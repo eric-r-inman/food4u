@@ -1,0 +1,4000 @@
+{
+  "tiers": [
+    {
+      "id": "d166",
+      "no": "01",
+      "name": "Foundation",
+      "freq": "EVERY MEAL",
+      "width": "100%",
+      "rail": "oklch(0.5 0.07 128)",
+      "tint": "oklch(0.965 0.018 122)",
+      "line": "oklch(0.88 0.035 122)",
+      "groups": [
+        {
+          "id": "d6",
+          "label": "Oils & healthy fats",
+          "foods": [
+            {
+              "id": "d1",
+              "name": "Extra-virgin olive oil",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d2",
+              "name": "Olives",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d3",
+              "name": "Avocado",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d4",
+              "name": "Avocado oil",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d5",
+              "name": "Cold-pressed rapeseed oil",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex1",
+              "name": "Ghee",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex2",
+              "name": "Toasted sesame oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex3",
+              "name": "Coconut oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex4",
+              "name": "Flaxseed oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex5",
+              "name": "Walnut oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex6",
+              "name": "Mustard oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex7",
+              "name": "Almond oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex8",
+              "name": "Perilla oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d29",
+          "label": "Leafy greens",
+          "foods": [
+            {
+              "id": "d7",
+              "name": "Spinach",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d8",
+              "name": "Kale",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d9",
+              "name": "Swiss chard",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d10",
+              "name": "Arugula",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d11",
+              "name": "Romaine",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d12",
+              "name": "Dandelion greens",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d13",
+              "name": "Watercress",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d14",
+              "name": "Collard greens",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d15",
+              "name": "Beet greens",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d16",
+              "name": "Endive",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d17",
+              "name": "Radicchio",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d18",
+              "name": "Escarole",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d19",
+              "name": "Mustard greens",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d20",
+              "name": "Bok choy",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d21",
+              "name": "Turnip greens",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d22",
+              "name": "Frisée",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d23",
+              "name": "Purslane",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d24",
+              "name": "Mizuna",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d25",
+              "name": "Komatsuna",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d26",
+              "name": "Chrysanthemum greens",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d27",
+              "name": "Tatsoi",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d28",
+              "name": "Shiso",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex9",
+              "name": "Chinese broccoli",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex10",
+              "name": "Choy sum",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex11",
+              "name": "Water spinach",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex12",
+              "name": "Malabar spinach",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex13",
+              "name": "Amaranth greens",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex14",
+              "name": "Fenugreek leaves",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex15",
+              "name": "Moringa leaves",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex16",
+              "name": "Pea shoots",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex17",
+              "name": "Sorrel",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex18",
+              "name": "Mâche",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex19",
+              "name": "Nettles",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d94",
+          "label": "Vegetables",
+          "foods": [
+            {
+              "id": "d30",
+              "name": "Tomatoes",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d31",
+              "name": "Garlic",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d32",
+              "name": "Onions",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d33",
+              "name": "Eggplant",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d34",
+              "name": "Zucchini",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d35",
+              "name": "Bell peppers",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d36",
+              "name": "Broccoli",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d37",
+              "name": "Cauliflower",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d38",
+              "name": "Artichokes",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d39",
+              "name": "Fennel",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d40",
+              "name": "Cucumber",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d41",
+              "name": "Carrots",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d42",
+              "name": "Asparagus",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d43",
+              "name": "Mushrooms",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d44",
+              "name": "Leeks",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d45",
+              "name": "Celery",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d46",
+              "name": "Beets",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d47",
+              "name": "Cabbage",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d48",
+              "name": "Brussels sprouts",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d49",
+              "name": "Okra",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d50",
+              "name": "Capers",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d51",
+              "name": "Sun-dried tomatoes",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d52",
+              "name": "Sweet potato",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d53",
+              "name": "Butternut squash",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d54",
+              "name": "Green beans",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d55",
+              "name": "Radishes",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d56",
+              "name": "Turnips",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d57",
+              "name": "Kohlrabi",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d58",
+              "name": "Chili peppers",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d59",
+              "name": "Shiitake",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d60",
+              "name": "Maitake",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d61",
+              "name": "Enoki",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d62",
+              "name": "Daikon",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d63",
+              "name": "Burdock root",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d64",
+              "name": "Lotus root",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d65",
+              "name": "Bitter melon",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d66",
+              "name": "Napa cabbage",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d67",
+              "name": "Bamboo shoots",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d68",
+              "name": "Parsnip",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d69",
+              "name": "Rutabaga",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d70",
+              "name": "Green onions",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d71",
+              "name": "Yellow Onion",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d72",
+              "name": "Red Onion",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d73",
+              "name": "Sweet Onion",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d74",
+              "name": "Shallots",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d75",
+              "name": "Romanesco",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d76",
+              "name": "Broccolini",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d77",
+              "name": "Broccoli rabe",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d78",
+              "name": "Sunchokes",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d79",
+              "name": "Celeriac",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d80",
+              "name": "Kabocha squash",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d81",
+              "name": "Delicata squash",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d82",
+              "name": "Acorn squash",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d83",
+              "name": "Spaghetti squash",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d84",
+              "name": "Heirloom tomatoes",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d85",
+              "name": "Watermelon radish",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d86",
+              "name": "Snap peas",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d87",
+              "name": "Snow peas",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d88",
+              "name": "Broccoli sprouts",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d89",
+              "name": "Alfalfa sprouts",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d90",
+              "name": "Microgreens",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d91",
+              "name": "Chayote",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d92",
+              "name": "Water chestnuts",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d93",
+              "name": "Horseradish",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex20",
+              "name": "Tomatillos",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex21",
+              "name": "Nopales",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex22",
+              "name": "Jicama",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex23",
+              "name": "Poblano peppers",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex24",
+              "name": "Jalapeños",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex25",
+              "name": "Serrano peppers",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex26",
+              "name": "Sweet corn",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex27",
+              "name": "Taro",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex28",
+              "name": "Yam",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex29",
+              "name": "Winter melon",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex30",
+              "name": "Long beans",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex31",
+              "name": "Chinese eggplant",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex32",
+              "name": "Indian eggplant",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex33",
+              "name": "Bottle gourd",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex34",
+              "name": "Ridge gourd",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex35",
+              "name": "Drumsticks",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex36",
+              "name": "Cluster beans",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex37",
+              "name": "Shishito peppers",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex38",
+              "name": "Garlic scapes",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex39",
+              "name": "Fiddleheads",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex40",
+              "name": "Ramps",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex41",
+              "name": "Chinese celery",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex42",
+              "name": "Baby corn",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex43",
+              "name": "Ivy gourd",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex44",
+              "name": "Plantain",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex45",
+              "name": "Cassava",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d109",
+          "label": "Whole grains",
+          "foods": [
+            {
+              "id": "d95",
+              "name": "Oats",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d96",
+              "name": "Farro",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d97",
+              "name": "Barley",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d98",
+              "name": "Bulgur",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d99",
+              "name": "Brown rice",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d100",
+              "name": "Quinoa",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d101",
+              "name": "Whole-grain bread",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d102",
+              "name": "Whole-wheat pasta",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d103",
+              "name": "Buckwheat / soba",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d104",
+              "name": "Millet",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d105",
+              "name": "Rye",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d106",
+              "name": "Freekeh",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d107",
+              "name": "Black rice",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d108",
+              "name": "Sorghum",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex46",
+              "name": "Amaranth",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex47",
+              "name": "Teff",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex48",
+              "name": "Wild rice",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex49",
+              "name": "Spelt",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex50",
+              "name": "Kamut",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex51",
+              "name": "Fonio",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex52",
+              "name": "Finger millet",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex53",
+              "name": "Pearl millet",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex54",
+              "name": "Job's tears",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex55",
+              "name": "Whole-grain corn tortillas",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex56",
+              "name": "Brown rice noodles",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex57",
+              "name": "Whole-wheat couscous",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex58",
+              "name": "Red rice",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d138",
+          "label": "Fruit",
+          "foods": [
+            {
+              "id": "d110",
+              "name": "Berries",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d111",
+              "name": "Pomegranate",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d112",
+              "name": "Figs",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d113",
+              "name": "Grapes",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d114",
+              "name": "Oranges",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d115",
+              "name": "Apples",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d116",
+              "name": "Pears",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d117",
+              "name": "Melon",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d118",
+              "name": "Lemons",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d119",
+              "name": "Dates",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d120",
+              "name": "Apricots",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d121",
+              "name": "Peaches",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d122",
+              "name": "Plums",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d123",
+              "name": "Cherries",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d124",
+              "name": "Grapefruit",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d125",
+              "name": "Nectarines",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d126",
+              "name": "Kiwi",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d127",
+              "name": "Persimmon",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d128",
+              "name": "Quince",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d129",
+              "name": "Prunes",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d130",
+              "name": "Raisins",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d131",
+              "name": "Mandarins",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d132",
+              "name": "Asian pear",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d133",
+              "name": "Lingonberries",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d134",
+              "name": "Bilberries",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d135",
+              "name": "Black currants",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d136",
+              "name": "Sea buckthorn",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d137",
+              "name": "Yuzu",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex59",
+              "name": "Mango",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex60",
+              "name": "Papaya",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex61",
+              "name": "Guava",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex62",
+              "name": "Pineapple",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex63",
+              "name": "Passion fruit",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex64",
+              "name": "Dragon fruit",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex65",
+              "name": "Lychee",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex66",
+              "name": "Longan",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex67",
+              "name": "Rambutan",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex68",
+              "name": "Mangosteen",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex69",
+              "name": "Jackfruit",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex70",
+              "name": "Pomelo",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex71",
+              "name": "Loquat",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex72",
+              "name": "Cherimoya",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex73",
+              "name": "Prickly pear",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex74",
+              "name": "Tamarind",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex75",
+              "name": "Indian gooseberry",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex76",
+              "name": "Sapota",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex77",
+              "name": "Jamun",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex78",
+              "name": "Blackberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex79",
+              "name": "Raspberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex80",
+              "name": "Strawberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex81",
+              "name": "Blueberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex82",
+              "name": "Cranberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex83",
+              "name": "Gooseberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex84",
+              "name": "Mulberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex85",
+              "name": "Elderberries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex86",
+              "name": "Aronia berries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex87",
+              "name": "Goji berries",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex88",
+              "name": "Banana",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex89",
+              "name": "Cantaloupe",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex90",
+              "name": "Watermelon",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex91",
+              "name": "Starfruit",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d159",
+          "label": "Herbs & spices",
+          "foods": [
+            {
+              "id": "d139",
+              "name": "Turmeric",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d140",
+              "name": "Ginger",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d141",
+              "name": "Basil",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d142",
+              "name": "Oregano",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d143",
+              "name": "Rosemary",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d144",
+              "name": "Parsley",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d145",
+              "name": "Mint",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d146",
+              "name": "Thyme",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d147",
+              "name": "Cinnamon",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d148",
+              "name": "Black pepper",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d149",
+              "name": "Sumac",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d150",
+              "name": "Wasabi",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d151",
+              "name": "Dill",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d152",
+              "name": "Caraway",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d153",
+              "name": "Star anise",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d154",
+              "name": "Cardamom",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d155",
+              "name": "Cloves",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d156",
+              "name": "Sage",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d157",
+              "name": "Cumin",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d158",
+              "name": "Smoked paprika",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex92",
+              "name": "Cilantro",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex93",
+              "name": "Coriander seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex94",
+              "name": "Mustard seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex95",
+              "name": "Fenugreek seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex96",
+              "name": "Fennel seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex97",
+              "name": "Curry leaves",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex98",
+              "name": "Garam masala",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex99",
+              "name": "Asafoetida",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex100",
+              "name": "Nigella seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex101",
+              "name": "Ajwain",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex102",
+              "name": "Saffron",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex103",
+              "name": "Bay leaves",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex104",
+              "name": "Allspice",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex105",
+              "name": "Mexican oregano",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex106",
+              "name": "Epazote",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex107",
+              "name": "Annatto",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex108",
+              "name": "Sichuan peppercorns",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex109",
+              "name": "Lemongrass",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex110",
+              "name": "Galangal",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex111",
+              "name": "Kaffir lime leaves",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex112",
+              "name": "Thai basil",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex113",
+              "name": "Chives",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex114",
+              "name": "Tarragon",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex115",
+              "name": "Marjoram",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex116",
+              "name": "Za'atar",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex117",
+              "name": "Gochugaru",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex118",
+              "name": "Chinese five-spice",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d165",
+          "label": "Tea & botanicals",
+          "foods": [
+            {
+              "id": "d160",
+              "name": "Green tea",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d161",
+              "name": "Matcha",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d162",
+              "name": "Sencha",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d163",
+              "name": "Hojicha",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d164",
+              "name": "Hibiscus",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex119",
+              "name": "Oolong tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex120",
+              "name": "Pu-erh tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex121",
+              "name": "White tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex122",
+              "name": "Jasmine tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex123",
+              "name": "Genmaicha",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex124",
+              "name": "Gyokuro",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex125",
+              "name": "Barley tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex126",
+              "name": "Chrysanthemum tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex127",
+              "name": "Rooibos",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex128",
+              "name": "Yerba mate",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex129",
+              "name": "Tulsi",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex130",
+              "name": "Chamomile",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex131",
+              "name": "Peppermint tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex132",
+              "name": "Ginger tea",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex133",
+              "name": "Kombucha",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d241",
+      "no": "02",
+      "name": "Daily",
+      "freq": "MOST DAYS",
+      "width": "82%",
+      "rail": "oklch(0.57 0.08 78)",
+      "tint": "oklch(0.965 0.022 84)",
+      "line": "oklch(0.88 0.04 84)",
+      "groups": [
+        {
+          "id": "d183",
+          "label": "Condiments",
+          "foods": [
+            {
+              "id": "d167",
+              "name": "Balsamic vinegar",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d168",
+              "name": "Red wine vinegar",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d169",
+              "name": "Apple cider vinegar",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d170",
+              "name": "Sherry vinegar",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d171",
+              "name": "White wine vinegar",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d172",
+              "name": "Rice vinegar",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d173",
+              "name": "Dijon mustard",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d174",
+              "name": "Whole-grain mustard",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d175",
+              "name": "Tomato paste",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d176",
+              "name": "Harissa",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d177",
+              "name": "Pesto",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d178",
+              "name": "Pomegranate molasses",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d179",
+              "name": "Olive tapenade",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d180",
+              "name": "Anchovy paste",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d181",
+              "name": "Hot sauce",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d182",
+              "name": "Lemon juice",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex134",
+              "name": "Fish sauce",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex135",
+              "name": "Oyster sauce",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex136",
+              "name": "Gochujang",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex137",
+              "name": "Doubanjiang",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex138",
+              "name": "Ponzu",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex139",
+              "name": "Black vinegar",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex140",
+              "name": "Coconut aminos",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex141",
+              "name": "Salsa",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex142",
+              "name": "Salsa verde",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex143",
+              "name": "Chipotle in adobo",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex144",
+              "name": "Tamarind paste",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex145",
+              "name": "Mango chutney",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex146",
+              "name": "Sambal oelek",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d203",
+          "label": "Legumes & pulses",
+          "foods": [
+            {
+              "id": "d184",
+              "name": "Lentils",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d185",
+              "name": "Chickpeas",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d186",
+              "name": "White beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d187",
+              "name": "Fava beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d188",
+              "name": "Black-eyed peas",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d189",
+              "name": "Split peas",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d190",
+              "name": "Kidney beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d191",
+              "name": "Butter beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d192",
+              "name": "Borlotti beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d193",
+              "name": "Lupini beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d194",
+              "name": "Green peas",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d195",
+              "name": "Cannellini beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d196",
+              "name": "Pinto beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d197",
+              "name": "Edamame",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d198",
+              "name": "Hummus",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d199",
+              "name": "Adzuki beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d200",
+              "name": "Mung beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d201",
+              "name": "Soybeans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d202",
+              "name": "Red beans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex147",
+              "name": "Black beans",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex148",
+              "name": "Pigeon peas",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex149",
+              "name": "Black gram",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex150",
+              "name": "Red lentils",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex151",
+              "name": "Green lentils",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex152",
+              "name": "Beluga lentils",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex153",
+              "name": "French lentils",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex154",
+              "name": "Black chickpeas",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex155",
+              "name": "Navy beans",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex156",
+              "name": "Great northern beans",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex157",
+              "name": "Cranberry beans",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex158",
+              "name": "Peanuts",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex159",
+              "name": "Moth beans",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex160",
+              "name": "Horse gram",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d222",
+          "label": "Nuts & seeds",
+          "foods": [
+            {
+              "id": "d204",
+              "name": "Walnuts",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d205",
+              "name": "Almonds",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d206",
+              "name": "Pistachios",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d207",
+              "name": "Hazelnuts",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d208",
+              "name": "Pine nuts",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d209",
+              "name": "Tahini",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d210",
+              "name": "Flaxseed",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d211",
+              "name": "Sunflower seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d212",
+              "name": "Pumpkin seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d213",
+              "name": "Chia seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d214",
+              "name": "Cashews",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d215",
+              "name": "Pecans",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d216",
+              "name": "Sesame seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d217",
+              "name": "Brazil nuts",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d218",
+              "name": "Macadamia nuts",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d219",
+              "name": "Almond butter",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d220",
+              "name": "Hemp seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d221",
+              "name": "Pepitas",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex161",
+              "name": "Peanut butter",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex162",
+              "name": "Cashew butter",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex163",
+              "name": "Sunflower seed butter",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex164",
+              "name": "Poppy seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex165",
+              "name": "Watermelon seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex166",
+              "name": "Coconut",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex167",
+              "name": "Lotus seeds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d231",
+          "label": "Soy & fermented",
+          "foods": [
+            {
+              "id": "d223",
+              "name": "Tofu",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d224",
+              "name": "Natto",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d225",
+              "name": "Miso",
+              "prep": "P",
+              "hero": true,
+              "na": true
+            },
+            {
+              "id": "d226",
+              "name": "Tempeh",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d227",
+              "name": "Tamari / soy sauce",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d228",
+              "name": "Kimchi",
+              "prep": "F",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d229",
+              "name": "Sauerkraut",
+              "prep": "F",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d230",
+              "name": "Pickled vegetables",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "ex168",
+              "name": "Doenjang",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex169",
+              "name": "Fermented black beans",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex170",
+              "name": "Fermented tofu",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex171",
+              "name": "Soy milk",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex172",
+              "name": "Nutritional yeast",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d238",
+          "label": "Cultured dairy · moderate",
+          "foods": [
+            {
+              "id": "d232",
+              "name": "Greek yogurt",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d233",
+              "name": "Kefir",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d234",
+              "name": "Skyr",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d235",
+              "name": "Feta",
+              "prep": "F",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d236",
+              "name": "Pecorino / Parmesan",
+              "prep": "F",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d237",
+              "name": "Ricotta",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex173",
+              "name": "Paneer",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex174",
+              "name": "Buttermilk",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex175",
+              "name": "Queso fresco",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex176",
+              "name": "Cotija",
+              "prep": "F",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex177",
+              "name": "Cottage cheese",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex178",
+              "name": "Labneh",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex179",
+              "name": "Goat cheese",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex180",
+              "name": "Manchego",
+              "prep": "F",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex181",
+              "name": "Halloumi",
+              "prep": "F",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex182",
+              "name": "Mozzarella",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d240",
+          "label": "Supplements",
+          "foods": [
+            {
+              "id": "d239",
+              "name": "Fisetin",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d260",
+      "no": "03",
+      "name": "Weekly",
+      "freq": "2–3× PER WEEK",
+      "width": "64%",
+      "rail": "oklch(0.49 0.06 232)",
+      "tint": "oklch(0.965 0.015 232)",
+      "line": "oklch(0.87 0.03 232)",
+      "groups": [
+        {
+          "id": "d255",
+          "label": "Oily & white fish",
+          "foods": [
+            {
+              "id": "d242",
+              "name": "Sardines",
+              "prep": "P",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d243",
+              "name": "Salmon",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d244",
+              "name": "Herring",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d245",
+              "name": "Anchovies",
+              "prep": "P",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d246",
+              "name": "Mackerel",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d247",
+              "name": "Tuna",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d248",
+              "name": "Cod",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d249",
+              "name": "Trout",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d250",
+              "name": "Sea bass",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d251",
+              "name": "Pollock",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d252",
+              "name": "Canned tuna",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d253",
+              "name": "Canned sardines",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d254",
+              "name": "Canned salmon",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex183",
+              "name": "Shrimp",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex184",
+              "name": "Mussels",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex185",
+              "name": "Clams",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex186",
+              "name": "Oysters",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex187",
+              "name": "Scallops",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex188",
+              "name": "Squid",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex189",
+              "name": "Octopus",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex190",
+              "name": "Crab",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex191",
+              "name": "Halibut",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex192",
+              "name": "Haddock",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex193",
+              "name": "Arctic char",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex194",
+              "name": "Snapper",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex195",
+              "name": "Tilapia",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex196",
+              "name": "Barramundi",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d259",
+          "label": "Eggs & poultry",
+          "foods": [
+            {
+              "id": "d256",
+              "name": "Eggs",
+              "prep": "F",
+              "hero": true,
+              "na": false
+            },
+            {
+              "id": "d257",
+              "name": "Chicken",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d258",
+              "name": "Turkey",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex197",
+              "name": "Duck",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex198",
+              "name": "Quail",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex199",
+              "name": "Duck eggs",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex200",
+              "name": "Quail eggs",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d270",
+      "no": "04",
+      "name": "Occasionally",
+      "freq": "A FEW ×/MONTH",
+      "width": "46%",
+      "rail": "oklch(0.52 0.1 42)",
+      "tint": "oklch(0.965 0.022 50)",
+      "line": "oklch(0.88 0.045 50)",
+      "groups": [
+        {
+          "id": "d264",
+          "label": "Sweeteners & extras",
+          "foods": [
+            {
+              "id": "d261",
+              "name": "Honey",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d262",
+              "name": "Potatoes",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d263",
+              "name": "Red wine · optional",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex201",
+              "name": "Maple syrup",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex202",
+              "name": "Blackstrap molasses",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex203",
+              "name": "Coconut sugar",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex204",
+              "name": "Jaggery",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex205",
+              "name": "Piloncillo",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex206",
+              "name": "Date syrup",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex207",
+              "name": "Agave nectar",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex208",
+              "name": "Monk fruit",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex209",
+              "name": "Stevia",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex210",
+              "name": "Cacao nibs",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        },
+        {
+          "id": "d269",
+          "label": "Limit",
+          "foods": [
+            {
+              "id": "d265",
+              "name": "Red meat",
+              "prep": "F",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "d266",
+              "name": "Cured meats",
+              "prep": "F",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d267",
+              "name": "Rich cheeses",
+              "prep": "F",
+              "hero": false,
+              "na": true
+            },
+            {
+              "id": "d268",
+              "name": "Sweets & pastries",
+              "prep": "P",
+              "hero": false,
+              "na": false
+            },
+            {
+              "id": "ex211",
+              "name": "Dark chocolate",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex212",
+              "name": "Roasted chickpeas",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex213",
+              "name": "Roasted edamame",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex214",
+              "name": "Seaweed snacks",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex215",
+              "name": "Roasted makhana",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex216",
+              "name": "Kale chips",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex217",
+              "name": "Whole-grain crackers",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex218",
+              "name": "Rye crisps",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex219",
+              "name": "Air-popped popcorn",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex220",
+              "name": "Plantain chips",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex221",
+              "name": "Trail mix",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex222",
+              "name": "Nut & seed bars",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex223",
+              "name": "Dried mango",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex224",
+              "name": "Turkey jerky",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex225",
+              "name": "Beef jerky",
+              "prep": "P",
+              "hero": false,
+              "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ex226",
+              "name": "Whole-grain pretzels",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex227",
+              "name": "Rice cakes",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex228",
+              "name": "Oatcakes",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex229",
+              "name": "Dolmas",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex230",
+              "name": "Falafel",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex231",
+              "name": "Roasted chana",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex232",
+              "name": "Puffed rice",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex233",
+              "name": "Banana chips",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex234",
+              "name": "Coconut chips",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex235",
+              "name": "Dark-chocolate almonds",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex236",
+              "name": "Granola",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex237",
+              "name": "Energy balls",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex238",
+              "name": "Hummus cups",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ex239",
+              "name": "Guacamole",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "staples": [
+    {
+      "id": "d271",
+      "name": "Shopping List",
+      "meta": "WHAT TO BUY · DRAG FOODS HERE",
+      "rail": "oklch(0.5 0.09 150)",
+      "line": "oklch(0.85 0.045 150)",
+      "note": "Drag foods here to build your shopping list.",
+      "items": []
+    },
+    {
+      "id": "d272",
+      "name": "Pantry",
+      "meta": "ROOM TEMPERATURE · SHOP MONTHLY",
+      "rail": "oklch(0.55 0.08 74)",
+      "line": "oklch(0.86 0.04 74)",
+      "note": "Grains, legumes, nuts & seeds keep beautifully in mason jars. Choose no-salt-added canned goods where you can.",
+      "items": []
+    },
+    {
+      "id": "d273",
+      "name": "Refrigerator",
+      "meta": "REFRIGERATOR · SHOP WEEKLY",
+      "rail": "oklch(0.49 0.06 232)",
+      "line": "oklch(0.85 0.035 232)",
+      "note": "Long-keeping produce and cultured staples that earn their shelf space — carrots and cabbage last for weeks and turn up in countless recipes.",
+      "items": []
+    },
+    {
+      "id": "d274",
+      "name": "Freezer",
+      "meta": "FREEZER · SHOP MONTHLY",
+      "rail": "oklch(0.52 0.06 212)",
+      "line": "oklch(0.85 0.035 212)",
+      "note": "Flash-frozen at peak ripeness — just as nutritious as fresh and always on hand. Nuts keep longest in the freezer too.",
+      "items": []
+    },
+    {
+      "id": "d275",
+      "name": "Counter",
+      "meta": "COOL · DARK · NOT REFRIGERATED",
+      "rail": "oklch(0.5 0.085 64)",
+      "line": "oklch(0.85 0.04 64)",
+      "note": "Roots, alliums, and winter squash that keep best in a cool, dark cupboard rather than the fridge.",
+      "items": []
+    },
+    {
+      "id": "d276",
+      "name": "Spice Cupboard",
+      "meta": "DRIED SPICES & HERBS · COOL, DARK",
+      "rail": "oklch(0.5 0.11 45)",
+      "line": "oklch(0.85 0.05 45)",
+      "note": "Ground and whole dried spices — kept away from heat and light.",
+      "items": []
+    },
+    {
+      "id": "d277",
+      "name": "Apothecary",
+      "meta": "SUPPLEMENTS · COOL, DARK, DRY",
+      "rail": "oklch(0.5 0.08 300)",
+      "line": "oklch(0.85 0.04 300)",
+      "note": "Capsules, powders, and tinctures — kept cool, dark, and dry.",
+      "items": []
+    }
+  ],
+  "recipes": [
+    {
+      "id": "d278",
+      "name": "Cucumber Sandwich",
+      "category": "Lunch",
+      "ingredients": [
+        {
+          "id": "d279",
+          "name": "Whole-grain bread",
+          "na": false
+        },
+        {
+          "id": "d280",
+          "name": "Cucumber",
+          "na": false
+        },
+        {
+          "id": "d281",
+          "name": "Hummus",
+          "na": false
+        },
+        {
+          "id": "d282",
+          "name": "Extra-virgin olive oil",
+          "na": false
+        },
+        {
+          "id": "d283",
+          "name": "Feta",
+          "na": false
+        },
+        {
+          "id": "d284",
+          "name": "Dill",
+          "na": false
+        },
+        {
+          "id": "d285",
+          "name": "Lemon juice",
+          "na": false
+        },
+        {
+          "id": "d286",
+          "name": "Black pepper",
+          "na": false
+        }
+      ],
+      "instructions": "Ingredients:\n- 2 slices whole-grain bread\n- 1/2 cucumber, thinly sliced\n- 3 tbsp hummus\n- 1 tsp extra-virgin olive oil\n- 2 tbsp feta, crumbled\n- 1 tbsp fresh dill, chopped\n- 1 tsp lemon juice\n- Black pepper, to taste\n\nInstructions:\n1. Spread the hummus evenly over both slices of bread.\n2. Layer the cucumber over one slice; scatter the crumbled feta and dill on top.\n3. Drizzle with olive oil and lemon juice, then season with black pepper.\n4. Close the sandwich, slice in half on the diagonal, and serve."
+    },
+    {
+      "id": "d287",
+      "name": "Hummus",
+      "category": "Sauces & Condiments",
+      "ingredients": [
+        {
+          "id": "d288",
+          "name": "Chickpeas",
+          "na": false
+        },
+        {
+          "id": "d289",
+          "name": "Tahini",
+          "na": false
+        },
+        {
+          "id": "d290",
+          "name": "Extra-virgin olive oil",
+          "na": false
+        },
+        {
+          "id": "d291",
+          "name": "Lemon juice",
+          "na": false
+        },
+        {
+          "id": "d292",
+          "name": "Garlic",
+          "na": false
+        },
+        {
+          "id": "d293",
+          "name": "Cumin",
+          "na": false
+        }
+      ],
+      "instructions": "Ingredients:\n- 1 can (15 oz) chickpeas, drained (reserve liquid)\n- 1/4 cup tahini\n- 3 tbsp extra-virgin olive oil, plus more to serve\n- 2 tbsp lemon juice\n- 1 clove garlic\n- 1/2 tsp ground cumin\n- Salt, to taste\n\nInstructions:\n1. Blend the tahini and lemon juice until creamy, about 1 minute.\n2. Add the garlic, cumin, olive oil, and a pinch of salt; blend to combine.\n3. Add the chickpeas and blend until smooth, thinning with the reserved\n   chickpea liquid a tablespoon at a time until light and fluffy.\n4. Spread in a bowl, drizzle with olive oil, and serve."
+    },
+    {
+      "id": "d294",
+      "name": "Tzatziki",
+      "category": "Sauces & Condiments",
+      "ingredients": [
+        {
+          "id": "d295",
+          "name": "Greek yogurt",
+          "na": false
+        },
+        {
+          "id": "d296",
+          "name": "Cucumber",
+          "na": false
+        },
+        {
+          "id": "d297",
+          "name": "Garlic",
+          "na": false
+        },
+        {
+          "id": "d298",
+          "name": "Extra-virgin olive oil",
+          "na": false
+        },
+        {
+          "id": "d299",
+          "name": "Dill",
+          "na": false
+        },
+        {
+          "id": "d300",
+          "name": "Lemon juice",
+          "na": false
+        }
+      ],
+      "instructions": "Ingredients:\n- 1 cup plain Greek yogurt\n- 1/2 cucumber, grated and squeezed dry\n- 1 clove garlic, minced\n- 1 tbsp extra-virgin olive oil\n- 1 tbsp fresh dill, chopped\n- 1 tsp lemon juice\n- Salt, to taste\n\nInstructions:\n1. Grate the cucumber, then squeeze out as much liquid as possible.\n2. Stir the cucumber into the yogurt with the garlic, olive oil, dill,\n   and lemon juice.\n3. Season with salt, chill 30 minutes to let the flavors meld, and serve."
+    }
+  ]
+}

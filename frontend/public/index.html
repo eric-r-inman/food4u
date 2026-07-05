@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>food4u — Longevity Food Pyramid</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="/elm.js"></script>
+    <script>
+      // Ensure HTML5 drag-and-drop initiates across browsers (Firefox and
+      // Safari require dataTransfer data to be set during dragstart).  A
+      // capture-phase listener sets it for every draggable chip before
+      // Elm's own handler runs.
+      document.addEventListener(
+        "dragstart",
+        function (event) {
+          try {
+            event.dataTransfer.setData("text/plain", "food4u");
+            event.dataTransfer.effectAllowed = "move";
+          } catch (_) {}
+        },
+        true,
+      );
+
+      Elm.Main.init({ node: document.getElementById("app") });
+    </script>
+  </body>
+</html>

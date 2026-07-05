@@ -1,0 +1,46 @@
+[package]
+name = "food4u-server"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+name = "food4u_server"
+path = "src/lib.rs"
+
+[[bin]]
+name = "food4u-server"
+path = "src/main.rs"
+
+[dependencies]
+rust-template-foundation = { workspace = true, features = ["auth"] }
+food4u-lib = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+# Enables method chaining and reduces superfluous local variables that only
+# exist to name intermediate results.  Prefer .tap() over temporary variables
+# when it improves readability.
+tap = { workspace = true }
+axum = { workspace = true }
+tokio = { workspace = true }
+tokio-listener = { workspace = true }
+prometheus = { workspace = true }
+aide = { workspace = true }
+schemars = { workspace = true }
+openidconnect = { workspace = true }
+
+[dev-dependencies]
+openidconnect = { workspace = true }
+prometheus = { workspace = true }
+serde_json = { workspace = true }
+tempfile = { workspace = true }
+tower = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,103 @@
+#+title:     food4u
+#+language:  en
+
+* Introduction
+
+food4u is a small, browser-based app for managing a longevity-oriented kitchen.
+It is a personal, single-user tool meant to run locally on one machine.
+
+The page is four side-by-side columns, each collapsible to a vertical bar:
+
+- *Longevity Foods* — a food pyramid (Foundation → Occasionally) of ~500 whole
+  foods, organized by category and drawn from Mediterranean, Okinawan, Nordic,
+  and Blue Zones patterns.
+- *Recipes* — your recipes, grouped by meal category.  Add one by name or paste
+  a recipe as text and it is parsed into ingredients and instructions.  Filter
+  to "Can make now" or "Almost there" based on what is stocked.
+- *Kitchen* — storage panes (Pantry, Refrigerator, Freezer, Counter, Spice
+  Cupboard, Apothecary) tracking what you actually have on hand.
+- *Shopping List* — what to buy, grouped by grocery-store department, with a
+  one-click plain-text export.
+
+You build it by dragging foods between columns: pyramid → kitchen or shopping
+list (copy), recipe ingredients from the pyramid, and a recipe's missing
+ingredients to the shopping list in one click.  Recipes can be linked to pyramid
+foods, and a recipe is flagged green when every ingredient is already stocked.
+
+The frontend is an [[https://elm-lang.org/][Elm]] single-page app served by a small Rust server (built on
+the rust-template foundation).  The whole model is a single JSON document the
+server persists to a file on disk.  Edits in the browser save automatically;
+there is no database to run.
+
+* Running it
+
+The development entry point builds the frontend, starts the server, and opens
+the app in a browser:
+
+#+begin_src sh :exports code
+just dev
+#+end_src
+
+This serves the app at =http://127.0.0.1:3000=.  When no OIDC provider is
+configured the server runs unauthenticated, so there is no login step for local
+use.
+
+Run everything through the Nix dev shell so the Rust, Elm, and formatter
+toolchains match:
+
+#+begin_src sh :exports code
+nix develop --command just dev
+nix develop --command just build
+nix develop --command just test
+#+end_src
+
+* Architecture
+
+- =frontend/src/Main.elm= — the entire UI: the four-column layout, the pyramid,
+  recipes (including the pasted-text parser), the kitchen storage panes, the
+  shopping list with department grouping and text export, per-column search,
+  drag-and-drop, and the load/save wiring.
+- =crates/server= — serves the compiled frontend and exposes the model API.
+  =store.rs= owns persistence; =routes.rs= owns the endpoints.
+- =crates/server/src/seed/default_model.json= — the embedded default model,
+  generated from the original Claude Design mock-up.  It is the checked-in
+  source of truth and is served until the user saves their own changes.
+
+** Model API
+
+- =GET /api/model= — the current model, or the embedded default when no data
+  file exists yet.
+- =PUT /api/model= — persist the posted model document.
+
+* Configuration
+
+Configuration follows the foundation's staged precedence (CLI flags, then
+=food4u_*= environment variables, then a TOML config file, then compiled
+defaults).  The app-specific knobs:
+
+- =--data-file= / =food4u_data_file= — where the model JSON is persisted
+  (default =food4u-model.json= in the working directory).
+- =--frontend-path= / =food4u_frontend_path= — the compiled frontend assets
+  (default =frontend/public=).
+- =--base-url= / =food4u_base_url= — required; the public base URL.  =just dev=
+  sets this to the local address for you.
+
+* Gotchas and tradeoffs
+
+- The model is stored as an opaque JSON document.  Its schema lives in Elm only;
+  the server persists and serves it without a parallel set of Rust types.  This
+  keeps the single-user app simple at the cost of server-side validation of the
+  model's shape.
+- The persisted file (=food4u-model.json=) is per-machine and git-ignored, so
+  edits survive rebuilds.  The embedded default seeds it only when the file does
+  not yet exist; the default starts with empty storage panes.  Delete the file
+  to start fresh from that default.
+- Drag-and-drop uses native HTML5 DnD.  A capture-phase listener in =index.html=
+  seeds =dataTransfer= so drags initiate in Firefox and Safari as well as
+  Chrome.
+
+* Contributing
+
+Run =just test= (Elm compile check plus the Rust suite) and =treefmt= before
+committing; both are enforced in CI.  See [[file:CONTRIBUTING.org][CONTRIBUTING.org]] for the full
+workflow.

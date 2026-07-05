@@ -1,0 +1,202 @@
+/* Base styling for food4u, mirroring the original mock-up's palette and
+   typography.  Component styling is applied inline by the Elm view; this
+   file owns page-level defaults, the responsive two-pane layout, and the
+   hover-reveal remove control. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: oklch(0.955 0.012 86);
+  font-family: "Archivo", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+input,
+button {
+  font-family: "Archivo", system-ui, sans-serif;
+}
+
+/* The app fills the viewport: a fixed top toolbar, then a two-pane body
+   whose columns scroll independently rather than the page as a whole. */
+.app-root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* The page fills the viewport width so the four columns have room.  On
+   narrow viewports it collapses to a single, page-scrolling column. */
+.page {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 20px;
+  overflow: hidden;
+}
+
+/* Four side-by-side columns — Pyramid, Recipes, Kitchen, Shopping Cart —
+   each independently scrolling and each collapsible to a slim vertical
+   strip.  The expanded pyramid grows to fill but keeps a usable floor;
+   the others are fixed width.  If everything is open on a too-narrow
+   window, the row scrolls horizontally rather than crushing the pyramid.
+   overflow-y: scroll keeps a visible scrollbar present (rather than
+   macOS overlay scrollbars that vanish). */
+.layout {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  overflow-x: auto;
+}
+
+.pyramid-col-open {
+  flex: 1 1 auto;
+  min-width: 360px;
+  min-height: 0;
+}
+
+.recipes-pane-open,
+.kitchen-col-open,
+.cart-col-open {
+  flex: 0 0 330px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.col-closed,
+.recipes-pane-closed {
+  flex: 0 0 46px;
+  min-height: 0;
+}
+
+.pyramid-body,
+.recipes-body,
+.kitchen-body,
+.cart-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.cart-body {
+  padding: 16px;
+}
+
+.pyramid-body {
+  padding: 16px 24px 24px;
+}
+
+.recipes-body {
+  padding: 16px;
+}
+
+.kitchen-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Keep panes at their natural height so the column overflows and
+   scrolls, rather than the flex items shrinking to fit the viewport. */
+.kitchen-body > * {
+  flex-shrink: 0;
+}
+
+.pyramid-body::-webkit-scrollbar,
+.recipes-body::-webkit-scrollbar,
+.kitchen-body::-webkit-scrollbar,
+.cart-body::-webkit-scrollbar {
+  width: 12px;
+}
+
+.pyramid-body::-webkit-scrollbar-thumb,
+.recipes-body::-webkit-scrollbar-thumb,
+.kitchen-body::-webkit-scrollbar-thumb,
+.cart-body::-webkit-scrollbar-thumb {
+  background: oklch(0.82 0.012 86);
+  border: 3px solid oklch(0.955 0.012 86);
+  border-radius: 8px;
+}
+
+.pyramid-body::-webkit-scrollbar-thumb:hover,
+.recipes-body::-webkit-scrollbar-thumb:hover,
+.kitchen-body::-webkit-scrollbar-thumb:hover,
+.cart-body::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.72 0.012 86);
+}
+
+.pyramid-body::-webkit-scrollbar-track,
+.recipes-body::-webkit-scrollbar-track,
+.kitchen-body::-webkit-scrollbar-track,
+.cart-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* On narrow viewports, stack into one page-scrolling column. */
+@media (max-width: 980px) {
+  .app-root {
+    height: auto;
+    overflow: visible;
+  }
+
+  .page {
+    overflow: visible;
+  }
+
+  .layout {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .pyramid-body,
+  .recipes-body,
+  .kitchen-body,
+  .cart-body {
+    overflow: visible;
+  }
+
+  .pyramid-col-open {
+    min-width: 0;
+  }
+
+  .pyramid-col-open,
+  .recipes-pane-open,
+  .kitchen-col-open,
+  .cart-col-open,
+  .col-closed,
+  .recipes-pane-closed {
+    flex: 0 0 auto;
+  }
+}
+
+/* The per-chip remove control is hidden until the chip is hovered, so a
+   dense list of foods stays readable.  display:none (not visibility)
+   so the hidden control reserves no space to the right of the text. */
+.chip-x {
+  display: none;
+}
+
+.chip:hover .chip-x {
+  display: inline-block;
+}
+
+@media print {
+  .noprint {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+}

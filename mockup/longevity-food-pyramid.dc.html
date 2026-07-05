@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:oklch(0.955 0.012 86);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    input{font-family:'Archivo',system-ui,sans-serif}
+    @media print { .noprint{display:none !important} body{background:#fff} }
+  </style>
+</helmet>
+
+<div class="noprint" style="position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:oklch(0.985 0.006 86 / 0.92);backdrop-filter:blur(8px);border-bottom:1px solid oklch(0.9 0.012 86)">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:1240px;width:100%;margin:0 auto;padding:11px 52px">
+    <button type="button" onClick="{{ onToggleEdit }}" style="{{ editBtnStyle }}">{{ editLabel }}</button>
+    <button type="button" onClick="{{ onReset }}" style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.4px;padding:8px 14px;border-radius:8px;border:1px solid oklch(0.86 0.02 70);background:#fff;color:oklch(0.45 0.02 60);cursor:pointer">Reset to defaults</button>
+    <sc-if value="{{ editMode }}" hint-placeholder-val="{{ false }}">
+      <span style="font-size:12.5px;color:oklch(0.5 0.012 70);line-height:1.4;text-wrap:pretty">Drag items between groups · click <strong style="color:oklch(0.4 0.04 60)">P</strong>/<strong style="color:oklch(0.38 0.05 145)">F</strong>/<strong style="color:oklch(0.5 0.13 45)">★</strong>/<strong style="color:oklch(0.48 0.13 34)">Na</strong> to tag · <strong>✕</strong> to remove · changes save automatically.</span>
+    </sc-if>
+  </div>
+</div>
+
+<div style="max-width:1240px;margin:18px auto 34px;background:oklch(0.99 0.006 86);border:1px solid oklch(0.9 0.012 86);border-radius:14px;box-shadow:0 18px 50px -28px rgba(60,45,20,0.35);padding:44px 52px 40px">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;border-bottom:1px solid oklch(0.9 0.012 86);padding-bottom:26px">
+    <div style="max-width:780px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:2.5px;color:oklch(0.5 0.07 128);font-weight:600;text-transform:uppercase">Mediterranean · Okinawan · Nordic · Blue Zones</div>
+      <h1 style="margin:12px 0 0;font-size:46px;line-height:1.02;font-weight:800;letter-spacing:-1.2px;color:oklch(0.28 0.015 70)">The Longevity Food Pyramid</h1>
+      <p style="margin:14px 0 0;font-size:16px;line-height:1.5;color:oklch(0.46 0.012 70);text-wrap:pretty">A data-rich hierarchy synthesizing the world's most evidence-backed longevity diets — Mediterranean, Okinawan &amp; traditional Japanese, and the clinically-validated Nordic pattern. Foods are ranked by how central each is and the strength of its evidence. Eat freely from the wide base; sparingly from the narrow top.</p>
+    </div>
+    <sc-if value="{{ showStats }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:0;border:1px solid oklch(0.89 0.012 86);border-radius:10px;overflow:hidden">
+      <div style="padding:14px 18px;text-align:center;border-right:1px solid oklch(0.91 0.012 86)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:oklch(0.3 0.015 70);line-height:1">{{ statTotal }}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:oklch(0.52 0.012 70);margin-top:6px">FOODS</div>
+      </div>
+      <div style="padding:14px 18px;text-align:center;border-right:1px solid oklch(0.91 0.012 86)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:oklch(0.45 0.05 60);line-height:1">{{ statPantry }}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:oklch(0.52 0.012 70);margin-top:6px">PANTRY</div>
+      </div>
+      <div style="padding:14px 18px;text-align:center;border-right:1px solid oklch(0.91 0.012 86)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:oklch(0.45 0.06 145);line-height:1">{{ statFresh }}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:oklch(0.52 0.012 70);margin-top:6px">FRESH</div>
+      </div>
+      <div style="padding:14px 18px;text-align:center;border-right:1px solid oklch(0.91 0.012 86)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:oklch(0.58 0.13 42);line-height:1">{{ statHero }}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:oklch(0.52 0.012 70);margin-top:6px">TOP ★</div>
+      </div>
+      <div style="padding:14px 18px;text-align:center">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:oklch(0.48 0.13 34);line-height:1">{{ statNa }}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:oklch(0.52 0.012 70);margin-top:6px">Na LIMIT</div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:14px 26px;align-items:center;padding:18px 0 22px;font-size:13px;color:oklch(0.42 0.012 70)">
+    <div style="display:inline-flex;align-items:center;gap:7px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px;background:oklch(0.9 0.025 70);color:oklch(0.4 0.04 60)">P</span> Pantry · shelf-stable</div>
+    <div style="display:inline-flex;align-items:center;gap:7px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px;background:oklch(0.9 0.04 145);color:oklch(0.38 0.05 145)">F</span> Fresh · buy close to use</div>
+    <div style="display:inline-flex;align-items:center;gap:7px"><span style="color:oklch(0.58 0.13 42);font-size:13px">★</span> Top-priority staple · strongest evidence</div>
+    <div style="display:inline-flex;align-items:center;gap:7px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px;background:oklch(0.91 0.055 38);color:oklch(0.48 0.13 34)">Na</span> High sodium · enjoy occasionally</div>
+    <div style="display:inline-flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:oklch(0.55 0.012 70);margin-left:auto">BAND WIDTH = HOW OFTEN TO EAT</div>
+  </div>
+
+  <div style="display:flex;gap:16px;align-items:stretch">
+    <div style="flex:0 0 30px;display:flex;flex-direction:column;align-items:center;padding:4px 0">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1.5px;color:oklch(0.55 0.10 42);writing-mode:vertical-rl;transform:rotate(180deg)">EAT LESS ▲</span>
+      <div style="flex:1;width:2px;margin:8px 0;background:linear-gradient(to bottom, oklch(0.6 0.1 42), oklch(0.55 0.09 78), oklch(0.5 0.07 128))"></div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1.5px;color:oklch(0.48 0.08 128);writing-mode:vertical-rl;transform:rotate(180deg)">▼ EAT MOST</span>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ tiers }}" as="tier" hint-placeholder-count="4">
+        <div style="width: {{ tier.width }};margin:0 auto;background: {{ tier.tint }};border:1px solid {{ tier.line }};border-radius:11px;display:flex;overflow:hidden;min-height:96px">
+          <div style="flex:0 0 158px;background: {{ tier.rail }};color:#fff;padding:18px 16px;display:flex;flex-direction:column;justify-content:center;gap:4px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;opacity:0.7;letter-spacing:1px">{{ tier.no }}</div>
+            <div style="font-size:21px;font-weight:700;letter-spacing:-0.3px;line-height:1.05">{{ tier.name }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;opacity:0.92;letter-spacing:0.5px;margin-top:2px">{{ tier.freq }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;opacity:0.62;letter-spacing:0.5px;margin-top:6px">{{ tier.countLabel }}</div>
+          </div>
+          <div style="flex:1;padding:16px 20px;display:flex;flex-wrap:wrap;gap:16px 26px;align-content:flex-start">
+            <sc-for list="{{ tier.groups }}" as="group" hint-placeholder-count="3">
+              <div style="{{ group.cellStyle }}" onDragOver="{{ group.onDragOver }}" onDrop="{{ group.onDrop }}">
+                <div style="display:flex;align-items:baseline;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;color: {{ group.rail }};border-bottom:1px solid {{ group.line }};padding-bottom:5px">
+                  <span>{{ group.label }}</span>
+                  <span style="margin-left:auto;opacity:0.55;font-weight:500">{{ group.count }}</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <sc-for list="{{ group.foods }}" as="food" hint-placeholder-count="5">
+                    <span draggable="{{ food.draggable }}" onDragStart="{{ food.onDragStart }}" style="{{ food.chipStyle }}">
+                      <sc-if value="{{ food.showStar }}" hint-placeholder-val="{{ false }}"><span style="{{ food.starStyle }}">★</span></sc-if>
+                      <span>{{ food.name }}</span>
+                      <sc-if value="{{ food.tagP }}" hint-placeholder-val="{{ false }}"><span style="{{ food.pTag }}">P</span></sc-if>
+                      <sc-if value="{{ food.tagF }}" hint-placeholder-val="{{ false }}"><span style="{{ food.fTag }}">F</span></sc-if>
+                      <sc-if value="{{ food.tagNa }}" hint-placeholder-val="{{ false }}"><span style="{{ food.naTag }}">Na</span></sc-if>
+                      <sc-if value="{{ food.editMode }}" hint-placeholder-val="{{ false }}">
+                        <span class="noprint" style="display:inline-flex;gap:3px;align-items:center;margin-left:3px">
+                          <button type="button" onClick="{{ food.onToggleP }}" style="{{ food.pBtn }}">P</button>
+                          <button type="button" onClick="{{ food.onToggleF }}" style="{{ food.fBtn }}">F</button>
+                          <button type="button" onClick="{{ food.onToggleHero }}" style="{{ food.heroBtn }}">★</button>
+                          <button type="button" onClick="{{ food.onToggleNa }}" style="{{ food.naBtn }}">Na</button>
+                          <button type="button" onClick="{{ food.onRemove }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;cursor:pointer;border:1px solid oklch(0.85 0.06 25);background:oklch(0.96 0.03 25);color:oklch(0.5 0.16 25);line-height:1.3">✕</button>
+                        </span>
+                      </sc-if>
+                    </span>
+                  </sc-for>
+                  <sc-if value="{{ group.isAdding }}" hint-placeholder-val="{{ false }}">
+                    <input type="text" value="{{ group.addValue }}" onChange="{{ group.onAddInput }}" onKeyDown="{{ group.onAddKey }}" onBlur="{{ group.onAddCommit }}" placeholder="Add food…" autoFocus="{{ true }}" style="padding:3px 8px;border:1px solid oklch(0.68 0.06 128);border-radius:6px;font-size:13px;width:132px;outline:none;color:oklch(0.3 0.012 70)" />
+                  </sc-if>
+                  <sc-if value="{{ group.notAdding }}" hint-placeholder-val="{{ false }}">
+                    <button type="button" class="noprint" onClick="{{ group.onStartAdd }}" style="padding:4px 9px;border:1px dashed oklch(0.74 0.04 128);border-radius:6px;background:transparent;color:oklch(0.48 0.06 128);font-size:12.5px;font-weight:600;cursor:pointer;line-height:1.1">+ Add</button>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+</div>
+
+<div style="max-width:1240px;margin:0 auto 40px;background:oklch(0.99 0.006 86);border:1px solid oklch(0.9 0.012 86);border-radius:14px;box-shadow:0 18px 50px -28px rgba(60,45,20,0.35);padding:44px 52px 40px">
+  <div style="border-bottom:1px solid oklch(0.9 0.012 86);padding-bottom:24px;max-width:860px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:2.5px;color:oklch(0.5 0.07 128);font-weight:600;text-transform:uppercase">Always-Stocked · Kitchen Foundation</div>
+    <h2 style="margin:12px 0 0;font-size:34px;line-height:1.05;font-weight:800;letter-spacing:-0.8px;color:oklch(0.28 0.015 70)">Kitchen Staples</h2>
+    <p style="margin:12px 0 0;font-size:15px;line-height:1.5;color:oklch(0.46 0.012 70);text-wrap:pretty">The versatile building blocks worth always having on hand — ingredients that recur across Mediterranean, Okinawan &amp; Nordic recipes. Kept modest to fit a shared kitchen. The recipe-driven weekly shop comes separately.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:18px;margin-top:26px">
+    <sc-for list="{{ staples }}" as="card" hint-placeholder-count="3">
+      <div style="flex:1 1 300px;min-width:280px;background:#fff;border:1px solid {{ card.line }};border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="background: {{ card.rail }};color:#fff;padding:15px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <div style="font-size:21px;font-weight:700;letter-spacing:-0.3px">{{ card.name }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:0.82">{{ card.count }}</div>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;opacity:0.92;margin-top:5px;letter-spacing:0.6px">{{ card.meta }}</div>
+        </div>
+        <div style="padding:15px 16px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;flex:1" onDragOver="{{ card.onDragOver }}" onDrop="{{ card.onDrop }}">
+          <sc-for list="{{ card.items }}" as="s" hint-placeholder-count="9">
+            <span draggable="{{ s.draggable }}" onDragStart="{{ s.onDragStart }}" style="{{ s.chipStyle }}">
+              <span>{{ s.name }}</span>
+              <sc-if value="{{ s.tagNa }}" hint-placeholder-val="{{ false }}"><span style="{{ s.naTag }}">Na</span></sc-if>
+              <sc-if value="{{ s.editMode }}" hint-placeholder-val="{{ false }}">
+                <span class="noprint" style="display:inline-flex;gap:3px;align-items:center;margin-left:3px">
+                  <button type="button" onClick="{{ s.onToggleNa }}" style="{{ s.naBtn }}">Na</button>
+                  <button type="button" onClick="{{ s.onRemove }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;cursor:pointer;border:1px solid oklch(0.85 0.06 25);background:oklch(0.96 0.03 25);color:oklch(0.5 0.16 25);line-height:1.3">✕</button>
+                </span>
+              </sc-if>
+            </span>
+          </sc-for>
+          <sc-if value="{{ card.isAdding }}" hint-placeholder-val="{{ false }}">
+            <input type="text" value="{{ card.addValue }}" onChange="{{ card.onAddInput }}" onKeyDown="{{ card.onAddKey }}" onBlur="{{ card.onAddCommit }}" placeholder="Add item…" autoFocus="{{ true }}" style="padding:3px 8px;border:1px solid oklch(0.68 0.05 232);border-radius:6px;font-size:13px;width:132px;outline:none;color:oklch(0.3 0.012 70)" />
+          </sc-if>
+          <sc-if value="{{ card.notAdding }}" hint-placeholder-val="{{ false }}">
+            <button type="button" class="noprint" onClick="{{ card.onStartAdd }}" style="padding:4px 9px;border:1px dashed oklch(0.72 0.04 232);border-radius:6px;background:transparent;color:oklch(0.48 0.06 232);font-size:12.5px;font-weight:600;cursor:pointer;line-height:1.1">+ Add</button>
+          </sc-if>
+        </div>
+        <div style="padding:0 18px 16px;font-size:12px;line-height:1.5;color:oklch(0.5 0.012 70);text-wrap:pretty">{{ card.note }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:oklch(0.965 0.018 70);border:1px solid oklch(0.88 0.03 70);border-radius:12px;padding:15px 20px">
+    <div style="font-size:17px;font-weight:700;color:oklch(0.34 0.03 60);letter-spacing:-0.2px">Counter basket</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.8px;color:oklch(0.52 0.04 60)">COOL · DARK · NOT REFRIGERATED</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-left:auto">
+      <span style="padding:4px 9px;background:#fff;border:1px solid oklch(0.88 0.025 70);border-radius:6px;font-size:13px;font-weight:500;color:oklch(0.33 0.012 70)">Onions</span>
+      <span style="padding:4px 9px;background:#fff;border:1px solid oklch(0.88 0.025 70);border-radius:6px;font-size:13px;font-weight:500;color:oklch(0.33 0.012 70)">Garlic</span>
+      <span style="padding:4px 9px;background:#fff;border:1px solid oklch(0.88 0.025 70);border-radius:6px;font-size:13px;font-weight:500;color:oklch(0.33 0.012 70)">Shallots</span>
+      <span style="padding:4px 9px;background:#fff;border:1px solid oklch(0.88 0.025 70);border-radius:6px;font-size:13px;font-weight:500;color:oklch(0.33 0.012 70)">Potatoes</span>
+      <span style="padding:4px 9px;background:#fff;border:1px solid oklch(0.88 0.025 70);border-radius:6px;font-size:13px;font-weight:500;color:oklch(0.33 0.012 70)">Sweet potatoes</span>
+      <span style="padding:4px 9px;background:#fff;border:1px solid oklch(0.88 0.025 70);border-radius:6px;font-size:13px;font-weight:500;color:oklch(0.33 0.012 70)">Winter squash</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1320, &quot;height&quot;: 2620 },
+  &quot;showPrepTags&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
+  &quot;showHeroStars&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
+  &quot;showSodium&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
+  &quot;showStats&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; }
+}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.KEY = 'medLongevityModel_v1';
+    this._n = 0;
+    let model = null;
+    try { const s = localStorage.getItem(this.KEY); if (s) model = JSON.parse(s); } catch (e) {}
+    if (!model || !model.tiers) model = this.buildDefault();
+    this.migrate(model);
+    this.state = { model, editMode: false, addingTo: null, addValue: '' };
+    this._drag = null;
+    this.allowDrop = (e) => { e.preventDefault(); try { e.dataTransfer.dropEffect = 'move'; } catch (_) {} };
+    this.onAddInput = (e) => this.setState({ addValue: e.target.value });
+    this.onToggleEdit = () => this.setState(s => ({ editMode: !s.editMode, addingTo: null, addValue: '' }));
+    this.onReset = () => {
+      if (window.confirm('Reset all foods and staples to the original defaults? Your customizations will be lost.')) {
+        const m = this.buildDefault();
+        this.persist(m);
+        this.setState({ model: m, addingTo: null, addValue: '' });
+      }
+    };
+  }
+
+  uid() { return 'i' + Date.now().toString(36) + '_' + (++this._n); }
+
+  migrate(m) {
+    // v1 → add Supplements group to the Daily tier if missing
+    const daily = (m.tiers || []).find(t => t.name === 'Daily');
+    if (daily && !daily.groups.some(g => g.label === 'Supplements')) {
+      daily.groups.push({ id: this.uid(), label: 'Supplements', foods: [{ id: this.uid(), name: 'Fisetin', prep: 'P', hero: false, na: false }] });
+      this.persist(m);
+    }
+  }
+
+  buildDefault() {
+    let k = 0; const id = () => 'd' + (++k);
+    const f = (name, prep, hero, na) => ({ id: id(), name, prep: prep || 'P', hero: !!hero, na: !!na });
+    const g = (label, foods) => ({ id: id(), label, foods });
+    const T = (no, name, freq, width, rail, tint, line, groups) => ({ id: id(), no, name, freq, width, rail, tint, line, groups });
+    const tiers = [
+      T('01', 'Foundation', 'EVERY MEAL', '100%', 'oklch(0.5 0.07 128)', 'oklch(0.965 0.018 122)', 'oklch(0.88 0.035 122)', [
+        g('Oils & healthy fats', [f('Extra-virgin olive oil','P',1), f('Olives','P',0,1), f('Avocado','F'), f('Avocado oil','P'), f('Cold-pressed rapeseed oil','P')]),
+        g('Leafy greens', [f('Spinach','F',1), f('Kale','F'), f('Swiss chard','F'), f('Arugula','F'), f('Romaine','F'), f('Dandelion greens','F'), f('Watercress','F'), f('Collard greens','F'), f('Beet greens','F'), f('Endive','F'), f('Radicchio','F'), f('Escarole','F'), f('Mustard greens','F'), f('Bok choy','F'), f('Turnip greens','F'), f('Frisée','F'), f('Purslane','F'), f('Mizuna','F'), f('Komatsuna','F'), f('Chrysanthemum greens','F'), f('Tatsoi','F'), f('Shiso','F')]),
+        g('Vegetables', [f('Tomatoes','F',1), f('Garlic','P',1), f('Onions','P'), f('Eggplant','F'), f('Zucchini','F'), f('Bell peppers','F'), f('Broccoli','F'), f('Cauliflower','F'), f('Artichokes','F'), f('Fennel','F'), f('Cucumber','F'), f('Carrots','F'), f('Asparagus','F'), f('Mushrooms','F'), f('Leeks','F'), f('Celery','F'), f('Beets','F'), f('Cabbage','F'), f('Brussels sprouts','F'), f('Okra','F'), f('Capers','P',0,1), f('Sun-dried tomatoes','P',0,1), f('Sweet potato','F'), f('Butternut squash','F'), f('Green beans','F'), f('Radishes','F'), f('Turnips','F'), f('Kohlrabi','F'), f('Chili peppers','F'), f('Shiitake','F'), f('Maitake','F'), f('Enoki','F'), f('Daikon','F'), f('Burdock root','F'), f('Lotus root','F'), f('Bitter melon','F'), f('Napa cabbage','F'), f('Bamboo shoots','F'), f('Parsnip','F'), f('Rutabaga','F'), f('Green onions','F')]),
+        g('Sea vegetables', [f('Wakame','P',1), f('Nori','P'), f('Kombu','P'), f('Hijiki','P'), f('Arame','P'), f('Dulse','P')]),
+        g('Whole grains', [f('Oats','P',1), f('Farro','P'), f('Barley','P'), f('Bulgur','P'), f('Brown rice','P'), f('Quinoa','P'), f('Whole-grain bread','P'), f('Whole-wheat pasta','P'), f('Buckwheat / soba','P'), f('Millet','P'), f('Rye','P'), f('Freekeh','P'), f('Black rice','P'), f('Sorghum','P')]),
+        g('Fruit', [f('Berries','F',1), f('Pomegranate','F'), f('Figs','F'), f('Grapes','F'), f('Oranges','F'), f('Apples','F'), f('Pears','F'), f('Melon','F'), f('Lemons','F'), f('Dates','P'), f('Apricots','F'), f('Peaches','F'), f('Plums','F'), f('Cherries','F'), f('Grapefruit','F'), f('Nectarines','F'), f('Kiwi','F'), f('Persimmon','F'), f('Quince','F'), f('Prunes','P'), f('Raisins','P'), f('Mandarins','F'), f('Asian pear','F'), f('Lingonberries','F'), f('Bilberries','F'), f('Black currants','F'), f('Sea buckthorn','F'), f('Yuzu','F')]),
+        g('Herbs & spices', [f('Turmeric','P',1), f('Ginger','F',1), f('Basil','F'), f('Oregano','P'), f('Rosemary','F'), f('Parsley','F'), f('Mint','F'), f('Thyme','P'), f('Cinnamon','P'), f('Black pepper','P'), f('Sumac','P'), f('Wasabi','P'), f('Dill','F'), f('Caraway','P'), f('Star anise','P'), f('Cardamom','P'), f('Cloves','P'), f('Sage','F')]),
+        g('Tea & botanicals', [f('Green tea','P',1), f('Matcha','P'), f('Sencha','P'), f('Hojicha','P'), f('Hibiscus','P')]),
+      ]),
+      T('02', 'Daily', 'MOST DAYS', '82%', 'oklch(0.57 0.08 78)', 'oklch(0.965 0.022 84)', 'oklch(0.88 0.04 84)', [
+        g('Legumes & pulses', [f('Lentils','P',1), f('Chickpeas','P',1), f('White beans','P'), f('Fava beans','P'), f('Black-eyed peas','P'), f('Split peas','P'), f('Kidney beans','P'), f('Butter beans','P'), f('Borlotti beans','P'), f('Lupini beans','P'), f('Green peas','F'), f('Cannellini beans','P'), f('Pinto beans','P'), f('Edamame','F'), f('Hummus','F'), f('Adzuki beans','P'), f('Mung beans','P'), f('Soybeans','P'), f('Red beans','P')]),
+        g('Nuts & seeds', [f('Walnuts','P',1), f('Almonds','P',1), f('Pistachios','P'), f('Hazelnuts','P'), f('Pine nuts','P'), f('Tahini','P'), f('Flaxseed','P'), f('Sunflower seeds','P'), f('Pumpkin seeds','P'), f('Chia seeds','P'), f('Cashews','P'), f('Pecans','P'), f('Sesame seeds','P'), f('Brazil nuts','P'), f('Macadamia nuts','P'), f('Almond butter','P'), f('Hemp seeds','P'), f('Pepitas','P')]),
+        g('Soy & fermented', [f('Tofu','F',1), f('Natto','F',1), f('Miso','P',1,1), f('Tempeh','F'), f('Tamari / soy sauce','P',0,1), f('Kimchi','F',0,1), f('Sauerkraut','F',0,1), f('Pickled vegetables','P',0,1)]),
+        g('Cultured dairy · moderate', [f('Greek yogurt','F',1), f('Kefir','F'), f('Skyr','F'), f('Feta','F',0,1), f('Pecorino / Parmesan','F',0,1), f('Ricotta','F')]),
+        g('Supplements', [f('Fisetin','P')]),
+      ]),
+      T('03', 'Weekly', '2–3× PER WEEK', '64%', 'oklch(0.49 0.06 232)', 'oklch(0.965 0.015 232)', 'oklch(0.87 0.03 232)', [
+        g('Oily & white fish', [f('Sardines','P',1), f('Salmon','F',1), f('Herring','F'), f('Anchovies','P',0,1), f('Mackerel','F'), f('Tuna','P'), f('Cod','F'), f('Trout','F'), f('Sea bass','F'), f('Pollock','F')]),
+        g('Eggs & poultry', [f('Eggs','F',1), f('Chicken','F'), f('Turkey','F')]),
+      ]),
+      T('04', 'Occasionally', 'A FEW ×/MONTH', '46%', 'oklch(0.52 0.1 42)', 'oklch(0.965 0.022 50)', 'oklch(0.88 0.045 50)', [
+        g('Sweeteners & extras', [f('Honey','P'), f('Potatoes','F'), f('Red wine · optional','P')]),
+        g('Limit · save for feasts', [f('Red meat','F'), f('Cured meats','F',0,1), f('Rich cheeses','F',0,1), f('Sweets & pastries','P')]),
+      ]),
+    ];
+    const s = (name, na) => ({ id: id(), name, na: !!na });
+    const C = (name, meta, rail, line, note, items) => ({ id: id(), name, meta, rail, line, note, items });
+    const staples = [
+      C('Pantry', 'ROOM TEMPERATURE · SHOP MONTHLY', 'oklch(0.55 0.08 74)', 'oklch(0.86 0.04 74)',
+        'Grains, legumes, nuts & seeds keep beautifully in mason jars. Choose no-salt-added canned goods where you can.',
+        [s('Extra-virgin olive oil'), s('No-salt canned tomatoes'), s('Brown rice'), s('Farro'), s('Rolled oats'), s('Whole-grain pasta'), s('Quinoa'), s('Lentils'), s('Chickpeas'), s('Cannellini beans'), s('Walnuts'), s('Almonds'), s('Pepitas'), s('Tahini'), s('Canned sardines'), s('Nori & wakame'), s('Olives', 1), s('Honey'), s('Red wine vinegar'), s('Dijon mustard'), s('Turmeric'), s('Cumin'), s('Smoked paprika'), s('Cinnamon'), s('Black pepper'), s('Dried oregano'), s('Green tea'), s('Dates')]),
+      C('Cold', 'REFRIGERATOR · 2 SHELVES · SHOP WEEKLY', 'oklch(0.49 0.06 232)', 'oklch(0.85 0.035 232)',
+        'Long-keeping produce and cultured staples that earn their shelf space — carrots and cabbage last for weeks and turn up in countless recipes.',
+        [s('Carrots'), s('Celery'), s('Cabbage'), s('Lemons'), s('Fresh ginger'), s('Eggs'), s('Plain Greek yogurt'), s('Kefir'), s('Feta', 1), s('Parmesan', 1), s('Miso', 1), s('Tofu'), s('Apples')]),
+      C('Frozen', 'FREEZER · 2 SHELVES · SHOP MONTHLY', 'oklch(0.52 0.06 212)', 'oklch(0.85 0.035 212)',
+        'Flash-frozen at peak ripeness — just as nutritious as fresh and always on hand. Nuts keep longest in the freezer too.',
+        [s('Wild salmon fillets'), s('White fish (cod)'), s('Mixed berries'), s('Chopped spinach'), s('Green peas'), s('Edamame'), s('Broccoli florets'), s('Artichoke hearts'), s('Whole-grain bread'), s('Shelled walnuts')]),
+    ];
+    return { tiers, staples };
+  }
+
+  persist(m) { try { localStorage.setItem(this.KEY, JSON.stringify(m)); } catch (e) {} }
+  update(mutator) {
+    const m = JSON.parse(JSON.stringify(this.state.model));
+    mutator(m);
+    this.persist(m);
+    this.setState({ model: m });
+  }
+  pyramidList(m, gid) { for (const t of m.tiers) for (const gr of t.groups) if (gr.id === gid) return gr.foods; return null; }
+  stapleList(m, cid) { for (const c of m.staples) if (c.id === cid) return c.items; return null; }
+
+  onDropInto(kind, locId) {
+    return (e) => {
+      e.preventDefault();
+      const d = this._drag; this._drag = null;
+      if (!d || (d.kind === kind && d.locId === locId)) return;
+      this.update(m => {
+        const src = d.kind === 'pyramid' ? this.pyramidList(m, d.locId) : this.stapleList(m, d.locId);
+        if (!src) return;
+        const idx = src.findIndex(x => x.id === d.foodId);
+        if (idx < 0) return;
+        const item = src[idx];
+        const tgt = kind === 'pyramid' ? this.pyramidList(m, locId) : this.stapleList(m, locId);
+        if (!tgt) return;
+        if (d.kind === 'pyramid' && kind === 'staple') {
+          if (!tgt.some(x => x.name.toLowerCase() === item.name.toLowerCase())) tgt.push({ id: this.uid(), name: item.name, na: !!item.na });
+        } else if (d.kind === 'staple' && kind === 'pyramid') {
+          src.splice(idx, 1);
+          tgt.push({ id: this.uid(), name: item.name, prep: 'P', hero: false, na: !!item.na });
+        } else if (d.kind === 'pyramid') {
+          src.splice(idx, 1); tgt.push(item);
+        } else {
+          src.splice(idx, 1); tgt.push({ id: item.id, name: item.name, na: !!item.na });
+        }
+      });
+    };
+  }
+  dragStart(kind, locId, foodId) { return (e) => { this._drag = { kind, locId, foodId }; try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', foodId); } catch (_) {} }; }
+  removeFood(kind, locId, foodId) { return () => this.update(m => { const l = kind === 'pyramid' ? this.pyramidList(m, locId) : this.stapleList(m, locId); if (!l) return; const i = l.findIndex(x => x.id === foodId); if (i >= 0) l.splice(i, 1); }); }
+  toggleTag(kind, locId, foodId, tag) {
+    return () => this.update(m => {
+      const l = kind === 'pyramid' ? this.pyramidList(m, locId) : this.stapleList(m, locId); if (!l) return;
+      const it = l.find(x => x.id === foodId); if (!it) return;
+      if (tag === 'P') it.prep = it.prep === 'P' ? '' : 'P';
+      else if (tag === 'F') it.prep = it.prep === 'F' ? '' : 'F';
+      else if (tag === 'hero') it.hero = !it.hero;
+      else if (tag === 'na') it.na = !it.na;
+    });
+  }
+  startAdd(kind, locId) { return () => this.setState({ addingTo: kind + ':' + locId, addValue: '' }); }
+  commitAdd(kind, locId) {
+    return () => {
+      const v = (this.state.addValue || '').trim();
+      if (v) this.update(m => {
+        const l = kind === 'pyramid' ? this.pyramidList(m, locId) : this.stapleList(m, locId); if (!l) return;
+        if (kind === 'pyramid') l.push({ id: this.uid(), name: v, prep: 'F', hero: false, na: false });
+        else l.push({ id: this.uid(), name: v, na: false });
+      });
+      this.setState({ addingTo: null, addValue: '' });
+    };
+  }
+  addKey(kind, locId) { return (e) => { if (e.key === 'Enter') { e.preventDefault(); this.commitAdd(kind, locId)(); } else if (e.key === 'Escape') { this.setState({ addingTo: null, addValue: '' }); } }; }
+
+  renderVals() {
+    const m = this.state.model;
+    const editMode = this.state.editMode;
+    const showPrep = this.props.showPrepTags ?? true;
+    const showStars = this.props.showHeroStars ?? true;
+    const showStats = this.props.showStats ?? true;
+    const showSodium = this.props.showSodium ?? true;
+
+    const heroChip = { display:'inline-flex', alignItems:'center', gap:'5px', padding:'4px 9px', background:'oklch(0.95 0.035 45)', border:'1px solid oklch(0.8 0.07 45)', borderRadius:'6px', fontSize:'13.5px', fontWeight:600, color:'oklch(0.37 0.06 40)', lineHeight:1.1 };
+    const plainChip = { display:'inline-flex', alignItems:'center', gap:'5px', padding:'4px 9px', background:'#fff', border:'1px solid oklch(0.89 0.01 86)', borderRadius:'6px', fontSize:'13.5px', fontWeight:500, color:'oklch(0.35 0.012 70)', lineHeight:1.1 };
+    const stapleChip = { display:'inline-flex', alignItems:'center', gap:'5px', padding:'4px 9px', background:'oklch(0.975 0.006 86)', border:'1px solid oklch(0.9 0.01 86)', borderRadius:'6px', fontSize:'13px', fontWeight:500, color:'oklch(0.33 0.012 70)', lineHeight:1.1 };
+    const tag = (bg, fg) => ({ fontFamily:"'IBM Plex Mono',monospace", fontSize:'10px', fontWeight:600, padding:'1px 4px', borderRadius:'3px', background:bg, color:fg });
+    const pTag = tag('oklch(0.9 0.025 70)', 'oklch(0.4 0.04 60)');
+    const fTag = tag('oklch(0.9 0.04 145)', 'oklch(0.38 0.05 145)');
+    const naTag = tag('oklch(0.91 0.055 38)', 'oklch(0.48 0.13 34)');
+    const starStyle = { color:'oklch(0.58 0.13 42)', fontSize:'10px' };
+
+    const btnBase = { fontFamily:"'IBM Plex Mono',monospace", fontSize:'10px', fontWeight:600, padding:'1px 5px', borderRadius:'3px', cursor:'pointer', lineHeight:1.3, borderWidth:'1px', borderStyle:'solid' };
+    const off = { ...btnBase, background:'#fff', color:'oklch(0.72 0.01 70)', borderColor:'oklch(0.88 0.01 86)' };
+    const onP = { ...btnBase, background:'oklch(0.9 0.025 70)', color:'oklch(0.4 0.04 60)', borderColor:'oklch(0.78 0.04 60)' };
+    const onF = { ...btnBase, background:'oklch(0.9 0.04 145)', color:'oklch(0.38 0.05 145)', borderColor:'oklch(0.75 0.06 145)' };
+    const onHero = { ...btnBase, background:'oklch(0.93 0.06 55)', color:'oklch(0.5 0.13 45)', borderColor:'oklch(0.8 0.1 50)' };
+    const onNa = { ...btnBase, background:'oklch(0.91 0.055 38)', color:'oklch(0.48 0.13 34)', borderColor:'oklch(0.8 0.08 38)' };
+
+    let total = 0, pantry = 0, fresh = 0, hero = 0, na = 0;
+    const tiers = m.tiers.map(t => {
+      let c = 0;
+      const groups = t.groups.map(gr => {
+        const foods = gr.foods.map(fd => {
+          total++; c++;
+          if (fd.prep === 'P') pantry++; if (fd.prep === 'F') fresh++; if (fd.hero) hero++; if (fd.na) na++;
+          return {
+            name: fd.name,
+            chipStyle: fd.hero ? heroChip : plainChip,
+            draggable: editMode,
+            onDragStart: this.dragStart('pyramid', gr.id, fd.id),
+            showStar: !editMode && fd.hero && showStars, starStyle,
+            tagP: !editMode && showPrep && fd.prep === 'P', pTag,
+            tagF: !editMode && showPrep && fd.prep === 'F', fTag,
+            tagNa: !editMode && showSodium && fd.na, naTag,
+            editMode,
+            onToggleP: this.toggleTag('pyramid', gr.id, fd.id, 'P'),
+            onToggleF: this.toggleTag('pyramid', gr.id, fd.id, 'F'),
+            onToggleHero: this.toggleTag('pyramid', gr.id, fd.id, 'hero'),
+            onToggleNa: this.toggleTag('pyramid', gr.id, fd.id, 'na'),
+            onRemove: this.removeFood('pyramid', gr.id, fd.id),
+            pBtn: fd.prep === 'P' ? onP : off,
+            fBtn: fd.prep === 'F' ? onF : off,
+            heroBtn: fd.hero ? onHero : off,
+            naBtn: fd.na ? onNa : off,
+          };
+        });
+        const addKey = 'pyramid:' + gr.id;
+        const base = { flex:'1 1 168px', minWidth:'158px', display:'flex', flexDirection:'column', gap:'9px' };
+        return {
+          label: gr.label, count: gr.foods.length, foods, rail: t.rail, line: t.line,
+          cellStyle: editMode ? { ...base, padding:'7px', outline:'1px dashed ' + t.line, outlineOffset:'0px', borderRadius:'8px' } : base,
+          onDragOver: this.allowDrop, onDrop: this.onDropInto('pyramid', gr.id),
+          isAdding: this.state.addingTo === addKey,
+          notAdding: editMode && this.state.addingTo !== addKey,
+          addValue: this.state.addValue,
+          onStartAdd: this.startAdd('pyramid', gr.id), onAddInput: this.onAddInput,
+          onAddKey: this.addKey('pyramid', gr.id), onAddCommit: this.commitAdd('pyramid', gr.id),
+        };
+      });
+      return { no: t.no, name: t.name, freq: t.freq, width: t.width, rail: t.rail, tint: t.tint, line: t.line, groups, countLabel: c + ' FOODS' };
+    });
+
+    const staples = m.staples.map(card => {
+      const items = card.items.map(it => ({
+        name: it.name, chipStyle: stapleChip, draggable: editMode,
+        onDragStart: this.dragStart('staple', card.id, it.id),
+        tagNa: !editMode && showSodium && it.na, naTag,
+        editMode,
+        onToggleNa: this.toggleTag('staple', card.id, it.id, 'na'),
+        onRemove: this.removeFood('staple', card.id, it.id),
+        naBtn: it.na ? onNa : off,
+      }));
+      const addKey = 'staple:' + card.id;
+      return {
+        name: card.name, meta: card.meta, rail: card.rail, line: card.line, note: card.note, count: card.items.length + ' ITEMS', items,
+        onDragOver: this.allowDrop, onDrop: this.onDropInto('staple', card.id),
+        isAdding: this.state.addingTo === addKey,
+        notAdding: editMode && this.state.addingTo !== addKey,
+        addValue: this.state.addValue,
+        onStartAdd: this.startAdd('staple', card.id), onAddInput: this.onAddInput,
+        onAddKey: this.addKey('staple', card.id), onAddCommit: this.commitAdd('staple', card.id),
+      };
+    });
+
+    const ebBase = { fontFamily:"'IBM Plex Mono',monospace", fontSize:'12px', fontWeight:700, letterSpacing:'0.4px', padding:'8px 18px', borderRadius:'8px', cursor:'pointer' };
+    const editBtnStyle = editMode
+      ? { ...ebBase, background:'oklch(0.52 0.1 145)', color:'#fff', border:'1px solid oklch(0.45 0.09 145)' }
+      : { ...ebBase, background:'#fff', color:'oklch(0.42 0.09 145)', border:'1px solid oklch(0.62 0.08 145)' };
+
+    return { tiers, staples, editMode, showStats, statTotal: total, statPantry: pantry, statFresh: fresh, statHero: hero, statNa: na, onToggleEdit: this.onToggleEdit, onReset: this.onReset, editLabel: editMode ? 'Done' : 'Edit', editBtnStyle };
+  }
+}
+</script>
+</body>
+</html>
