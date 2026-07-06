@@ -9,6 +9,16 @@ module Data exposing
     , Tier
     , dataDecoder
     , encodeData
+    , foodInGroup
+    , itemInStorage
+    , listHasName
+    , mapGroup
+    , mapRecipe
+    , mapStorage
+    , pushFood
+    , pushItemTo
+    , pyramidHasName
+    , removeFood
     )
 
 {-| The food model's schema and its JSON serialization. The model is a
@@ -263,3 +273,146 @@ encodeItem item =
         , ( "name", Encode.string item.name )
         , ( "na", Encode.bool item.na )
         ]
+
+
+
+-- DATA OPERATIONS
+
+
+mapGroup : String -> (Group -> Group) -> Data -> Data
+mapGroup gid fn data =
+    { data
+        | tiers =
+            List.map
+                (\t ->
+                    { t
+                        | groups =
+                            List.map
+                                (\g ->
+                                    if g.id == gid then
+                                        fn g
+
+                                    else
+                                        g
+                                )
+                                t.groups
+                    }
+                )
+                data.tiers
+    }
+
+
+mapCard : String -> (Card -> Card) -> Data -> Data
+mapCard cid fn data =
+    { data
+        | staples =
+            List.map
+                (\c ->
+                    if c.id == cid then
+                        fn c
+
+                    else
+                        c
+                )
+                data.staples
+    }
+
+
+pushFood : String -> Food -> Data -> Data
+pushFood gid food =
+    mapGroup gid (\g -> { g | foods = g.foods ++ [ food ] })
+
+
+mapRecipe : String -> (Recipe -> Recipe) -> Data -> Data
+mapRecipe rid fn data =
+    { data
+        | recipes =
+            List.map
+                (\r ->
+                    if r.id == rid then
+                        fn r
+
+                    else
+                        r
+                )
+                data.recipes
+    }
+
+
+{-| Apply a transform to the item list of a drop-target location (a
+pane's in-stock list, its "Buy" list, or a recipe's ingredients).
+Pyramid locations have no item list, so they are left untouched.
+-}
+mapStorage : Loc -> (List Item -> List Item) -> Data -> Data
+mapStorage loc fn data =
+    case loc of
+        StoragePane cid ->
+            mapCard cid (\c -> { c | items = fn c.items }) data
+
+        RecipeIngredients rid ->
+            mapRecipe rid (\r -> { r | ingredients = fn r.ingredients }) data
+
+        PyramidGroup _ ->
+            data
+
+
+storageItemsAt : Loc -> Data -> List Item
+storageItemsAt loc data =
+    let
+        atCard cid selector =
+            data.staples |> List.filter (\c -> c.id == cid) |> List.concatMap selector
+    in
+    case loc of
+        StoragePane cid ->
+            atCard cid .items
+
+        RecipeIngredients rid ->
+            data.recipes |> List.filter (\r -> r.id == rid) |> List.concatMap .ingredients
+
+        PyramidGroup _ ->
+            []
+
+
+pushItemTo : Loc -> Item -> Data -> Data
+pushItemTo loc item =
+    mapStorage loc (\items -> items ++ [ item ])
+
+
+itemInStorage : Loc -> String -> Data -> Maybe Item
+itemInStorage loc foodId data =
+    storageItemsAt loc data |> List.filter (\i -> i.id == foodId) |> List.head
+
+
+listHasName : Loc -> String -> Data -> Bool
+listHasName loc name data =
+    storageItemsAt loc data |> List.any (\i -> String.toLower i.name == String.toLower name)
+
+
+removeFood : Loc -> String -> Data -> Data
+removeFood loc foodId data =
+    case loc of
+        PyramidGroup gid ->
+            mapGroup gid (\g -> { g | foods = List.filter (\f -> f.id /= foodId) g.foods }) data
+
+        _ ->
+            mapStorage loc (List.filter (\i -> i.id /= foodId)) data
+
+
+foodInGroup : String -> String -> Data -> Maybe Food
+foodInGroup gid foodId data =
+    data.tiers
+        |> List.concatMap .groups
+        |> List.filter (\g -> g.id == gid)
+        |> List.concatMap .foods
+        |> List.filter (\f -> f.id == foodId)
+        |> List.head
+
+
+{-| Whether a food of this name already exists anywhere in the pyramid.
+-}
+pyramidHasName : String -> Data -> Bool
+pyramidHasName name data =
+    data.tiers
+        |> List.concatMap .groups
+        |> List.concatMap .foods
+        |> List.any (\f -> String.toLower f.name == String.toLower name)
