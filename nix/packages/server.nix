@@ -25,7 +25,12 @@
   elmFrontend = pkgs.stdenv.mkDerivation {
     name = "food4u-elm-frontend";
     src = ../../frontend;
-    nativeBuildInputs = [pkgs.elmPackages.elm];
+    nativeBuildInputs = [
+      pkgs.elmPackages.elm
+      # Minifies the --optimize'd Elm output in buildPhase, kept in sync
+      # with the dev shell so the packaged and local bundles are identical.
+      pkgs.nodePackages.terser
+    ];
 
     configurePhase = pkgs.elmPackages.fetchElmDeps {
       elmPackages = import ../../frontend/elm-srcs.nix;
@@ -33,8 +38,15 @@
       registryDat = ../../frontend/registry.dat;
     };
 
+    # Compile with --optimize, then minify with Elm's recommended two-pass
+    # terser invocation: a compress pass that treats the generated wrapper
+    # helpers (F2..F9, A2..A9) as pure so dead code folds away, followed by
+    # a mangle pass.  The optimized-but-unminified intermediate is not kept.
     buildPhase = ''
-      elm make src/Main.elm --optimize --output elm.js
+      elm make src/Main.elm --optimize --output elm.unminified.js
+      terser elm.unminified.js \
+        --compress 'pure_funcs=[F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9],pure_getters,keep_fargs=false,unsafe_comps,unsafe' \
+        | terser --mangle --output elm.js
     '';
 
     installPhase = ''

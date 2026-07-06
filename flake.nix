@@ -89,6 +89,10 @@
           pkgs.elmPackages.elm
           pkgs.elmPackages.elm-format
           pkgs.elm2nix
+          # Minifies the --optimize'd Elm output for the production build
+          # (`just build-prod`); the same tool is used by the Nix package
+          # build so local and packaged frontends are byte-for-byte alike.
+          pkgs.nodePackages.terser
           # Unified formatter and the per-language binaries it invokes.
           pkgs.treefmt
           pkgs.alejandra

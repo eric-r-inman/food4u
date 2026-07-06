@@ -19,9 +19,21 @@ dev: build-elm
 # Build both Rust and Elm.
 build: build-elm build-rust
 
-# Build the Elm frontend.
+# Build the Elm frontend.  Unoptimized for a fast edit loop and readable
+# runtime errors; `just dev` uses this.
 build-elm:
     cd frontend && elm make src/Main.elm --output public/elm.js
+
+# Build the Elm frontend optimized and minified, mirroring the Nix package
+# build so the local and packaged bundles match.  Slower than build-elm
+# (terser runs twice); use it for release builds and bundle-size checks,
+# not the edit loop.
+build-elm-prod:
+    cd frontend && elm make src/Main.elm --optimize --output public/elm.unminified.js && terser public/elm.unminified.js --compress 'pure_funcs=[F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9],pure_getters,keep_fargs=false,unsafe_comps,unsafe' | terser --mangle --output public/elm.js && rm -f public/elm.unminified.js
+
+# Build the optimized frontend and the release binary together.
+build-prod: build-elm-prod
+    cargo build --workspace --release
 
 # Build all Rust workspace crates.
 build-rust:

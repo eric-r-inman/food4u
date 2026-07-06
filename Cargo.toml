@@ -89,6 +89,18 @@ opt-level = 3
 
 [profile.release]
 debug = false
+# Whole-program optimization for the shipped binary.  `lto = "fat"` and a
+# single codegen unit let the optimizer inline and specialize across crate
+# boundaries at the cost of longer link times, which only the release
+# build pays.  `strip` drops symbols the running service never needs.
+lto = "fat"
+codegen-units = 1
+strip = "symbols"
+# `panic` is intentionally left at the default (unwind).  Setting it to
+# "abort" would trade a small size win for turning any panic — including
+# one inside a dependency — into a process-wide abort that kills every
+# in-flight request.  For a multi-user hosted service, unwinding so one
+# request's failure cannot take down the others is the better posture.
 
 # ============================================================================
 # LINTS
