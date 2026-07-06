@@ -249,6 +249,7 @@ type Msg
     | CommitPaste String
     | CancelPaste
     | ExportShoppingList
+    | ClearCart
     | DragStart Loc String
     | DragEnd
     | DropOn Loc
@@ -408,6 +409,18 @@ update msg model =
                 Nothing ->
                     Cmd.none
             )
+
+        ClearCart ->
+            withData model
+                (\data ->
+                    case cartCardId data of
+                        Just cid ->
+                            persistData model
+                                (mapStorage (StoragePane cid) (always []) data)
+
+                        Nothing ->
+                            ( model, Cmd.none )
+                )
 
         ToggleCategory gid ->
             ( { model
@@ -1887,24 +1900,13 @@ viewCartColumn model data =
         in
         div (class "cart-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
             [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart
-            , div (styles [ ( "flex", "0 0 auto" ), ( "padding", "10px 16px" ), ( "border-bottom", "1px solid oklch(0.9 0.012 86)" ) ])
+            , div [ class "cart-toolbar" ]
                 [ button
-                    (type_ "button"
-                        :: onClick ExportShoppingList
-                        :: styles
-                            [ ( "font-family", "'IBM Plex Mono',monospace" )
-                            , ( "font-size", "11.5px" )
-                            , ( "font-weight", "600" )
-                            , ( "letter-spacing", "0.3px" )
-                            , ( "padding", "6px 12px" )
-                            , ( "border-radius", "7px" )
-                            , ( "border", "1px solid oklch(0.8 0.06 150)" )
-                            , ( "background", "oklch(0.96 0.04 150)" )
-                            , ( "color", "oklch(0.4 0.1 150)" )
-                            , ( "cursor", "pointer" )
-                            ]
-                    )
+                    [ type_ "button", class "cart-btn cart-btn-export", onClick ExportShoppingList ]
                     [ text "⬇  Export to .txt" ]
+                , button
+                    [ type_ "button", class "cart-btn cart-btn-clear", onClick ClearCart ]
+                    [ text "🗑  Clear all" ]
                 ]
             , case cartMaybe of
                 Just cart ->

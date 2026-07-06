@@ -3,6 +3,19 @@
    file owns page-level defaults, the responsive two-pane layout, and the
    hover-reveal remove control. */
 
+:root {
+  /* Shared values for the Shopping List toolbar buttons. */
+  --cart-btn-font: "IBM Plex Mono", monospace;
+  --cart-btn-radius: 7px;
+  --cart-toolbar-border: oklch(0.9 0.012 86);
+  --cart-export-border: oklch(0.8 0.06 150);
+  --cart-export-bg: oklch(0.96 0.04 150);
+  --cart-export-fg: oklch(0.4 0.1 150);
+  --cart-clear-border: oklch(0.78 0.09 42);
+  --cart-clear-bg: oklch(0.96 0.04 42);
+  --cart-clear-fg: oklch(0.45 0.13 42);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -178,6 +191,38 @@ button {
   .recipes-pane-closed {
     flex: 0 0 auto;
   }
+}
+
+/* The Shopping List toolbar: the export and clear-all buttons sit in a
+   row beneath the column header. */
+.cart-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--cart-toolbar-border);
+}
+
+.cart-btn {
+  font-family: var(--cart-btn-font);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 6px 12px;
+  border-radius: var(--cart-btn-radius);
+  cursor: pointer;
+}
+
+.cart-btn-export {
+  border: 1px solid var(--cart-export-border);
+  background: var(--cart-export-bg);
+  color: var(--cart-export-fg);
+}
+
+.cart-btn-clear {
+  border: 1px solid var(--cart-clear-border);
+  background: var(--cart-clear-bg);
+  color: var(--cart-clear-fg);
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a
