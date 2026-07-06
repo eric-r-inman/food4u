@@ -19,6 +19,7 @@ module Data exposing
     , pushItemTo
     , pyramidHasName
     , removeFood
+    , shoppingCartName
     )
 
 {-| The food model's schema and its JSON serialization. The model is a
@@ -30,6 +31,15 @@ decode to sensible defaults rather than failing the whole load.
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
+
+
+{-| The reserved name of the Shopping List storage card. It is a to-buy
+list rather than a real kitchen pane, so several queries treat it
+specially.
+-}
+shoppingCartName : String
+shoppingCartName =
+    "Shopping List"
 
 
 type alias Data =
