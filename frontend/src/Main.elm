@@ -23,7 +23,7 @@ it to a JSON file.
 import Browser
 import Browser.Dom as Dom
 import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, Tier, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
-import Derived exposing (categoryRanks, inStockNames, itemRank, nameCategory, recipeMissing, stockedExcludingCart)
+import Derived exposing (inStockNames, itemRank, recipeMissing)
 import Dict exposing (Dict)
 import File.Download as Download
 import Html exposing (..)
@@ -33,6 +33,7 @@ import Html.Keyed as Keyed
 import Html.Lazy as Lazy
 import Http
 import Json.Decode as Decode
+import Model exposing (Drag, Model, derive, emptyDerived)
 import Msg exposing (Msg(..))
 import RecipeParser exposing (parsePastedRecipe)
 import Set exposing (Set)
@@ -41,78 +42,6 @@ import Style exposing (cardStyle, categoryChipBg, chipBase, foodChipStyle, searc
 import Task
 import Types exposing (AddTarget(..), RecipeFilter(..))
 import Ui exposing (addInputId, collapsedColumnBar, columnTitleBar, dropZone, notepadButton, pasteInputId, recipeCartButton, recipeDeleteButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
-
-
-
--- MODEL
-
-
-type alias Drag =
-    { from : Loc
-    , foodId : String
-    }
-
-
-type alias Model =
-    { data : Maybe Data
-    , error : Maybe String
-    , adding : Maybe AddTarget
-    , addValue : String
-    , drag : Maybe Drag
-    , recipeDrag : Maybe String
-    , seq : Int
-
-    -- Keys whose collapse is *toggled away from their default*. Food and
-    -- recipe categories and individual recipes default collapsed; storage
-    -- panes default expanded. So membership flips whichever default
-    -- applies at each site (see `isOpen`).
-    , toggled : Set String
-    , pyramidOpen : Bool
-    , recipesOpen : Bool
-    , kitchenOpen : Bool
-    , cartOpen : Bool
-    , search : String
-    , recipeSearch : String
-    , kitchenSearch : String
-    , recipeFilter : RecipeFilter
-    , pasting : Maybe String
-    , pasteValue : String
-
-    -- Indices derived from `data`, recomputed only when the data changes
-    -- (see `derive`), so the views consult them instead of rescanning
-    -- every food and storage item on each render.
-    , derived : Derived
-    }
-
-
-{-| Precomputed lookups over `Data`. Rebuilding these on every render was
-the dominant per-keystroke cost, so they are recomputed once at each data
-change and cached on the model instead.
--}
-type alias Derived =
-    { nameCategory : Dict String String
-    , categoryRanks : Dict String Int
-    , inStock : Set String
-    , stockedNoCart : Set String
-    }
-
-
-emptyDerived : Derived
-emptyDerived =
-    { nameCategory = Dict.empty
-    , categoryRanks = Dict.empty
-    , inStock = Set.empty
-    , stockedNoCart = Set.empty
-    }
-
-
-derive : Data -> Derived
-derive data =
-    { nameCategory = nameCategory data
-    , categoryRanks = categoryRanks data
-    , inStock = inStockNames data
-    , stockedNoCart = stockedExcludingCart data
-    }
 
 
 main : Program () Model Msg
