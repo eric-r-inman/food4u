@@ -27,6 +27,8 @@ import File.Download as Download
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn)
+import Html.Keyed as Keyed
+import Html.Lazy as Lazy
 import Http
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -1802,24 +1804,36 @@ viewPyramidColumn model data =
         collapsedColumnBar "Longevity Foods" "oklch(0.5 0.07 128)" TogglePyramid []
 
     else
-        let
-            inStock =
-                model.derived.inStock
+        -- Lazy on the narrow set of inputs the pyramid actually reads, so a
+        -- keystroke or drag in another column does not rebuild and re-diff
+        -- the ~500-food tree.  Nothing here consults the drag state, so a
+        -- drag never re-renders the pyramid at all.
+        Lazy.lazy6 viewPyramidBody
+            model.search
+            model.toggled
+            model.adding
+            model.addValue
+            model.derived.inStock
+            data.tiers
 
-            search =
-                String.toLower (String.trim model.search)
 
-            anyMatch =
-                search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) (allFoods data)
-        in
-        div (class "pyramid-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-            [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid
-            , div [ class "pyramid-body" ]
-                [ viewSearchField "Search foods…" model.search (search /= "" && not anyMatch) SearchInput
-                , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
-                    (List.map (viewTier model inStock search) data.tiers)
-                ]
+viewPyramidBody : String -> Set String -> Maybe AddTarget -> String -> Set String -> List Tier -> Html Msg
+viewPyramidBody rawSearch toggled adding addValue inStock tiers =
+    let
+        search =
+            String.toLower (String.trim rawSearch)
+
+        anyMatch =
+            search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) (List.concatMap (\t -> List.concatMap .foods t.groups) tiers)
+    in
+    div (class "pyramid-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
+        [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid
+        , div [ class "pyramid-body" ]
+            [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput
+            , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
+                (List.map (viewTier toggled adding addValue inStock search) tiers)
             ]
+        ]
 
 
 {-| A search input with a clear button, reddened when the current term
@@ -1889,23 +1903,33 @@ viewKitchenColumn model data =
         collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen []
 
     else
-        let
-            kitchenSearch =
-                String.toLower (String.trim model.kitchenSearch)
+        Lazy.lazy5 viewKitchenBody
+            model.kitchenSearch
+            model.toggled
+            model.derived.nameCategory
+            model.derived.categoryRanks
+            data.staples
 
-            kitchenPanes =
-                List.filter (\c -> c.name /= shoppingCartName) data.staples
 
-            anyMatch =
-                kitchenSearch /= "" && List.any (\c -> List.any (\i -> String.contains kitchenSearch (String.toLower i.name)) c.items) kitchenPanes
-        in
-        div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-            [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
-            , div [ class "kitchen-body" ]
-                (viewSearchField "Search Kitchen…" model.kitchenSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
-                    :: List.map (viewPane model.toggled kitchenSearch model.derived.nameCategory model.derived.categoryRanks) kitchenPanes
-                )
-            ]
+viewKitchenBody : String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
+viewKitchenBody rawSearch toggled nameToCat ranks staples =
+    let
+        kitchenSearch =
+            String.toLower (String.trim rawSearch)
+
+        kitchenPanes =
+            List.filter (\c -> c.name /= shoppingCartName) staples
+
+        anyMatch =
+            kitchenSearch /= "" && List.any (\c -> List.any (\i -> String.contains kitchenSearch (String.toLower i.name)) c.items) kitchenPanes
+    in
+    div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
+        [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
+        , div [ class "kitchen-body" ]
+            (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
+                :: List.map (viewPane toggled kitchenSearch nameToCat ranks) kitchenPanes
+            )
+        ]
 
 
 {-| The Shopping List as its own column. The cart is still a storage
@@ -1998,13 +2022,8 @@ viewCartSection nameToCat loc ( dept, items ) =
         ]
 
 
-allFoods : Data -> List Food
-allFoods data =
-    data.tiers |> List.concatMap .groups |> List.concatMap .foods
-
-
-viewTier : Model -> Set String -> String -> Tier -> Html Msg
-viewTier model inStock search tier =
+viewTier : Set String -> Maybe AddTarget -> String -> Set String -> String -> Tier -> Html Msg
+viewTier toggled adding addValue inStock search tier =
     let
         foodCount =
             tier.groups |> List.concatMap .foods |> List.length
@@ -2042,12 +2061,12 @@ viewTier model inStock search tier =
                 , ( "gap", "12px" )
                 ]
             )
-            (List.map (viewCategory model inStock search tier) tier.groups)
+            (List.map (viewCategory toggled adding addValue inStock search tier) tier.groups)
         ]
 
 
-viewCategory : Model -> Set String -> String -> Tier -> Group -> Html Msg
-viewCategory model inStock search tier group =
+viewCategory : Set String -> Maybe AddTarget -> String -> Set String -> String -> Tier -> Group -> Html Msg
+viewCategory toggled adding addValue inStock search tier group =
     let
         loc =
             PyramidGroup group.id
@@ -2058,7 +2077,7 @@ viewCategory model inStock search tier group =
         -- Categories default collapsed; a live search force-expands any
         -- category containing a match.
         isCollapsed =
-            not (categoryHasMatch || isOpen False group.id model.toggled)
+            not (categoryHasMatch || isOpen False group.id toggled)
 
         bg =
             categoryChipBg group.label
@@ -2098,12 +2117,13 @@ viewCategory model inStock search tier group =
                     []
 
                 else
-                    [ div (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "6px" ) ])
+                    [ Keyed.node "div"
+                        (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "6px" ) ])
                         (group.foods
                             |> List.sortBy (\f -> String.toLower f.name)
-                            |> List.map (viewFood bg inStock search loc)
+                            |> List.map (\f -> ( f.id, viewFood bg inStock search loc f ))
                         )
-                    , viewAdder model (AddFood loc) "Add food…"
+                    , viewAdder adding addValue (AddFood loc) "Add food…"
                     ]
                )
         )
@@ -2407,7 +2427,7 @@ viewRecipeFooter model category =
 
     else
         div (styles [ ( "display", "flex" ), ( "align-items", "center" ), ( "gap", "8px" ) ])
-            (viewAdder model (AddRecipe category) "New recipe name"
+            (viewAdder model.adding model.addValue (AddRecipe category) "New recipe name"
                 :: (if model.adding == Just (AddRecipe category) then
                         -- Once the name input is showing, offer "or Paste"
                         -- to its right.
@@ -2821,11 +2841,11 @@ recipeDeleteButton msg =
 -- ADD / DRAG / DROP HELPERS
 
 
-viewAdder : Model -> AddTarget -> String -> Html Msg
-viewAdder model target placeholderText =
-    if model.adding == Just target then
+viewAdder : Maybe AddTarget -> String -> AddTarget -> String -> Html Msg
+viewAdder adding addValue target placeholderText =
+    if adding == Just target then
         input
-            (value model.addValue
+            (value addValue
                 :: id addInputId
                 :: onInput AddInput
                 :: onBlur (CommitAdd target)
