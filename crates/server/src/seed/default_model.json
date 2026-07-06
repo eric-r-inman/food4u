@@ -1696,6 +1696,30 @@
               "hero": false,
               "na": false,
               "recipeId": ""
+            },
+            {
+              "id": "ai1",
+              "name": "Tart cherries",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai2",
+              "name": "Açaí",
+              "prep": "F",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai3",
+              "name": "Camu camu",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
             }
           ]
         },
@@ -2054,6 +2078,14 @@
             {
               "id": "ex118",
               "name": "Chinese five-spice",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai4",
+              "name": "Cayenne",
               "prep": "P",
               "hero": false,
               "na": false,
@@ -2452,6 +2484,14 @@
               "prep": "P",
               "hero": false,
               "na": true,
+              "recipeId": ""
+            },
+            {
+              "id": "ai5",
+              "name": "Bone broth",
+              "prep": "P",
+              "hero": false,
+              "na": false,
               "recipeId": ""
             }
           ]
@@ -3135,6 +3175,102 @@
               "prep": "P",
               "hero": false,
               "na": false
+            },
+            {
+              "id": "ai6",
+              "name": "Omega-3 fish oil",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai7",
+              "name": "Curcumin",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai8",
+              "name": "Vitamin D",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai9",
+              "name": "Ginger extract",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai10",
+              "name": "Boswellia",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai11",
+              "name": "Quercetin",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai12",
+              "name": "Bromelain",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai13",
+              "name": "Resveratrol",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai14",
+              "name": "Probiotics",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai15",
+              "name": "Spirulina",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai16",
+              "name": "Chlorella",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
+            },
+            {
+              "id": "ai17",
+              "name": "Ashwagandha",
+              "prep": "P",
+              "hero": false,
+              "na": false,
+              "recipeId": ""
             }
           ]
         }
