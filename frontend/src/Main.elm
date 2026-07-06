@@ -33,7 +33,7 @@ import Html.Keyed as Keyed
 import Html.Lazy as Lazy
 import Http
 import Json.Decode as Decode
-import Model exposing (Drag, Model, derive, emptyDerived)
+import Model exposing (Drag, Model, derive, emptyDerived, isOpen)
 import Msg exposing (Msg(..))
 import RecipeParser exposing (parsePastedRecipe)
 import Set exposing (Set)
@@ -41,7 +41,7 @@ import Shopping exposing (cartCardId, groupByDepartment, shoppingListText)
 import Style exposing (cardStyle, categoryChipBg, chipBase, foodChipStyle, searchHighlightStyle, styles)
 import Task
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (addInputId, collapsedColumnBar, columnTitleBar, dropZone, notepadButton, pasteInputId, recipeCartButton, recipeDeleteButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
+import Ui exposing (addInputId, collapsedColumnBar, columnTitleBar, dropZone, notepadButton, pasteInputId, recipeCartButton, recipeDeleteButton, recipeDropZone, removeButton, viewAdder, viewItem, viewSearchField)
 
 
 main : Program () Model Msg
@@ -78,18 +78,6 @@ init _ =
       }
     , fetchModel
     )
-
-
-{-| Whether a collapse target is currently open, given its default-open
-state and whether the user has toggled it.
--}
-isOpen : Bool -> String -> Set String -> Bool
-isOpen defaultOpen key toggled =
-    if Set.member key toggled then
-        not defaultOpen
-
-    else
-        defaultOpen
 
 
 subscriptions : Model -> Sub Msg
@@ -1143,27 +1131,6 @@ viewPane toggled search nameToCat ranks card =
                     ]
                )
         )
-
-
-viewItem : String -> Dict String String -> Loc -> Item -> Html Msg
-viewItem search nameToCat loc item =
-    let
-        bg =
-            Dict.get (String.toLower item.name) nameToCat
-                |> Maybe.map categoryChipBg
-                |> Maybe.withDefault "oklch(1 0 0)"
-
-        chip =
-            if search /= "" && String.contains search (String.toLower item.name) then
-                searchHighlightStyle
-
-            else
-                foodChipStyle bg False
-    in
-    span (class "chip" :: chip ++ Ui.draggable loc item.id)
-        [ span [] [ text item.name ]
-        , removeButton (RemoveFoodMsg loc item.id)
-        ]
 
 
 

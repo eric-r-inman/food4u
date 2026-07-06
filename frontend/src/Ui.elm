@@ -11,6 +11,7 @@ module Ui exposing
     , recipeDropZone
     , removeButton
     , viewAdder
+    , viewItem
     , viewSearchField
     )
 
@@ -21,13 +22,14 @@ per-chip buttons, and the drag/drop attribute helpers. These produce
 per-column views can import without cycling through Main.
 -}
 
-import Data exposing (Loc)
+import Data exposing (Item, Loc)
+import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn)
 import Json.Decode as Decode
 import Msg exposing (Msg(..))
-import Style exposing (styles)
+import Style exposing (categoryChipBg, foodChipStyle, searchHighlightStyle, styles)
 import Types exposing (AddTarget)
 
 
@@ -335,3 +337,28 @@ recipeDropZone gid =
     [ preventDefaultOn "dragover" (Decode.succeed ( NoOp, True ))
     , preventDefaultOn "drop" (Decode.succeed ( DropRecipeOnGroup gid, True ))
     ]
+
+
+{-| A single storage-pane item chip, tinted by its pyramid category and
+highlighted when it matches the current search. Shared by the Kitchen
+panes and the Shopping List sections.
+-}
+viewItem : String -> Dict String String -> Loc -> Item -> Html Msg
+viewItem search nameToCat loc item =
+    let
+        bg =
+            Dict.get (String.toLower item.name) nameToCat
+                |> Maybe.map categoryChipBg
+                |> Maybe.withDefault "oklch(1 0 0)"
+
+        chip =
+            if search /= "" && String.contains search (String.toLower item.name) then
+                searchHighlightStyle
+
+            else
+                foodChipStyle bg False
+    in
+    span (class "chip" :: chip ++ draggable loc item.id)
+        [ span [] [ text item.name ]
+        , removeButton (RemoveFoodMsg loc item.id)
+        ]

@@ -1,4 +1,4 @@
-module Model exposing (Drag, Indices, Model, derive, emptyDerived)
+module Model exposing (Drag, Indices, Model, derive, emptyDerived, isOpen)
 
 {-| The application model, the in-progress drag, and the indices cached on
 the model. The indices are recomputed once whenever the data changes (see
@@ -79,3 +79,15 @@ derive data =
     , inStock = Derived.inStockNames data
     , stockedNoCart = Derived.stockedExcludingCart data
     }
+
+
+{-| Whether a collapse target is currently open, given its default-open
+state and whether the user has toggled it.
+-}
+isOpen : Bool -> String -> Set String -> Bool
+isOpen defaultOpen key toggled =
+    if Set.member key toggled then
+        not defaultOpen
+
+    else
+        defaultOpen
