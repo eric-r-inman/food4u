@@ -33,10 +33,12 @@ import Html.Keyed as Keyed
 import Html.Lazy as Lazy
 import Http
 import Json.Decode as Decode
+import Msg exposing (Msg(..))
 import RecipeParser exposing (parsePastedRecipe)
 import Set exposing (Set)
 import Shopping exposing (cartCardId, groupByDepartment, shoppingListText)
 import Task
+import Types exposing (AddTarget(..), RecipeFilter(..))
 
 
 
@@ -47,22 +49,6 @@ type alias Drag =
     { from : Loc
     , foodId : String
     }
-
-
-{-| What an inline add-input is currently creating: a food in a list, or
-a new recipe in a category.
--}
-type AddTarget
-    = AddFood Loc
-    | AddRecipe String
-
-
-{-| Filter for the Recipes column by how stocked each recipe is.
--}
-type RecipeFilter
-    = AllRecipes
-    | CanMakeNow
-    | AlmostThere
 
 
 type alias Model =
@@ -182,45 +168,6 @@ subscriptions _ =
 
 
 -- UPDATE
-
-
-type Msg
-    = GotModel (Result Http.Error Data)
-    | Saved (Result Http.Error ())
-    | StartAdd AddTarget
-    | AddInput String
-    | AddKeyDown String
-    | CommitAdd AddTarget
-    | CancelAdd
-    | RemoveFoodMsg Loc String
-    | RemoveRecipe String
-    | AddRecipeToCart String
-    | EditRecipeName String String
-    | EditRecipeInstructions String String
-    | PersistNow
-    | OpenRecipe String
-    | ToggleCategory String
-    | TogglePyramid
-    | ToggleRecipes
-    | ToggleKitchen
-    | ToggleCart
-    | SearchInput String
-    | RecipeSearchInput String
-    | KitchenSearchInput String
-    | SetRecipeFilter RecipeFilter
-    | StartPaste String
-    | PasteInput String
-    | CommitPaste String
-    | CancelPaste
-    | ExportShoppingList
-    | ClearCart
-    | DragStart Loc String
-    | DragEnd
-    | DropOn Loc
-    | RecipeDragStart String
-    | RecipeDragEnd
-    | DropRecipeOnGroup String
-    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
