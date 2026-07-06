@@ -161,6 +161,41 @@ type alias Model =
     , recipeFilter : RecipeFilter
     , pasting : Maybe String
     , pasteValue : String
+
+    -- Indices derived from `data`, recomputed only when the data changes
+    -- (see `derive`), so the views consult them instead of rescanning
+    -- every food and storage item on each render.
+    , derived : Derived
+    }
+
+
+{-| Precomputed lookups over `Data`. Rebuilding these on every render was
+the dominant per-keystroke cost, so they are recomputed once at each data
+change and cached on the model instead.
+-}
+type alias Derived =
+    { nameCategory : Dict String String
+    , categoryRanks : Dict String Int
+    , inStock : Set String
+    , stockedNoCart : Set String
+    }
+
+
+emptyDerived : Derived
+emptyDerived =
+    { nameCategory = Dict.empty
+    , categoryRanks = Dict.empty
+    , inStock = Set.empty
+    , stockedNoCart = Set.empty
+    }
+
+
+derive : Data -> Derived
+derive data =
+    { nameCategory = nameCategory data
+    , categoryRanks = categoryRanks data
+    , inStock = inStockNames data
+    , stockedNoCart = stockedExcludingCart data
     }
 
 
@@ -194,6 +229,7 @@ init _ =
       , recipeFilter = AllRecipes
       , pasting = Nothing
       , pasteValue = ""
+      , derived = emptyDerived
       }
     , fetchModel
     )
@@ -263,7 +299,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotModel (Ok data) ->
-            ( { model | data = Just data, error = Nothing }, Cmd.none )
+            ( { model | data = Just data, derived = derive data, error = Nothing }, Cmd.none )
 
         GotModel (Err _) ->
             ( { model | error = Just "Failed to load food data." }, Cmd.none )
@@ -451,7 +487,7 @@ update msg model =
                             ( newData, newSeq ) =
                                 performDrop drag target model.seq data
                         in
-                        ( { model | data = Just newData, seq = newSeq, drag = Nothing }
+                        ( { model | data = Just newData, derived = derive newData, seq = newSeq, drag = Nothing }
                         , saveModel newData
                         )
 
@@ -474,6 +510,7 @@ update msg model =
                     in
                     ( { model
                         | data = Just newData
+                        , derived = derive newData
                         , seq = newSeq
                         , recipeDrag = Nothing
 
@@ -496,7 +533,7 @@ update msg model =
                                     newData =
                                         pushFood gid (Food (nextId model.seq) name "F" False na "") data
                                 in
-                                ( { model | data = Just newData, seq = model.seq + 1, drag = Nothing, toggled = Set.insert gid model.toggled }
+                                ( { model | data = Just newData, derived = derive newData, seq = model.seq + 1, drag = Nothing, toggled = Set.insert gid model.toggled }
                                 , saveModel newData
                                 )
 
@@ -522,7 +559,7 @@ withData model fn =
 
 persistData : Model -> Data -> ( Model, Cmd Msg )
 persistData model newData =
-    ( { model | data = Just newData }, saveModel newData )
+    ( { model | data = Just newData, derived = derive newData }, saveModel newData )
 
 
 commitAdd : AddTarget -> Model -> ( Model, Cmd Msg )
@@ -552,7 +589,7 @@ commitAdd target model =
                             AddRecipe category ->
                                 { data | recipes = data.recipes ++ [ Recipe newId value category [] "" ] }
                 in
-                ( { model | data = Just newData, seq = model.seq + 1, adding = Nothing, addValue = "" }
+                ( { model | data = Just newData, derived = derive newData, seq = model.seq + 1, adding = Nothing, addValue = "" }
                 , saveModel newData
                 )
 
@@ -593,6 +630,7 @@ commitPaste category model =
                 in
                 ( { model
                     | data = Just newData
+                    , derived = derive newData
                     , seq = seqAfter + 1
                     , pasting = Nothing
                     , pasteValue = ""
@@ -864,7 +902,7 @@ addRecipeToCart rid model =
                                 ( data, model.seq )
                                 toAdd
                     in
-                    ( { model | data = Just newData, seq = newSeq }, saveModel newData )
+                    ( { model | data = Just newData, derived = derive newData, seq = newSeq }, saveModel newData )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -1766,7 +1804,7 @@ viewPyramidColumn model data =
     else
         let
             inStock =
-                inStockNames data
+                model.derived.inStock
 
             search =
                 String.toLower (String.trim model.search)
@@ -1865,7 +1903,7 @@ viewKitchenColumn model data =
             [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
             , div [ class "kitchen-body" ]
                 (viewSearchField "Search Kitchen…" model.kitchenSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
-                    :: List.map (viewPane model.toggled kitchenSearch (nameCategory data) (categoryRanks data)) kitchenPanes
+                    :: List.map (viewPane model.toggled kitchenSearch model.derived.nameCategory model.derived.categoryRanks) kitchenPanes
                 )
             ]
 
@@ -1896,7 +1934,7 @@ viewCartColumn model data =
     else
         let
             nameToCat =
-                nameCategory data
+                model.derived.nameCategory
         in
         div (class "cart-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
             [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart
@@ -2434,7 +2472,7 @@ viewRecipes model data =
             , div [ class "recipes-body" ]
                 (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput
                     :: viewRecipeFilterBar model.recipeFilter
-                    :: List.map (viewRecipeCategory model (nameCategory data) (inStockNames data) (stockedExcludingCart data) recipeSearch data) recipeCategories
+                    :: List.map (viewRecipeCategory model model.derived.nameCategory model.derived.inStock model.derived.stockedNoCart recipeSearch data) recipeCategories
                 )
             ]
 
