@@ -21,6 +21,7 @@ type Msg
     | CancelAdd
     | RemoveFoodMsg Loc String
     | RemoveRecipe String
+    | RemovePane String
     | AddRecipeToCart String
     | EditRecipeName String String
     | EditRecipeInstructions String String

@@ -23,7 +23,7 @@ it to a JSON file.
 import Browser
 import Browser.Dom as Dom
 import CartView exposing (viewCartColumn)
-import Data exposing (Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
+import Data exposing (Card, Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -153,6 +153,13 @@ update msg model =
                         (unlinkRecipe rid
                             { data | recipes = List.filter (\r -> r.id /= rid) data.recipes }
                         )
+                )
+
+        RemovePane pid ->
+            withData model
+                (\data ->
+                    persistData model
+                        { data | staples = List.filter (\c -> c.id /= pid) data.staples }
                 )
 
         AddRecipeToCart rid ->
@@ -391,6 +398,9 @@ commitAdd target model =
 
                             AddRecipe category ->
                                 { data | recipes = data.recipes ++ [ Recipe newId value category [] "" ] }
+
+                            AddPane ->
+                                { data | staples = data.staples ++ [ newPane newId value ] }
                 in
                 ( { model | data = Just newData, derived = derive newData, seq = model.seq + 1, adding = Nothing, addValue = "" }
                 , saveModel newData
@@ -403,6 +413,21 @@ commitAdd target model =
 nextId : Int -> String
 nextId seq =
     "u" ++ String.fromInt seq
+
+
+{-| A fresh, empty Kitchen storage pane in a neutral warm rail, ready for
+the user to drag foods into.
+-}
+newPane : String -> String -> Card
+newPane id name =
+    { id = id
+    , name = name
+    , meta = ""
+    , rail = "oklch(0.55 0.08 74)"
+    , line = "oklch(0.86 0.04 74)"
+    , note = ""
+    , items = []
+    }
 
 
 {-| Add a recipe parsed from pasted text to the given category.

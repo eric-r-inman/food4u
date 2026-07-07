@@ -18,7 +18,8 @@ import Model exposing (Model, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, styles)
-import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, viewItem, viewSearchField)
+import Types exposing (AddTarget(..))
+import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, paneDeleteButton, viewAdder, viewItem, viewSearchField)
 
 
 viewKitchenColumn : Model -> Data -> Html Msg
@@ -27,7 +28,9 @@ viewKitchenColumn model data =
         collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen []
 
     else
-        Lazy.lazy5 viewKitchenBody
+        Lazy.lazy7 viewKitchenBody
+            model.adding
+            model.addValue
             model.kitchenSearch
             model.toggled
             model.derived.nameCategory
@@ -35,8 +38,8 @@ viewKitchenColumn model data =
             data.staples
 
 
-viewKitchenBody : String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
-viewKitchenBody rawSearch toggled nameToCat ranks staples =
+viewKitchenBody : Maybe AddTarget -> String -> String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
+viewKitchenBody adding addValue rawSearch toggled nameToCat ranks staples =
     let
         kitchenSearch =
             String.toLower (String.trim rawSearch)
@@ -52,6 +55,7 @@ viewKitchenBody rawSearch toggled nameToCat ranks staples =
         , div [ class "kitchen-body" ]
             (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
                 :: List.map (viewPane toggled kitchenSearch nameToCat ranks) kitchenPanes
+                ++ [ viewAdder adding addValue AddPane "New pane name…" "+ Add pane" ]
             )
         ]
 
@@ -94,7 +98,10 @@ viewPane toggled search nameToCat ranks card =
                         ]
                     , div (styles [ ( "font-size", "19px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text card.name ]
                     ]
-                , div (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ) ]) [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
+                , div [ class "pane-header-meta" ]
+                    [ div (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ) ]) [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
+                    , paneDeleteButton (RemovePane card.id)
+                    ]
                 ]
             , div (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "opacity", "0.92" ), ( "margin-top", "5px" ), ( "letter-spacing", "0.6px" ) ]) [ text card.meta ]
             ]

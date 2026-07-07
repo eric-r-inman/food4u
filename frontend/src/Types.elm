@@ -18,12 +18,13 @@ type alias Me =
     }
 
 
-{-| What an inline add-input is currently creating: a food in a list, or
-a new recipe in a category.
+{-| What an inline add-input is currently creating: a food in a list, a
+new recipe in a category, or a new Kitchen storage pane.
 -}
 type AddTarget
     = AddFood Loc
     | AddRecipe String
+    | AddPane
 
 
 {-| Filter for the Recipes column by how stocked each recipe is.

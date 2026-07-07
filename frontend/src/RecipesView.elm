@@ -166,7 +166,7 @@ viewRecipeFooter model category =
 
     else
         div (styles [ ( "display", "flex" ), ( "align-items", "center" ), ( "gap", "8px" ) ])
-            (viewAdder model.adding model.addValue (AddRecipe category) "New recipe name"
+            (viewAdder model.adding model.addValue (AddRecipe category) "New recipe name" "+ Add"
                 :: (if model.adding == Just (AddRecipe category) then
                         -- Once the name input is showing, offer "or Paste"
                         -- to its right.

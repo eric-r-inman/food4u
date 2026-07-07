@@ -22,6 +22,9 @@
   --auth-link-bg: oklch(0.96 0.03 250);
   --auth-link-fg: oklch(0.4 0.1 250);
   --auth-name-fg: oklch(0.4 0.02 70);
+
+  /* Shared value for the Kitchen pane delete control. */
+  --pane-btn-font: "IBM Plex Mono", monospace;
 }
 
 * {
@@ -258,6 +261,30 @@ button {
   background: var(--auth-link-bg);
   color: var(--auth-link-fg);
   text-decoration: none;
+}
+
+/* The right-hand cluster of a Kitchen pane header: the item count and the
+   delete control, sitting together at the end of the header row. */
+.pane-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The delete control on a Kitchen pane header.  It sits on the pane's
+   coloured rail, so it reads as a translucent white chip rather than the
+   bordered light-background delete used elsewhere. */
+.pane-delete-btn {
+  font-family: var(--pane-btn-font);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  line-height: 1.2;
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a

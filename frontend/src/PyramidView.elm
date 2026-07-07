@@ -159,7 +159,7 @@ viewCategory toggled adding addValue inStock search tier group =
                             |> List.sortBy (\f -> String.toLower f.name)
                             |> List.map (\f -> ( f.id, viewFood bg inStock search loc f ))
                         )
-                    , viewAdder adding addValue (AddFood loc) "Add food…"
+                    , viewAdder adding addValue (AddFood loc) "Add food…" "+ Add"
                     ]
                )
         )

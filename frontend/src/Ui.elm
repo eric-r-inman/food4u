@@ -5,6 +5,7 @@ module Ui exposing
     , draggable
     , dropZone
     , notepadButton
+    , paneDeleteButton
     , pasteInputId
     , recipeCartButton
     , recipeDeleteButton
@@ -26,7 +27,7 @@ import Data exposing (Item, Loc)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn)
+import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
 import Msg exposing (Msg(..))
 import Style exposing (categoryChipBg, foodChipStyle, searchHighlightStyle, styles)
@@ -248,6 +249,20 @@ recipeDeleteButton msg =
         [ text "✕" ]
 
 
+{-| Deletes a whole storage pane. It sits inside the pane header, which is
+itself a collapse toggle, so the click must not propagate up to it.
+-}
+paneDeleteButton : Msg -> Html Msg
+paneDeleteButton msg =
+    button
+        [ type_ "button"
+        , class "pane-delete-btn"
+        , title "Delete this pane"
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
+        [ text "✕" ]
+
+
 removeButton : Msg -> Html Msg
 removeButton msg =
     button
@@ -271,8 +286,8 @@ removeButton msg =
         [ text "✕" ]
 
 
-viewAdder : Maybe AddTarget -> String -> AddTarget -> String -> Html Msg
-viewAdder adding addValue target placeholderText =
+viewAdder : Maybe AddTarget -> String -> AddTarget -> String -> String -> Html Msg
+viewAdder adding addValue target placeholderText buttonLabel =
     if adding == Just target then
         input
             (value addValue
@@ -312,7 +327,7 @@ viewAdder adding addValue target placeholderText =
                     , ( "cursor", "pointer" )
                     ]
             )
-            [ text "+ Add" ]
+            [ text buttonLabel ]
 
 
 draggable : Loc -> String -> List (Attribute Msg)
