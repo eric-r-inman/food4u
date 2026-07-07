@@ -10,7 +10,7 @@ import Data exposing (Data, Loc)
 import Derived
 import Dict exposing (Dict)
 import Set exposing (Set)
-import Types exposing (AddTarget, RecipeFilter)
+import Types exposing (AddTarget, Me, RecipeFilter)
 
 
 type alias Drag =
@@ -43,6 +43,10 @@ type alias Model =
     , recipeFilter : RecipeFilter
     , pasting : Maybe String
     , pasteValue : String
+
+    -- The signed-in identity from `/me`, once fetched.  Drives the
+    -- sign-in / sign-out control in the toolbar.
+    , me : Maybe Me
 
     -- Indices derived from `data`, recomputed only when the data changes
     -- (see `derive`), so the views consult them instead of rescanning

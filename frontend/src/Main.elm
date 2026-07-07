@@ -31,6 +31,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput)
 import Http
+import Json.Decode as Decode
 import KitchenView exposing (viewKitchenColumn)
 import Model exposing (Drag, Model, derive, emptyDerived, isOpen)
 import Msg exposing (Msg(..))
@@ -41,7 +42,7 @@ import Set exposing (Set)
 import Shopping exposing (cartCardId, shoppingListText)
 import Style exposing (styles)
 import Task
-import Types exposing (AddTarget(..), RecipeFilter(..))
+import Types exposing (AddTarget(..), Me, RecipeFilter(..))
 import Ui exposing (addInputId, pasteInputId)
 
 
@@ -75,9 +76,10 @@ init _ =
       , recipeFilter = AllRecipes
       , pasting = Nothing
       , pasteValue = ""
+      , me = Nothing
       , derived = emptyDerived
       }
-    , fetchModel
+    , Cmd.batch [ fetchModel, fetchMe ]
     )
 
 
@@ -98,6 +100,12 @@ update msg model =
 
         GotModel (Err _) ->
             ( { model | error = Just "Failed to load food data." }, Cmd.none )
+
+        GotMe (Ok me) ->
+            ( { model | me = Just me }, Cmd.none )
+
+        GotMe (Err _) ->
+            ( model, Cmd.none )
 
         Saved (Ok ()) ->
             ( model, Cmd.none )
@@ -647,6 +655,18 @@ fetchModel =
     Http.get { url = "/api/model", expect = Http.expectJson GotModel dataDecoder }
 
 
+fetchMe : Cmd Msg
+fetchMe =
+    Http.get { url = "/me", expect = Http.expectJson GotMe meDecoder }
+
+
+meDecoder : Decode.Decoder Me
+meDecoder =
+    Decode.map2 Me
+        (Decode.field "name" Decode.string)
+        (Decode.field "auth_enabled" Decode.bool)
+
+
 saveModel : Data -> Cmd Msg
 saveModel data =
     Http.request
@@ -668,7 +688,7 @@ saveModel data =
 view : Model -> Html Msg
 view model =
     div [ class "app-root" ]
-        [ viewToolbar
+        [ viewToolbar model.me
         , viewError model.error
         , case model.data of
             Just data ->
@@ -714,8 +734,8 @@ viewError maybeError =
             text ""
 
 
-viewToolbar : Html Msg
-viewToolbar =
+viewToolbar : Maybe Me -> Html Msg
+viewToolbar me =
     div
         (class "noprint"
             :: styles
@@ -749,5 +769,34 @@ viewToolbar =
             , span
                 (styles [ ( "font-size", "12.5px" ), ( "color", "oklch(0.5 0.012 70)" ) ])
                 [ text "Drag a food to a storage pane · changes save automatically" ]
+            , div [ class "toolbar-auth" ] (viewAuth me)
             ]
         ]
+
+
+{-| The sign-in / sign-out control. Empty in a local unauthenticated run;
+a "Sign in" link when OIDC is on but nobody is signed in; the name and a
+"Sign out" link once signed in.
+-}
+viewAuth : Maybe Me -> List (Html Msg)
+viewAuth maybeMe =
+    case maybeMe of
+        Just me ->
+            if not me.authEnabled then
+                []
+
+            else if me.name == "anonymous" then
+                [ authLink "/auth/login" "Sign in" ]
+
+            else
+                [ span [ class "auth-name" ] [ text me.name ]
+                , authLink "/auth/logout" "Sign out"
+                ]
+
+        Nothing ->
+            []
+
+
+authLink : String -> String -> Html Msg
+authLink url label =
+    a [ href url, class "auth-link" ] [ text label ]

@@ -7,11 +7,12 @@ Main.
 
 import Data exposing (Data, Loc)
 import Http
-import Types exposing (AddTarget, RecipeFilter)
+import Types exposing (AddTarget, Me, RecipeFilter)
 
 
 type Msg
     = GotModel (Result Http.Error Data)
+    | GotMe (Result Http.Error Me)
     | Saved (Result Http.Error ())
     | StartAdd AddTarget
     | AddInput String
