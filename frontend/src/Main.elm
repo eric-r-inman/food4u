@@ -23,27 +23,26 @@ it to a JSON file.
 import Browser
 import Browser.Dom as Dom
 import CartView exposing (viewCartColumn)
-import Data exposing (Data, Food, Group, Item, Loc(..), Recipe, Tier, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
+import Data exposing (Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
 import Derived exposing (inStockNames, recipeMissing)
 import Dict exposing (Dict)
 import File.Download as Download
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput)
-import Html.Keyed as Keyed
-import Html.Lazy as Lazy
 import Http
 import Json.Decode as Decode
 import KitchenView exposing (viewKitchenColumn)
 import Model exposing (Drag, Model, derive, emptyDerived, isOpen)
 import Msg exposing (Msg(..))
+import PyramidView exposing (viewPyramidColumn)
 import RecipeParser exposing (parsePastedRecipe)
 import Set exposing (Set)
 import Shopping exposing (cartCardId, shoppingListText)
-import Style exposing (cardStyle, categoryChipBg, chipBase, foodChipStyle, searchHighlightStyle, styles)
+import Style exposing (cardStyle, categoryChipBg, chipBase, foodChipStyle, styles)
 import Task
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (addInputId, collapsedColumnBar, columnTitleBar, dropZone, notepadButton, pasteInputId, recipeCartButton, recipeDeleteButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
+import Ui exposing (addInputId, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, viewAdder, viewSearchField)
 
 
 main : Program () Model Msg
@@ -775,181 +774,7 @@ viewToolbar =
 
 
 
--- LEFT PANE: PYRAMID
-
-
-viewPyramidColumn : Model -> Data -> Html Msg
-viewPyramidColumn model data =
-    if not model.pyramidOpen then
-        collapsedColumnBar "Longevity Foods" "oklch(0.5 0.07 128)" TogglePyramid []
-
-    else
-        -- Lazy on the narrow set of inputs the pyramid actually reads, so a
-        -- keystroke or drag in another column does not rebuild and re-diff
-        -- the ~500-food tree.  Nothing here consults the drag state, so a
-        -- drag never re-renders the pyramid at all.
-        Lazy.lazy6 viewPyramidBody
-            model.search
-            model.toggled
-            model.adding
-            model.addValue
-            model.derived.inStock
-            data.tiers
-
-
-viewPyramidBody : String -> Set String -> Maybe AddTarget -> String -> Set String -> List Tier -> Html Msg
-viewPyramidBody rawSearch toggled adding addValue inStock tiers =
-    let
-        search =
-            String.toLower (String.trim rawSearch)
-
-        anyMatch =
-            search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) (List.concatMap (\t -> List.concatMap .foods t.groups) tiers)
-    in
-    div (class "pyramid-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid
-        , div [ class "pyramid-body" ]
-            [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput
-            , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
-                (List.map (viewTier toggled adding addValue inStock search) tiers)
-            ]
-        ]
-
-
-viewTier : Set String -> Maybe AddTarget -> String -> Set String -> String -> Tier -> Html Msg
-viewTier toggled adding addValue inStock search tier =
-    let
-        foodCount =
-            tier.groups |> List.concatMap .foods |> List.length
-    in
-    div
-        (styles
-            [ ( "background", tier.tint )
-            , ( "border", "1px solid " ++ tier.line )
-            , ( "border-radius", "11px" )
-            , ( "display", "flex" )
-            , ( "flex-direction", "column" )
-            , ( "overflow", "hidden" )
-            ]
-        )
-        [ div
-            (styles
-                [ ( "background", tier.rail )
-                , ( "color", "#fff" )
-                , ( "padding", "11px 16px" )
-                , ( "display", "flex" )
-                , ( "align-items", "baseline" )
-                , ( "gap", "10px" )
-                ]
-            )
-            [ span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "font-weight", "500" ), ( "opacity", "0.7" ), ( "letter-spacing", "1px" ) ]) [ text tier.no ]
-            , span (styles [ ( "font-size", "18px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text tier.name ]
-            , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10.5px" ), ( "font-weight", "500" ), ( "opacity", "0.9" ), ( "letter-spacing", "0.5px" ) ]) [ text tier.freq ]
-            , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "opacity", "0.6" ), ( "letter-spacing", "0.5px" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt foodCount ++ " FOODS") ]
-            ]
-        , div
-            (styles
-                [ ( "padding", "14px 16px" )
-                , ( "display", "flex" )
-                , ( "flex-direction", "column" )
-                , ( "gap", "12px" )
-                ]
-            )
-            (List.map (viewCategory toggled adding addValue inStock search tier) tier.groups)
-        ]
-
-
-viewCategory : Set String -> Maybe AddTarget -> String -> Set String -> String -> Tier -> Group -> Html Msg
-viewCategory toggled adding addValue inStock search tier group =
-    let
-        loc =
-            PyramidGroup group.id
-
-        categoryHasMatch =
-            search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) group.foods
-
-        -- Categories default collapsed; a live search force-expands any
-        -- category containing a match.
-        isCollapsed =
-            not (categoryHasMatch || isOpen False group.id toggled)
-
-        bg =
-            categoryChipBg group.label
-    in
-    div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "8px" ) ] ++ recipeDropZone group.id)
-        (div
-            (onClick (ToggleCategory group.id)
-                :: styles
-                    [ ( "display", "flex" )
-                    , ( "align-items", "baseline" )
-                    , ( "gap", "7px" )
-                    , ( "font-family", "'IBM Plex Mono',monospace" )
-                    , ( "font-size", "11px" )
-                    , ( "font-weight", "600" )
-                    , ( "letter-spacing", "0.6px" )
-                    , ( "text-transform", "uppercase" )
-                    , ( "color", tier.rail )
-                    , ( "border-bottom", "1px solid " ++ tier.line )
-                    , ( "padding-bottom", "5px" )
-                    , ( "cursor", "pointer" )
-                    , ( "user-select", "none" )
-                    ]
-            )
-            [ span (styles [ ( "font-size", "9px" ), ( "opacity", "0.7" ) ])
-                [ text
-                    (if isCollapsed then
-                        "▶"
-
-                     else
-                        "▼"
-                    )
-                ]
-            , span [] [ text group.label ]
-            , span (styles [ ( "margin-left", "auto" ), ( "opacity", "0.55" ), ( "font-weight", "500" ) ]) [ text (String.fromInt (List.length group.foods)) ]
-            ]
-            :: (if isCollapsed then
-                    []
-
-                else
-                    [ Keyed.node "div"
-                        (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "6px" ) ])
-                        (group.foods
-                            |> List.sortBy (\f -> String.toLower f.name)
-                            |> List.map (\f -> ( f.id, viewFood bg inStock search loc f ))
-                        )
-                    , viewAdder adding addValue (AddFood loc) "Add food…"
-                    ]
-               )
-        )
-
-
-viewFood : String -> Set String -> String -> Loc -> Food -> Html Msg
-viewFood bg inStock search loc food =
-    let
-        matches =
-            search /= "" && String.contains search (String.toLower food.name)
-
-        chip =
-            if matches then
-                searchHighlightStyle
-
-            else
-                foodChipStyle bg (Set.member (String.toLower food.name) inStock)
-    in
-    span (class "chip" :: chip ++ Ui.draggable loc food.id)
-        ([ span [] [ text food.name ] ]
-            ++ (if food.recipeId /= "" then
-                    [ notepadButton (OpenRecipe food.recipeId) ]
-
-                else
-                    []
-               )
-            ++ [ removeButton (RemoveFoodMsg loc food.id) ]
-        )
-
-
-
--- LEFT PANE: RECIPES
+-- RECIPES
 
 
 recipeCategories : List String
