@@ -68,13 +68,17 @@ pub struct Config {
     default = "std::path::PathBuf::from(\"frontend/public\")"
   )]
   pub frontend_path: PathBuf,
-  /// Path to the JSON file the food model is persisted to.  Created on
-  /// first save; until then the embedded default model is served.
+  /// Path to the legacy JSON model file.  Read once at startup to import
+  /// an existing model into the database; no longer the store of record.
   #[merge_config(
     env,
     default = "std::path::PathBuf::from(\"food4u-model.json\")"
   )]
   pub data_file: PathBuf,
+  /// Database url for the relational store.  A `sqlite:<path>` url selects
+  /// the local file backend, created on first run.
+  #[merge_config(env, default = "\"sqlite:food4u.db\".to_string()")]
+  pub database_url: String,
   /// Base URL of the service (e.g. https://example.com), used to
   /// construct the OIDC redirect URI.
   #[merge_config(env, required)]

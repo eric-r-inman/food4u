@@ -1,37 +1,25 @@
-//! Persistence for the food model.
+//! Legacy JSON model loader.
 //!
-//! The model is a single JSON document — the longevity pyramid and the
-//! kitchen-staple cards — owned and shaped by the Elm frontend.  It is
-//! served opaquely on read, but written through the typed [`Model`] so a
-//! malformed document is rejected at the edge rather than persisted and
-//! then failing to load.  This is the first step of moving the model to
-//! relational storage, where the server must understand its shape.
+//! The model used to be persisted as this single JSON document; the
+//! relational store has since taken over as the store of record.  What
+//! remains is the read path, used once at startup to import an existing
+//! file — or the embedded seed the server used to serve — into the
+//! database.
 
-use crate::model::Model;
 use serde_json::Value;
 use std::path::PathBuf;
 use thiserror::Error;
 use tokio::fs;
 
 /// The default model shipped with the binary, generated from the
-/// original Claude Design mock-up.  Served whenever no user data file
-/// exists yet and restored on reset.
+/// original Claude Design mock-up.  Imported into the database on first
+/// run when no legacy file exists.
 const DEFAULT_MODEL_JSON: &str = include_str!("seed/default_model.json");
 
 #[derive(Debug, Error)]
 pub enum StoreError {
   #[error("could not read food model file at {path}: {source}")]
   ModelFileRead {
-    path: PathBuf,
-    source: std::io::Error,
-  },
-  #[error("could not write food model file at {path}: {source}")]
-  ModelFileWrite {
-    path: PathBuf,
-    source: std::io::Error,
-  },
-  #[error("could not create food model directory at {path}: {source}")]
-  ModelDirCreate {
     path: PathBuf,
     source: std::io::Error,
   },
@@ -42,8 +30,6 @@ pub enum StoreError {
   },
   #[error("embedded default food model is not valid JSON: {source}")]
   DefaultModelParse { source: serde_json::Error },
-  #[error("could not serialize food model: {source}")]
-  ModelSerialize { source: serde_json::Error },
 }
 
 /// File-backed store for the single food model document.
@@ -81,27 +67,5 @@ impl Store {
         source,
       }),
     }
-  }
-
-  /// Persist the given model, creating the parent directory as needed.
-  pub async fn save(&self, model: &Model) -> Result<(), StoreError> {
-    if let Some(parent) = self.data_file.parent() {
-      if !parent.as_os_str().is_empty() {
-        fs::create_dir_all(parent).await.map_err(|source| {
-          StoreError::ModelDirCreate {
-            path: parent.to_path_buf(),
-            source,
-          }
-        })?;
-      }
-    }
-    let bytes = serde_json::to_vec_pretty(model)
-      .map_err(|source| StoreError::ModelSerialize { source })?;
-    fs::write(&self.data_file, bytes).await.map_err(|source| {
-      StoreError::ModelFileWrite {
-        path: self.data_file.clone(),
-        source,
-      }
-    })
   }
 }

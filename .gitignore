@@ -19,6 +19,12 @@ frontend/public/elm.js
 # default in crates/server/src/seed/ is the checked-in source of truth).
 /food4u-model.json
 
+# The relational store written at runtime by `just dev`, plus SQLite's
+# write-ahead-log sidecar files.
+/food4u.db
+/food4u.db-wal
+/food4u.db-shm
+
 # Claude Code project config (Stop hook, compliance subagent, shared settings)
 # is part of the project and must be checked in.  A user-global or system-wide
 # ignore (e.g. /etc/gitignore) often excludes .claude/ wholesale; re-include

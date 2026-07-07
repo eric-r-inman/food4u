@@ -13,6 +13,7 @@ async fn test_config_no_oidc() {
     listen: None,
     frontend_path: None,
     data_file: None,
+    database_url: None,
     base_url: Some("https://example.com".to_string()),
     extra: OidcCliFields {
       oidc_issuer: None,
@@ -39,6 +40,7 @@ async fn test_config_full_oidc() {
     listen: None,
     frontend_path: None,
     data_file: None,
+    database_url: None,
     base_url: Some("https://example.com".to_string()),
     extra: OidcCliFields {
       oidc_issuer: Some("https://sso.example.com".to_string()),
@@ -65,6 +67,7 @@ async fn test_config_partial_oidc_errors() {
     listen: None,
     frontend_path: None,
     data_file: None,
+    database_url: None,
     base_url: Some("https://example.com".to_string()),
     extra: OidcCliFields {
       oidc_issuer: Some("https://sso.example.com".to_string()),
