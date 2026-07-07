@@ -36,7 +36,7 @@ create table foods (
     group_id text not null references food_groups (id) on delete cascade,
     name     text not null,
     prep     text not null,
-    hero     integer not null default 0,
+    hero     boolean not null default false,
     position integer not null
 );
 
@@ -59,7 +59,7 @@ create table users (
 create table user_food_state (
     user_id   text not null references users (id) on delete cascade,
     food_id   text not null references foods (id) on delete cascade,
-    in_stock  integer not null default 0,
+    in_stock  boolean not null default false,
     recipe_id text,
     primary key (user_id, food_id)
 );
@@ -72,7 +72,7 @@ create table user_custom_foods (
     group_id text references food_groups (id),
     name     text not null,
     prep     text not null,
-    in_stock integer not null default 0
+    in_stock boolean not null default false
 );
 
 -- Kitchen storage panes and the Shopping List (a storage pane whose items
@@ -93,7 +93,7 @@ create table storage_items (
     id          text primary key,
     location_id text not null references storage_locations (id) on delete cascade,
     name        text not null,
-    needs       integer not null default 0,
+    needs       boolean not null default false,
     position    integer not null
 );
 
@@ -113,7 +113,7 @@ create table recipe_ingredients (
     id        text primary key,
     recipe_id text not null references recipes (id) on delete cascade,
     name      text not null,
-    needs     integer not null default 0,
+    needs     boolean not null default false,
     position  integer not null
 );
 

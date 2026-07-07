@@ -4,6 +4,7 @@ pub mod import;
 pub mod limits;
 pub mod model;
 pub mod repo;
+pub mod repo_pg;
 pub mod routes;
 pub mod store;
 pub mod web_base;

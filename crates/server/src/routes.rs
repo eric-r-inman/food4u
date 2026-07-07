@@ -8,7 +8,7 @@
 
 use crate::limits::{self, QuotaExceeded};
 use crate::model::Model;
-use crate::repo::{self, RepoError};
+use crate::repo::RepoError;
 use crate::web_base::AppState;
 use aide::axum::ApiRouter;
 use axum::extract::{DefaultBodyLimit, State};
@@ -31,7 +31,7 @@ pub fn router() -> ApiRouter<AppState> {
 async fn get_model(
   State(state): State<AppState>,
 ) -> Result<Json<Model>, ApiError> {
-  Ok(Json(repo::load(&state.pool, &state.user_id).await?))
+  Ok(Json(state.db.load(&state.user_id).await?))
 }
 
 async fn put_model(
@@ -39,7 +39,7 @@ async fn put_model(
   Json(model): Json<Model>,
 ) -> Result<Json<Model>, ApiError> {
   limits::check(&model)?;
-  repo::save(&state.pool, &state.user_id, &model).await?;
+  state.db.save(&state.user_id, &model).await?;
   Ok(Json(model))
 }
 

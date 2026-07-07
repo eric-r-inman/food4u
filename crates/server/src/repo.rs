@@ -37,7 +37,7 @@ pub enum RepoError {
 }
 
 #[derive(sqlx::FromRow)]
-struct TierRow {
+pub(crate) struct TierRow {
   id: String,
   no: String,
   name: String,
@@ -49,14 +49,14 @@ struct TierRow {
 }
 
 #[derive(sqlx::FromRow)]
-struct GroupRow {
+pub(crate) struct GroupRow {
   id: String,
   tier_id: String,
   label: String,
 }
 
 #[derive(sqlx::FromRow)]
-struct FoodRow {
+pub(crate) struct FoodRow {
   id: String,
   group_id: String,
   name: String,
@@ -67,7 +67,7 @@ struct FoodRow {
 }
 
 #[derive(sqlx::FromRow)]
-struct CardRow {
+pub(crate) struct CardRow {
   id: String,
   name: String,
   meta: String,
@@ -77,7 +77,7 @@ struct CardRow {
 }
 
 #[derive(sqlx::FromRow)]
-struct StorageItemRow {
+pub(crate) struct StorageItemRow {
   location_id: String,
   id: String,
   name: String,
@@ -85,7 +85,7 @@ struct StorageItemRow {
 }
 
 #[derive(sqlx::FromRow)]
-struct RecipeRow {
+pub(crate) struct RecipeRow {
   id: String,
   name: String,
   category: String,
@@ -93,7 +93,7 @@ struct RecipeRow {
 }
 
 #[derive(sqlx::FromRow)]
-struct IngredientRow {
+pub(crate) struct IngredientRow {
   recipe_id: String,
   id: String,
   name: String,
@@ -171,7 +171,21 @@ pub async fn load(
   .await
   .map_err(read)?;
 
-  // Bucket children by parent id, preserving the ordered query result.
+  Ok(assemble(tiers, groups, foods, locations, items, recipes, ingredients))
+}
+
+/// Build the model from the ordered row sets: bucket each child by its
+/// parent id, then assemble the parents in order.  Shared by the SQLite
+/// and PostgreSQL read paths, which differ only in how they fetch.
+pub(crate) fn assemble(
+  tiers: Vec<TierRow>,
+  groups: Vec<GroupRow>,
+  foods: Vec<FoodRow>,
+  locations: Vec<CardRow>,
+  items: Vec<StorageItemRow>,
+  recipes: Vec<RecipeRow>,
+  ingredients: Vec<IngredientRow>,
+) -> Model {
   let mut foods_by_group: HashMap<String, Vec<Food>> = HashMap::new();
   for row in foods {
     foods_by_group.entry(row.group_id).or_default().push(Food {
@@ -218,7 +232,7 @@ pub async fn load(
       });
   }
 
-  Ok(Model {
+  Model {
     tiers: tiers
       .into_iter()
       .map(|row| Tier {
@@ -255,7 +269,7 @@ pub async fn load(
         instructions: row.instructions,
       })
       .collect(),
-  })
+  }
 }
 
 /// Decompose and persist the whole model for one user, replacing whatever
