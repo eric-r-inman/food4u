@@ -17,51 +17,51 @@ infrastructure (a running PostgreSQL, an OIDC provider, a deploy target), so
 they are deliberately not implemented on faith — that would ship code claiming a
 capability it was never run against.  Each names what unblocks it.
 
-* BLOCKED add the PostgreSQL backend
+* BLOCKED verify the PostgreSQL backend
 :PROPERTIES:
 :PLAN: docs/optimization-plan.org — Phase 3, and the "Backend abstraction" decision
 :UNBLOCKED_BY: a reachable PostgreSQL instance to run the queries against
 :END:
 
-The schema is already backend-neutral (text ids, integer booleans) and the
-migrations are written to serve both engines.  What remains is a second
-implementation of the repository in PostgreSQL dialect, because the engines
-differ where it matters:
+/Written, unverified./ The backend is selectable from the ~database_url~ scheme
+through the ~Db~ enum in ~db.rs~, which dispatches reads and writes to the
+SQLite repository or the PostgreSQL one in ~repo_pg.rs~.  The schema is portable
+(~boolean~ columns), one migration serves both engines, and the model-assembly
+logic is shared.  The SQLite path is fully verified; the PostgreSQL path mirrors
+it in dialect but has never run against a live server.
 
-- Bind placeholders: SQLite ~?~ versus PostgreSQL ~$1, $2~.
-- Upsert: ~insert or ignore~ / ~on conflict (...) do update~ versus the
-  PostgreSQL forms.
-- Booleans and the ~coalesce(max(position), -1) + 1~ position trick need a check
-  against PostgreSQL typing.
+What remains once a PostgreSQL instance exists:
 
-Per the plan's decision, introduce a ~Repository~ trait with ~load~, ~save~, and
-the scoped mutations, implement it for the existing SQLite pool, and add a
-PostgreSQL implementation.  Select the backend from the ~database_url~ scheme
-(~sqlite:~ versus ~postgres:~) at startup and enable the ~sqlx~ ~postgres~
-feature.  The existing round-trip and mutation tests become a shared suite run
-against both backends.
+- Run the round-trip and mutation tests against it (parameterize the test pool
+  by ~database_url~) and fix whatever the dialect differences surface — the
+  ~coalesce~ typing, ~on conflict~ forms, and cascade behaviour are the likely
+  suspects.
+- Give the scoped mutations PostgreSQL implementations too; only ~load~ and
+  ~save~ have them so far.
+- Consider promoting the ~Db~ enum to the ~Repository~ trait the plan named if a
+  third backend ever appears.
 
-* BLOCKED wire OIDC sign-in and per-request user resolution
+* BLOCKED finish OIDC sign-in
 :PROPERTIES:
 :PLAN: docs/optimization-plan.org — Phase 4
 :UNBLOCKED_BY: an OIDC provider (self-hosted Authentik or a managed IdP)
 :END:
 
-The foundation already ships the whole OIDC flow — ~AuthUser~,
-login/callback/logout handlers, ~require_auth~, ~current_user(session)~, and a
-~/me~ endpoint that falls back to an anonymous identity when OIDC is
-unconfigured.  The work is to /use/ it:
+/Partly done./ Each request now resolves its user from the foundation's OIDC
+session — the signed-in user's email, or the local user when unauthenticated —
+and reads and writes that user's model.  The unauthenticated local path is
+verified (the foundation does install the session layer; ~/me~ answers even with
+OIDC off).  The authenticated branch is written but unverified for want of a
+provider.
 
-- Resolve the request's user from the session instead of the fixed ~LOCAL_USER~,
-  falling back to the local user when unauthenticated so the local run is
-  unchanged.  This must be verified not to break the unauthenticated path (does
-  the foundation install the session layer when OIDC is off?) — the reason it is
-  blocked rather than assumed.
-- Just-in-time provisioning: on first authenticated request for an unknown
-  subject, insert the ~users~ row and seed the default storage panes.
+What remains:
+
+- Just-in-time provisioning: on first authenticated request for an unknown user,
+  seed the default storage panes (a new user currently sees the shared catalog
+  but an empty Kitchen).  ~save~ already inserts the ~users~ row.
 - Key the user on ~(issuer, subject)~, not email — a small foundation
   enhancement to carry the OIDC ~sub~ into ~AuthUser~ (see the plan's
-  Decisions); until then fall back to email.
+  Decisions); until then it falls back to email.
 - Frontend: query ~/me~ on load, show the signed-in name with sign-out and a
   sign-in control when anonymous, redirect to login on a 401 from ~/api/*~, and
   add account export and delete.
