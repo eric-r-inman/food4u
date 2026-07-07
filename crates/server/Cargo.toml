@@ -34,6 +34,9 @@ prometheus = { workspace = true }
 aide = { workspace = true }
 schemars = { workspace = true }
 openidconnect = { workspace = true }
+# The session type the routes extract to resolve the signed-in user via the
+# foundation's OIDC session; the foundation installs the session layer.
+tower-sessions = { workspace = true }
 # Connection pool and schema migrations for the relational food store that
 # is replacing the opaque JSON document.
 sqlx = { workspace = true }

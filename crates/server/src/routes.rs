@@ -1,10 +1,12 @@
 //! Application HTTP routes for reading and persisting the food model.
 //!
 //! These are plain JSON routes, deliberately undocumented in the OpenAPI
-//! spec.  A read assembles the current user's model from the relational
-//! store; a write is deserialized through the typed [`Model`] (so axum
-//! rejects malformed input with a 4xx), size-checked against the per-user
-//! limits, and then decomposed back into the tables.
+//! spec.  Each request resolves its user from the OIDC session (falling
+//! back to the configured local user when unauthenticated).  A read
+//! assembles that user's model from the relational store; a write is
+//! deserialized through the typed [`Model`] (so axum rejects malformed
+//! input with a 4xx), size-checked against the per-user limits, and then
+//! decomposed back into the tables.
 
 use crate::limits::{self, QuotaExceeded};
 use crate::model::Model;
@@ -16,6 +18,8 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use axum::Json;
+use rust_template_foundation::auth::current_user;
+use tower_sessions::Session;
 use tracing::error;
 
 /// The largest model document a write may carry.  Far above the shipped
@@ -28,18 +32,36 @@ pub fn router() -> ApiRouter<AppState> {
     .layer(DefaultBodyLimit::max(MAX_BODY_BYTES))
 }
 
+/// The account whose model this request reads or writes: the signed-in
+/// user's email when authenticated, otherwise the configured local user.
+async fn request_user(session: &Session, fallback: &str) -> String {
+  current_user(session)
+    .await
+    .map_or_else(|| fallback.to_string(), |user| user.email)
+}
+
 async fn get_model(
   State(state): State<AppState>,
+  session: Session,
 ) -> Result<Json<Model>, ApiError> {
-  Ok(Json(state.db.load(&state.user_id).await?))
+  Ok(Json(
+    state
+      .db
+      .load(&request_user(&session, &state.user_id).await)
+      .await?,
+  ))
 }
 
 async fn put_model(
   State(state): State<AppState>,
+  session: Session,
   Json(model): Json<Model>,
 ) -> Result<Json<Model>, ApiError> {
   limits::check(&model)?;
-  state.db.save(&state.user_id, &model).await?;
+  state
+    .db
+    .save(&request_user(&session, &state.user_id).await, &model)
+    .await?;
   Ok(Json(model))
 }
 
