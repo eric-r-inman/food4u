@@ -19,6 +19,21 @@ pub enum RepoError {
   ModelRead { source: sqlx::Error },
   #[error("could not write the food model to the database: {source}")]
   ModelWrite { source: sqlx::Error },
+  #[error("could not set the stock state of food {food_id}: {source}")]
+  FoodStockWrite {
+    food_id: String,
+    source: sqlx::Error,
+  },
+  #[error("could not add a storage item: {source}")]
+  StorageItemAdd { source: sqlx::Error },
+  #[error("could not remove a storage item: {source}")]
+  StorageItemRemove { source: sqlx::Error },
+  #[error("could not clear a storage pane: {source}")]
+  StoragePaneClear { source: sqlx::Error },
+  #[error("could not add a recipe: {source}")]
+  RecipeAdd { source: sqlx::Error },
+  #[error("could not delete a recipe: {source}")]
+  RecipeDelete { source: sqlx::Error },
 }
 
 #[derive(sqlx::FromRow)]
@@ -414,5 +429,153 @@ pub async fn save(
   }
 
   tx.commit().await.map_err(write)?;
+  Ok(())
+}
+
+// Scoped mutations.  Each changes one part of one user's model in place,
+// so a UI action is a small write rather than a rewrite of the whole
+// document.  Every statement is constrained to the user's own rows, so a
+// mutation can never reach another account's data even if handed a
+// mismatched id — it simply affects nothing.
+
+/// Set whether a catalog food is stocked for this user.
+pub async fn set_food_stock(
+  pool: &SqlitePool,
+  user_id: &str,
+  food_id: &str,
+  in_stock: bool,
+) -> Result<(), RepoError> {
+  sqlx::query(
+    "insert into user_food_state (user_id, food_id, in_stock) values (?, ?, ?) \
+     on conflict (user_id, food_id) do update set in_stock = excluded.in_stock",
+  )
+  .bind(user_id)
+  .bind(food_id)
+  .bind(in_stock)
+  .execute(pool)
+  .await
+  .map_err(|source| RepoError::FoodStockWrite {
+    food_id: food_id.to_string(),
+    source,
+  })?;
+  Ok(())
+}
+
+/// Append an item to one of the user's storage panes, at the end.  A no-op
+/// when the pane is not the user's.
+pub async fn add_storage_item(
+  pool: &SqlitePool,
+  user_id: &str,
+  location_id: &str,
+  item: &Item,
+) -> Result<(), RepoError> {
+  sqlx::query(
+    "insert into storage_items (id, location_id, name, needs, position) \
+     select ?, l.id, ?, ?, \
+       coalesce((select max(position) from storage_items where location_id = l.id), -1) + 1 \
+     from storage_locations l where l.id = ? and l.user_id = ?",
+  )
+  .bind(&item.id)
+  .bind(&item.name)
+  .bind(item.na)
+  .bind(location_id)
+  .bind(user_id)
+  .execute(pool)
+  .await
+  .map_err(|source| RepoError::StorageItemAdd { source })?;
+  Ok(())
+}
+
+/// Remove a storage item, only if it belongs to one of the user's panes.
+pub async fn remove_storage_item(
+  pool: &SqlitePool,
+  user_id: &str,
+  item_id: &str,
+) -> Result<(), RepoError> {
+  sqlx::query(
+    "delete from storage_items where id = ? and location_id in \
+     (select id from storage_locations where user_id = ?)",
+  )
+  .bind(item_id)
+  .bind(user_id)
+  .execute(pool)
+  .await
+  .map_err(|source| RepoError::StorageItemRemove { source })?;
+  Ok(())
+}
+
+/// Empty a storage pane (used for the Shopping List's clear-all), only if
+/// it belongs to the user.
+pub async fn clear_storage_pane(
+  pool: &SqlitePool,
+  user_id: &str,
+  location_id: &str,
+) -> Result<(), RepoError> {
+  sqlx::query(
+    "delete from storage_items where location_id = ? and location_id in \
+     (select id from storage_locations where user_id = ?)",
+  )
+  .bind(location_id)
+  .bind(user_id)
+  .execute(pool)
+  .await
+  .map_err(|source| RepoError::StoragePaneClear { source })?;
+  Ok(())
+}
+
+/// Add a recipe for the user, at the end of their list, with its
+/// ingredients.
+pub async fn add_recipe(
+  pool: &SqlitePool,
+  user_id: &str,
+  recipe: &Recipe,
+) -> Result<(), RepoError> {
+  let add = |source| RepoError::RecipeAdd { source };
+  let mut tx = pool.begin().await.map_err(add)?;
+  sqlx::query(
+    "insert into recipes (id, user_id, name, category, instructions, position) \
+     values (?, ?, ?, ?, ?, \
+       (select coalesce(max(position), -1) + 1 from recipes where user_id = ?))",
+  )
+  .bind(&recipe.id)
+  .bind(user_id)
+  .bind(&recipe.name)
+  .bind(&recipe.category)
+  .bind(&recipe.instructions)
+  .bind(user_id)
+  .execute(&mut *tx)
+  .await
+  .map_err(add)?;
+
+  for (position, ingredient) in recipe.ingredients.iter().enumerate() {
+    sqlx::query(
+      "insert into recipe_ingredients (id, recipe_id, name, needs, position) \
+       values (?, ?, ?, ?, ?)",
+    )
+    .bind(&ingredient.id)
+    .bind(&recipe.id)
+    .bind(&ingredient.name)
+    .bind(ingredient.na)
+    .bind(position as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(add)?;
+  }
+  tx.commit().await.map_err(add)?;
+  Ok(())
+}
+
+/// Delete one of the user's recipes and its ingredients.
+pub async fn delete_recipe(
+  pool: &SqlitePool,
+  user_id: &str,
+  recipe_id: &str,
+) -> Result<(), RepoError> {
+  sqlx::query("delete from recipes where id = ? and user_id = ?")
+    .bind(recipe_id)
+    .bind(user_id)
+    .execute(pool)
+    .await
+    .map_err(|source| RepoError::RecipeDelete { source })?;
   Ok(())
 }
