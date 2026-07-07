@@ -1,13 +1,13 @@
 //! Persistence for the food model.
 //!
 //! The model is a single JSON document — the longevity pyramid and the
-//! kitchen-staple cards — owned and shaped by the Elm frontend.  The
-//! server treats it as an opaque blob: it serves it, persists it, and
-//! seeds a default the first time around.  Keeping the schema in one
-//! place (Elm) avoids maintaining a parallel set of Rust types that
-//! would have to move in lockstep with the frontend for a single-user
-//! local app.
+//! kitchen-staple cards — owned and shaped by the Elm frontend.  It is
+//! served opaquely on read, but written through the typed [`Model`] so a
+//! malformed document is rejected at the edge rather than persisted and
+//! then failing to load.  This is the first step of moving the model to
+//! relational storage, where the server must understand its shape.
 
+use crate::model::Model;
 use serde_json::Value;
 use std::path::PathBuf;
 use thiserror::Error;
@@ -84,7 +84,7 @@ impl Store {
   }
 
   /// Persist the given model, creating the parent directory as needed.
-  pub async fn save(&self, model: &Value) -> Result<(), StoreError> {
+  pub async fn save(&self, model: &Model) -> Result<(), StoreError> {
     if let Some(parent) = self.data_file.parent() {
       if !parent.as_os_str().is_empty() {
         fs::create_dir_all(parent).await.map_err(|source| {

@@ -1,9 +1,12 @@
 //! Application HTTP routes for reading and persisting the food model.
 //!
 //! These are plain JSON routes, deliberately undocumented in the
-//! OpenAPI spec — the model is an opaque document owned by the Elm
-//! frontend, so there is no stable Rust schema to advertise.
+//! OpenAPI spec.  Reads serve the stored document as-is; writes are
+//! deserialized through the typed [`Model`], so axum rejects a malformed
+//! document with a 4xx rather than letting the server persist something
+//! it cannot later load.
 
+use crate::model::Model;
 use crate::store::StoreError;
 use crate::web_base::AppState;
 use aide::axum::ApiRouter;
@@ -27,8 +30,8 @@ async fn get_model(
 
 async fn put_model(
   State(state): State<AppState>,
-  Json(model): Json<Value>,
-) -> Result<Json<Value>, StoreError> {
+  Json(model): Json<Model>,
+) -> Result<Json<Model>, StoreError> {
   state.store.save(&model).await?;
   Ok(Json(model))
 }
