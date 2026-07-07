@@ -10,16 +10,29 @@ This is strictly a development aid.  The Dex configuration ships a hard-coded
 client secret and a passwordless connector, neither of which belongs anywhere
 near a hosted deployment.
 
-* Start the identity provider
+* One command
 
-Dex serves the configuration in this directory.  It listens on =127.0.0.1:5556=
-and issues tokens under =http://127.0.0.1:5556/dex=.
+=just login-demo= builds the frontend, starts Dex, runs food4u wired to it, and
+opens the browser.  Dex stops again when you stop the server with =Ctrl-C=.
+Each account's kitchen persists in =login-demo.db=, so a signed-in user's panes
+survive a restart.
 
 #+begin_src sh :results none :exports code
-nix run nixpkgs#dex -- serve dev/oidc/dex.yaml
+just login-demo
 #+end_src
 
-* Start food4u pointed at it
+* Doing it by hand
+
+The recipe delegates to =dev/oidc/login-demo.sh=; the two halves it runs are
+below, for when you want to drive them separately.
+
+Dex serves the configuration in this directory.  It listens on =127.0.0.1:5556=
+and issues tokens under =http://127.0.0.1:5556/dex=.  The OIDC provider is the
+=dex-oidc= package (plain =dex= in nixpkgs is an unrelated desktop launcher).
+
+#+begin_src sh :results none :exports code
+nix run nixpkgs#dex-oidc -- serve dev/oidc/dex.yaml
+#+end_src
 
 The server reads its configuration from =food4u_*= environment variables.  The
 client secret is supplied through a file so it never sits on the command line;
@@ -41,6 +54,7 @@ food4u_oidc_client_secret_file=/tmp/food4u-oidc-secret \
 
 Open =http://127.0.0.1:3000= and click *Sign in* in the toolbar.  You land back
 signed in as the demo user, with your name and a *Sign out* link in the toolbar.
-The demo user is a fresh account: the shared food catalog is still there, but
-the Kitchen and Recipes start empty, which is the per-user separation working.
-*Sign out* returns you to the local unauthenticated view.
+The demo user is a fresh account: the shared food catalog is still there, the
+Kitchen opens onto the default panes seeded empty for a new account, and Recipes
+start empty.  Add a pane, drag some foods in, and *Sign out* then back in — your
+changes are still there, separate from the local unauthenticated view.

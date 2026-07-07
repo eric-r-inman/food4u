@@ -16,6 +16,13 @@ dev_url := "http://127.0.0.1:3000"
 dev: build-elm
     ( sleep 1.5 && open "{{dev_url}}" ) & cargo run --package food4u-server -- --base-url "{{dev_url}}"
 
+# Build the frontend and run the app with the local OIDC login demo: Dex
+# as the identity provider plus food4u wired to it.  Sign-in works and each
+# account keeps its own kitchen (persisted in login-demo.db).  Dex stops
+# when the server does.  See dev/oidc/login-demo.org.
+login-demo: build-elm
+    dev/oidc/login-demo.sh
+
 # Build both Rust and Elm.
 build: build-elm build-rust
 

@@ -25,6 +25,12 @@ frontend/public/elm.js
 /food4u.db-wal
 /food4u.db-shm
 
+# The relational store written at runtime by `just login-demo`, holding the
+# demo's per-account data, plus its write-ahead-log sidecar files.
+/login-demo.db
+/login-demo.db-wal
+/login-demo.db-shm
+
 # Claude Code project config (Stop hook, compliance subagent, shared settings)
 # is part of the project and must be checked in.  A user-global or system-wide
 # ignore (e.g. /etc/gitignore) often excludes .claude/ wholesale; re-include
