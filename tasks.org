@@ -56,15 +56,16 @@ provider.
 
 What remains:
 
-- Just-in-time provisioning: on first authenticated request for an unknown user,
-  seed the default storage panes (a new user currently sees the shared catalog
-  but an empty Kitchen).  ~save~ already inserts the ~users~ row.
+- /Done./ Just-in-time provisioning: a user's first read seeds the default
+  storage panes when they have none, so a new account opens onto a usable
+  Kitchen rather than an empty one.  The panes are seeded with per-user-unique
+  ids because the storage-location primary key is shared across accounts.
 - Key the user on ~(issuer, subject)~, not email — a small foundation
   enhancement to carry the OIDC ~sub~ into ~AuthUser~ (see the plan's
   Decisions); until then it falls back to email.
-- Frontend: query ~/me~ on load, show the signed-in name with sign-out and a
-  sign-in control when anonymous, redirect to login on a 401 from ~/api/*~, and
-  add account export and delete.
+- /Partly done./ The toolbar now queries ~/me~ on load and shows the signed-in
+  name with a sign-out control, or a sign-in link when anonymous.  Still to do:
+  redirect to login on a 401 from ~/api/*~, and add account export and delete.
 
 * TODO expose the scoped mutations as HTTP endpoints and move the frontend onto them
 :PROPERTIES:
@@ -138,3 +139,11 @@ ids for foods, items, and recipes alike).  Making ~FoodId~/~ItemId~/~RecipeId~
 distinct would force a sum-typed drag payload or pervasive unwrapping that
 defeats the point.  Worth doing only as a deliberate redesign of how a drag
 identifies its payload, not a mechanical newtype sweep.
+
+Related, and sharper now that users can create their own panes: client-minted
+~nextId~ ids (~u0~, ~u1~, …) are only unique within one model, but the storage,
+food, and recipe primary keys are global across accounts.  Two hosted users who
+each add a pane would collide on ~storage_locations.id~.  Provisioning sidesteps
+this by deriving pane ids from the user id, but user-created entities do not.
+The hosted multi-user path needs either composite ~(user_id, id)~ keys or
+server-side id minting before more than one account writes concurrently.
