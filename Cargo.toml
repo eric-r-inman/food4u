@@ -45,6 +45,12 @@ tokio-listener = { version = "0.5", features = ["axum08"] }
 tower = "0.5"
 tower-http = { version = "0.6", features = ["trace", "cors", "fs", "set-header"] }
 
+# Database access.  Async, compile-time-checked queries, and migrations
+# over SQLite (the local backend) and, later, PostgreSQL.  default-features
+# is off to avoid pulling a second async runtime; only the tokio runtime is
+# enabled.
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "sqlite", "migrate", "macros"] }
+
 # Testing
 tempfile = "3"
 

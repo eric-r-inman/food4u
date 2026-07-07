@@ -34,11 +34,16 @@ prometheus = { workspace = true }
 aide = { workspace = true }
 schemars = { workspace = true }
 openidconnect = { workspace = true }
+# Connection pool and schema migrations for the relational food store that
+# is replacing the opaque JSON document.
+sqlx = { workspace = true }
 
 [dev-dependencies]
 openidconnect = { workspace = true }
 prometheus = { workspace = true }
 serde_json = { workspace = true }
+# Lets the migration test query the freshly-migrated schema directly.
+sqlx = { workspace = true }
 tempfile = { workspace = true }
 tower = { workspace = true }
 
