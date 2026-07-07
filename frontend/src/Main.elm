@@ -23,8 +23,8 @@ it to a JSON file.
 import Browser
 import Browser.Dom as Dom
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, Tier, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
-import Derived exposing (inStockNames, itemRank, recipeMissing)
+import Data exposing (Data, Food, Group, Item, Loc(..), Recipe, Tier, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
+import Derived exposing (inStockNames, recipeMissing)
 import Dict exposing (Dict)
 import File.Download as Download
 import Html exposing (..)
@@ -34,6 +34,7 @@ import Html.Keyed as Keyed
 import Html.Lazy as Lazy
 import Http
 import Json.Decode as Decode
+import KitchenView exposing (viewKitchenColumn)
 import Model exposing (Drag, Model, derive, emptyDerived, isOpen)
 import Msg exposing (Msg(..))
 import RecipeParser exposing (parsePastedRecipe)
@@ -42,7 +43,7 @@ import Shopping exposing (cartCardId, shoppingListText)
 import Style exposing (cardStyle, categoryChipBg, chipBase, foodChipStyle, searchHighlightStyle, styles)
 import Task
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (addInputId, collapsedColumnBar, columnTitleBar, dropZone, notepadButton, pasteInputId, recipeCartButton, recipeDeleteButton, recipeDropZone, removeButton, viewAdder, viewItem, viewSearchField)
+import Ui exposing (addInputId, collapsedColumnBar, columnTitleBar, dropZone, notepadButton, pasteInputId, recipeCartButton, recipeDeleteButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
 
 
 main : Program () Model Msg
@@ -815,41 +816,6 @@ viewPyramidBody rawSearch toggled adding addValue inStock tiers =
         ]
 
 
-viewKitchenColumn : Model -> Data -> Html Msg
-viewKitchenColumn model data =
-    if not model.kitchenOpen then
-        collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen []
-
-    else
-        Lazy.lazy5 viewKitchenBody
-            model.kitchenSearch
-            model.toggled
-            model.derived.nameCategory
-            model.derived.categoryRanks
-            data.staples
-
-
-viewKitchenBody : String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
-viewKitchenBody rawSearch toggled nameToCat ranks staples =
-    let
-        kitchenSearch =
-            String.toLower (String.trim rawSearch)
-
-        kitchenPanes =
-            List.filter (\c -> c.name /= shoppingCartName) staples
-
-        anyMatch =
-            kitchenSearch /= "" && List.any (\c -> List.any (\i -> String.contains kitchenSearch (String.toLower i.name)) c.items) kitchenPanes
-    in
-    div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
-        , div [ class "kitchen-body" ]
-            (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
-                :: List.map (viewPane toggled kitchenSearch nameToCat ranks) kitchenPanes
-            )
-        ]
-
-
 viewTier : Set String -> Maybe AddTarget -> String -> Set String -> String -> Tier -> Html Msg
 viewTier toggled adding addValue inStock search tier =
     let
@@ -979,64 +945,6 @@ viewFood bg inStock search loc food =
                     []
                )
             ++ [ removeButton (RemoveFoodMsg loc food.id) ]
-        )
-
-
-
--- RIGHT PANE: STORAGE
-
-
-viewPane : Set String -> String -> Dict String String -> Dict String Int -> Card -> Html Msg
-viewPane toggled search nameToCat ranks card =
-    let
-        stockLoc =
-            StoragePane card.id
-
-        sortItems list =
-            List.sortBy (\item -> ( itemRank nameToCat ranks item, String.toLower item.name )) list
-
-        paneHasMatch =
-            search /= "" && List.any (\i -> String.contains search (String.toLower i.name)) card.items
-
-        -- Panes default collapsed, except the Shopping List; a live
-        -- Kitchen search force-expands any pane that contains a match.
-        paneCollapsed =
-            not (paneHasMatch || isOpen (card.name == shoppingCartName) ("pane:" ++ card.id) toggled)
-    in
-    div
-        -- The whole pane is a drop target, so items can be dropped even
-        -- when it is collapsed (only its header is showing).
-        (cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ] ++ dropZone stockLoc)
-        (div
-            (onClick (ToggleCategory ("pane:" ++ card.id))
-                :: styles [ ( "background", card.rail ), ( "color", "#fff" ), ( "padding", "13px 16px" ), ( "cursor", "pointer" ), ( "user-select", "none" ) ]
-            )
-            [ div (styles [ ( "display", "flex" ), ( "justify-content", "space-between" ), ( "align-items", "baseline" ), ( "gap", "10px" ) ])
-                [ div (styles [ ( "display", "flex" ), ( "align-items", "baseline" ), ( "gap", "8px" ) ])
-                    [ span (styles [ ( "font-size", "10px" ), ( "opacity", "0.8" ) ])
-                        [ text
-                            (if paneCollapsed then
-                                "▶"
-
-                             else
-                                "▼"
-                            )
-                        ]
-                    , div (styles [ ( "font-size", "19px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text card.name ]
-                    ]
-                , div (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ) ]) [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
-                ]
-            , div (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "opacity", "0.92" ), ( "margin-top", "5px" ), ( "letter-spacing", "0.6px" ) ]) [ text card.meta ]
-            ]
-            :: (if paneCollapsed then
-                    []
-
-                else
-                    [ Keyed.node "div"
-                        (styles [ ( "padding", "14px 15px" ), ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ), ( "min-height", "44px" ), ( "flex", "1" ) ])
-                        (List.map (\item -> ( item.id, viewItem search nameToCat stockLoc item )) (sortItems card.items))
-                    ]
-               )
         )
 
 
