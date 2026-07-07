@@ -10,6 +10,7 @@
 
 use crate::limits::{self, QuotaExceeded};
 use crate::model::Model;
+use crate::provision::ProvisionError;
 use crate::repo::RepoError;
 use crate::web_base::AppState;
 use aide::axum::ApiRouter;
@@ -44,12 +45,9 @@ async fn get_model(
   State(state): State<AppState>,
   session: Session,
 ) -> Result<Json<Model>, ApiError> {
-  Ok(Json(
-    state
-      .db
-      .load(&request_user(&session, &state.user_id).await)
-      .await?,
-  ))
+  let user = request_user(&session, &state.user_id).await;
+  state.db.ensure_provisioned(&user).await?;
+  Ok(Json(state.db.load(&user).await?))
 }
 
 async fn put_model(
@@ -68,12 +66,19 @@ async fn put_model(
 /// The failure modes a model route can return to the client.
 enum ApiError {
   Store(RepoError),
+  Provision(ProvisionError),
   Quota(QuotaExceeded),
 }
 
 impl From<RepoError> for ApiError {
   fn from(source: RepoError) -> Self {
     ApiError::Store(source)
+  }
+}
+
+impl From<ProvisionError> for ApiError {
+  fn from(source: ProvisionError) -> Self {
+    ApiError::Provision(source)
   }
 }
 
@@ -90,6 +95,13 @@ impl IntoResponse for ApiError {
       // return an opaque 500 so nothing about the storage layer leaks.
       ApiError::Store(source) => {
         error!(error = %source, "food model store operation failed");
+        (StatusCode::INTERNAL_SERVER_ERROR, "failed to access the food model")
+          .into_response()
+      }
+      // Provisioning a new user's default panes failed server-side; log the
+      // detail and return an opaque 500 like any other store fault.
+      ApiError::Provision(source) => {
+        error!(error = %source, "new-user provisioning failed");
         (StatusCode::INTERNAL_SERVER_ERROR, "failed to access the food model")
           .into_response()
       }

@@ -6,6 +6,7 @@
 //! PostgreSQL is scaffolded but unverified (see [`crate::repo_pg`]).
 
 use crate::model::Model;
+use crate::provision::{self, ProvisionError};
 use crate::repo::RepoError;
 use crate::{repo, repo_pg};
 use sqlx::postgres::{PgPool, PgPoolOptions};
@@ -117,5 +118,33 @@ impl Db {
       Db::Sqlite(pool) => repo::save(pool, user_id, model).await,
       Db::Postgres(pool) => repo_pg::save(pool, user_id, model).await,
     }
+  }
+
+  /// Seed a user's default storage panes when they have none yet, so a
+  /// fresh account opens onto a usable Kitchen rather than a blank one.
+  /// The seed is parsed only when provisioning is actually needed, keeping
+  /// the common (already-provisioned) path a single cheap count.
+  pub async fn ensure_provisioned(
+    &self,
+    user_id: &str,
+  ) -> Result<(), ProvisionError> {
+    let existing = match self {
+      Db::Sqlite(pool) => repo::pane_count(pool, user_id).await,
+      Db::Postgres(pool) => repo_pg::pane_count(pool, user_id).await,
+    }?;
+    if existing > 0 {
+      return Ok(());
+    }
+
+    let defaults = provision::default_panes()?;
+    match self {
+      Db::Sqlite(pool) => {
+        repo::provision_default_panes(pool, user_id, &defaults).await?
+      }
+      Db::Postgres(pool) => {
+        repo_pg::provision_default_panes(pool, user_id, &defaults).await?
+      }
+    }
+    Ok(())
   }
 }

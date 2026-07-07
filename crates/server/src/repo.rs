@@ -30,6 +30,8 @@ pub enum RepoError {
   StorageItemRemove { source: sqlx::Error },
   #[error("could not clear a storage pane: {source}")]
   StoragePaneClear { source: sqlx::Error },
+  #[error("could not provision a new user's default panes: {source}")]
+  PaneProvision { source: sqlx::Error },
   #[error("could not add a recipe: {source}")]
   RecipeAdd { source: sqlx::Error },
   #[error("could not delete a recipe: {source}")]
@@ -591,5 +593,60 @@ pub async fn delete_recipe(
     .execute(pool)
     .await
     .map_err(|source| RepoError::RecipeDelete { source })?;
+  Ok(())
+}
+
+/// How many storage panes a user has.  The provisioning gate reads this to
+/// decide whether a fresh account needs its default panes seeded.
+pub async fn pane_count(
+  pool: &SqlitePool,
+  user_id: &str,
+) -> Result<i64, RepoError> {
+  sqlx::query_scalar("select count(*) from storage_locations where user_id = ?")
+    .bind(user_id)
+    .fetch_one(pool)
+    .await
+    .map_err(|source| RepoError::PaneProvision { source })
+}
+
+/// Seed a user's default storage panes, so a new account does not land in a
+/// blank, unusable Kitchen.  The pane ids are derived from the user id so
+/// they stay unique across accounts, which the shared primary key requires,
+/// and `insert or ignore` keeps a concurrent first access harmless.
+pub async fn provision_default_panes(
+  pool: &SqlitePool,
+  user_id: &str,
+  panes: &[Card],
+) -> Result<(), RepoError> {
+  let fail = |source| RepoError::PaneProvision { source };
+  let mut tx = pool.begin().await.map_err(fail)?;
+  sqlx::query(
+    "insert or ignore into users (id, email, display_name, created_at) \
+     values (?, '', '', '')",
+  )
+  .bind(user_id)
+  .execute(&mut *tx)
+  .await
+  .map_err(fail)?;
+
+  for (position, pane) in panes.iter().enumerate() {
+    sqlx::query(
+      "insert or ignore into storage_locations \
+       (id, user_id, name, meta, rail, line, note, position) \
+       values (?, ?, ?, ?, ?, ?, ?, ?)",
+    )
+    .bind(format!("{user_id}-{}", pane.id))
+    .bind(user_id)
+    .bind(&pane.name)
+    .bind(&pane.meta)
+    .bind(&pane.rail)
+    .bind(&pane.line)
+    .bind(&pane.note)
+    .bind(position as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(fail)?;
+  }
+  tx.commit().await.map_err(fail)?;
   Ok(())
 }

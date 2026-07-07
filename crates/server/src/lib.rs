@@ -3,6 +3,7 @@ pub mod db;
 pub mod import;
 pub mod limits;
 pub mod model;
+pub mod provision;
 pub mod repo;
 pub mod repo_pg;
 pub mod routes;

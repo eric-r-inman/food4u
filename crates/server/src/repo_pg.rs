@@ -266,3 +266,59 @@ pub async fn save(
   tx.commit().await.map_err(write)?;
   Ok(())
 }
+
+/// How many storage panes a user has — the PostgreSQL counterpart of
+/// [`repo::pane_count`].  UNVERIFIED, like the rest of this module.
+pub async fn pane_count(
+  pool: &PgPool,
+  user_id: &str,
+) -> Result<i64, RepoError> {
+  sqlx::query_scalar(
+    "select count(*) from storage_locations where user_id = $1",
+  )
+  .bind(user_id)
+  .fetch_one(pool)
+  .await
+  .map_err(|source| RepoError::PaneProvision { source })
+}
+
+/// Seed a user's default storage panes — the PostgreSQL counterpart of
+/// [`repo::provision_default_panes`], with the same id-derivation and
+/// idempotency.  UNVERIFIED, like the rest of this module.
+pub async fn provision_default_panes(
+  pool: &PgPool,
+  user_id: &str,
+  panes: &[crate::model::Card],
+) -> Result<(), RepoError> {
+  let fail = |source| RepoError::PaneProvision { source };
+  let mut tx = pool.begin().await.map_err(fail)?;
+  sqlx::query(
+    "insert into users (id, email, display_name, created_at) \
+     values ($1, '', '', '') on conflict do nothing",
+  )
+  .bind(user_id)
+  .execute(&mut *tx)
+  .await
+  .map_err(fail)?;
+
+  for (position, pane) in panes.iter().enumerate() {
+    sqlx::query(
+      "insert into storage_locations \
+       (id, user_id, name, meta, rail, line, note, position) \
+       values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict do nothing",
+    )
+    .bind(format!("{user_id}-{}", pane.id))
+    .bind(user_id)
+    .bind(&pane.name)
+    .bind(&pane.meta)
+    .bind(&pane.rail)
+    .bind(&pane.line)
+    .bind(&pane.note)
+    .bind(position as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(fail)?;
+  }
+  tx.commit().await.map_err(fail)?;
+  Ok(())
+}
