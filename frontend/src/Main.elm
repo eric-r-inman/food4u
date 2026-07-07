@@ -791,9 +791,6 @@ viewToolbar me =
                     ]
                 )
                 [ text "food4u" ]
-            , span
-                (styles [ ( "font-size", "12.5px" ), ( "color", "oklch(0.5 0.012 70)" ) ])
-                [ text "Drag a food to a storage pane · changes save automatically" ]
             , div [ class "toolbar-auth" ] (viewAuth me)
             ]
         ]
