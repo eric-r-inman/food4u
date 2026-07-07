@@ -1,6 +1,140 @@
 #+title:     Tasks
 #+language:  en
+#+todo:      TODO BLOCKED | DONE
 
 The project's backlog.  Record plans and work items here as ~* TODO~ entries —
 see the "Capturing plans" guidance in =llms.org= — cross-linking related entries
 and marking finished work ~* DONE~.
+
+Phases 0–2 of [[file:docs/optimization-plan.org][the optimization and hosting plan]] are complete: the build and
+bundle optimizations, the full frontend decomposition, and the relational store
+(schema, typed model, validation, the assemble/decompose repository, the store
+flip, size limits, and user-scoped mutations).  What remains is the hosted
+multi-user build plus a couple of standing frontend items.
+
+Some entries are ~BLOCKED~: they can be written but not *verified* without
+infrastructure (a running PostgreSQL, an OIDC provider, a deploy target), so
+they are deliberately not implemented on faith — that would ship code claiming a
+capability it was never run against.  Each names what unblocks it.
+
+* BLOCKED add the PostgreSQL backend
+:PROPERTIES:
+:PLAN: docs/optimization-plan.org — Phase 3, and the "Backend abstraction" decision
+:UNBLOCKED_BY: a reachable PostgreSQL instance to run the queries against
+:END:
+
+The schema is already backend-neutral (text ids, integer booleans) and the
+migrations are written to serve both engines.  What remains is a second
+implementation of the repository in PostgreSQL dialect, because the engines
+differ where it matters:
+
+- Bind placeholders: SQLite ~?~ versus PostgreSQL ~$1, $2~.
+- Upsert: ~insert or ignore~ / ~on conflict (...) do update~ versus the
+  PostgreSQL forms.
+- Booleans and the ~coalesce(max(position), -1) + 1~ position trick need a check
+  against PostgreSQL typing.
+
+Per the plan's decision, introduce a ~Repository~ trait with ~load~, ~save~, and
+the scoped mutations, implement it for the existing SQLite pool, and add a
+PostgreSQL implementation.  Select the backend from the ~database_url~ scheme
+(~sqlite:~ versus ~postgres:~) at startup and enable the ~sqlx~ ~postgres~
+feature.  The existing round-trip and mutation tests become a shared suite run
+against both backends.
+
+* BLOCKED wire OIDC sign-in and per-request user resolution
+:PROPERTIES:
+:PLAN: docs/optimization-plan.org — Phase 4
+:UNBLOCKED_BY: an OIDC provider (self-hosted Authentik or a managed IdP)
+:END:
+
+The foundation already ships the whole OIDC flow — ~AuthUser~,
+login/callback/logout handlers, ~require_auth~, ~current_user(session)~, and a
+~/me~ endpoint that falls back to an anonymous identity when OIDC is
+unconfigured.  The work is to /use/ it:
+
+- Resolve the request's user from the session instead of the fixed ~LOCAL_USER~,
+  falling back to the local user when unauthenticated so the local run is
+  unchanged.  This must be verified not to break the unauthenticated path (does
+  the foundation install the session layer when OIDC is off?) — the reason it is
+  blocked rather than assumed.
+- Just-in-time provisioning: on first authenticated request for an unknown
+  subject, insert the ~users~ row and seed the default storage panes.
+- Key the user on ~(issuer, subject)~, not email — a small foundation
+  enhancement to carry the OIDC ~sub~ into ~AuthUser~ (see the plan's
+  Decisions); until then fall back to email.
+- Frontend: query ~/me~ on load, show the signed-in name with sign-out and a
+  sign-in control when anonymous, redirect to login on a 401 from ~/api/*~, and
+  add account export and delete.
+
+* TODO expose the scoped mutations as HTTP endpoints and move the frontend onto them
+:PROPERTIES:
+:PLAN: docs/optimization-plan.org — Phase 3 (API redesign) and the client/server section
+:END:
+
+The user-scoped mutations exist and are tested in the repository but are not yet
+an HTTP surface, because the frontend still saves the whole model.  Add
+per-action endpoints over the mutations (toggle stock, add/remove a storage
+item, clear a pane, add/delete a recipe, link/unlink), then move the Elm app
+from the full-document ~PUT~ to those requests with optimistic updates.  This is
+the larger half — a rewrite of the frontend's persistence layer — and depends on
+nothing external, so it is not blocked; it is simply its own sizeable increment.
+
+* BLOCKED adopt PostgreSQL row-level security
+:PROPERTIES:
+:PLAN: docs/optimization-plan.org — Phase 5 and the "Row-level security" decision
+:UNBLOCKED_BY: the PostgreSQL backend above
+:END:
+
+The repository already scopes every statement to the caller's rows, the primary
+defense.  Layer PostgreSQL RLS policies on top as defense-in-depth once the
+backend exists, so a query that forgot its scope still cannot cross accounts.
+
+* BLOCKED stand up the hosted deployment
+:PROPERTIES:
+:PLAN: docs/optimization-plan.org — Hosting and operations
+:UNBLOCKED_BY: a deploy target and the two backend/auth blockers
+:END:
+
+Deploy the existing NixOS module with PostgreSQL provisioned alongside, the OIDC
+client secret via systemd ~LoadCredential~ (the config layer already supports a
+credential path), a TLS-terminating reverse proxy, and ~base_url~ set to the
+public origin.  Externalize the ~tower-sessions~ store to PostgreSQL so sessions
+survive restarts and scale across instances.  Add database health to the health
+checks and schedule backups with a tested restore.
+
+* TODO hardening for the public surface
+:PROPERTIES:
+:PLAN: docs/optimization-plan.org — Phase 5
+:END:
+
+Body-size limits and per-user quotas are in place.  Remaining before a public
+launch: rate limiting at the proxy or app, the CSRF posture for
+cookie-authenticated mutations (same-site cookies plus a token check where
+appropriate), and a security review of the surface using the repository's review
+tooling.
+
+* TODO migrate the pervasive inline Elm styles to the stylesheet
+:PROPERTIES:
+:PLAN: CONTRIBUTING.org "No inline styles in Elm"
+:END:
+
+The frontend builds its styling through a ~styles [...]~ helper that maps tuples
+to ~Html.Attributes.style~, used across every view — a standing violation of the
+no-inline-styles rule that every compliance review of the decomposition flagged
+as pre-existing and systemic.  Migrate these to class-based rules in
+~frontend/public/style.css~, driving the column accent colors from CSS custom
+properties.  A large, mechanical, codebase- wide pass; deferred so it does not
+tangle with the structural refactors.
+
+* TODO opaque id newtypes, only with a drag-channel redesign
+:PROPERTIES:
+:PLAN: docs/optimization-plan.org — Phase 1 (opaque id newtypes)
+:END:
+
+The last Phase 1 item, deliberately not done: the drag/drop channel treats ids
+as interchangeable strings across entity types (a ~DragStart~ carries a food id
+from the pyramid but an item id from a pane or recipe, and one ~nextId~ mints
+ids for foods, items, and recipes alike).  Making ~FoodId~/~ItemId~/~RecipeId~
+distinct would force a sum-typed drag payload or pervasive unwrapping that
+defeats the point.  Worth doing only as a deliberate redesign of how a drag
+identifies its payload, not a mechanical newtype sweep.
