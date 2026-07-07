@@ -1,0 +1,46 @@
+#+title:     Local login demo
+#+language:  en
+
+Run the full OIDC sign-in flow entirely on your machine — no cloud provider, no
+accounts, no cost.  A local [[https://dexidp.io/][Dex]] instance stands in for a real identity provider,
+and its /mock/ connector logs you straight in as a fixed demo user, so a click
+on *Sign in* bounces you back into food4u already authenticated.
+
+This is strictly a development aid.  The Dex configuration ships a hard-coded
+client secret and a passwordless connector, neither of which belongs anywhere
+near a hosted deployment.
+
+* Start the identity provider
+
+Dex serves the configuration in this directory.  It listens on =127.0.0.1:5556=
+and issues tokens under =http://127.0.0.1:5556/dex=.
+
+#+begin_src sh :results none :exports code
+nix run nixpkgs#dex -- serve dev/oidc/dex.yaml
+#+end_src
+
+* Start food4u pointed at it
+
+The server reads its configuration from =food4u_*= environment variables.  The
+client secret is supplied through a file so it never sits on the command line;
+its contents must match the secret in the Dex configuration.
+
+#+begin_src sh :results none :exports code
+printf food4u-dev-secret > /tmp/food4u-oidc-secret
+
+food4u_listen=127.0.0.1:3000 \
+food4u_base_url=http://127.0.0.1:3000 \
+food4u_database_url=sqlite:/tmp/food4u-demo.db \
+food4u_oidc_issuer=http://127.0.0.1:5556/dex \
+food4u_oidc_client_id=food4u \
+food4u_oidc_client_secret_file=/tmp/food4u-oidc-secret \
+  nix develop --command cargo run -p food4u-server
+#+end_src
+
+* Try it
+
+Open =http://127.0.0.1:3000= and click *Sign in* in the toolbar.  You land back
+signed in as the demo user, with your name and a *Sign out* link in the toolbar.
+The demo user is a fresh account: the shared food catalog is still there, but
+the Kitchen and Recipes start empty, which is the per-user separation working.
+*Sign out* returns you to the local unauthenticated view.

@@ -1,0 +1,20 @@
+# Local OIDC provider for the food4u login test drive.  The mock connector
+# signs you in as a demo user with one click — no password.  Not for
+# production; issuer is plain http on localhost.
+issuer: http://127.0.0.1:5556/dex
+storage:
+  type: memory
+web:
+  http: 127.0.0.1:5556
+oauth2:
+  skipApprovalScreen: true
+staticClients:
+  - id: food4u
+    name: food4u
+    secret: food4u-dev-secret
+    redirectURIs:
+      - http://127.0.0.1:3000/auth/callback
+connectors:
+  - type: mockCallback
+    id: mock
+    name: Demo Login
