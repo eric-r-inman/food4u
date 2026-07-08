@@ -87,14 +87,16 @@ viewStaplesTracker toggled search derived card =
         collapsed =
             not (isOpen False ("pane:" ++ card.id) toggled)
 
+        -- Red marks a staple that is neither on hand in a kitchen pane nor
+        -- already on the Shopping List: still to buy.  A staple sitting on
+        -- the Shopping List keeps its normal colour.
         missing item =
-            not (Set.member (String.toLower item.name) derived.stockedNoCart)
+            not (Set.member (String.toLower item.name) derived.inStock)
 
-        -- A staple that is neither in a kitchen pane nor already on the
-        -- Shopping List — the ones the cart button would add.  When any
-        -- exist, the button turns green.
+        -- The staples shown red are exactly the ones the cart button would
+        -- add; when any exist, the button turns green.
         hasStaplesToAdd =
-            List.any (\i -> not (Set.member (String.toLower i.name) derived.inStock)) card.items
+            List.any missing card.items
 
         sorted =
             List.sortBy (\item -> ( itemRank derived.nameCategory derived.categoryRanks item, String.toLower item.name )) card.items
