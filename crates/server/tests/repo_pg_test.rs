@@ -5,6 +5,7 @@
 //! match — exercising the PostgreSQL repository end to end.  Without the
 //! variable the test skips, so the default suite needs no database.  The
 //! save clears the shared catalog, so point it at a dedicated database.
+#![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::Db;
 use food4u_server::model::Model;

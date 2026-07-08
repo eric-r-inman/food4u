@@ -1,5 +1,6 @@
 //! A new account is seeded with the default storage panes on first access,
 //! and the seeding is idempotent.
+#![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::Db;
 

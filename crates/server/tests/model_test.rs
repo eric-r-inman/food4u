@@ -1,5 +1,6 @@
 //! The typed model faithfully represents the shipped seed document and
 //! survives a round trip through JSON.
+#![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::model::Model;
 

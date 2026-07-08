@@ -1,3 +1,10 @@
 {
-  "template_sync_hashes": ["2e4cdac079954e9e6b6fd817379c9cbfd2291485"]
+  "template_sync_hashes": [
+    "2e4cdac079954e9e6b6fd817379c9cbfd2291485",
+    "ad92be1e8285ce75e6b65eff15198f7377c66d9e"
+  ],
+  "workspaces": {
+    "food4u-lib": { "release-binary": false },
+    "food4u-server": { "release-binary": false }
+  }
 }

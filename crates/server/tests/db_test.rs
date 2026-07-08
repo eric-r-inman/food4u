@@ -1,4 +1,5 @@
 //! The initial schema migration applies cleanly to a fresh database.
+#![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::connect_and_migrate;
 

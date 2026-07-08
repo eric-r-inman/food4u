@@ -1,5 +1,6 @@
 //! The relational repository decomposes the model into tables and
 //! assembles it back without loss.
+#![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::connect_and_migrate;
 use food4u_server::model::{Card, Food, Group, Item, Model, Recipe, Tier};

@@ -1,5 +1,6 @@
 //! The scoped mutations change one part of one user's model in place, and
 //! never reach a mismatched user's data.
+#![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::connect_and_migrate;
 use food4u_server::model::{Card, Food, Group, Item, Model, Recipe, Tier};
