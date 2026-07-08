@@ -31,6 +31,10 @@
 
   /* The subtle border shared by the app's card frames. */
   --card-border: oklch(0.9 0.012 86);
+
+  /* The recipe category highlighted as a drag-move target. */
+  --recipe-drop-bg: oklch(0.96 0.03 250);
+  --recipe-drop-outline: oklch(0.62 0.1 250);
 }
 
 * {
@@ -418,6 +422,15 @@ button {
   gap: 7px;
   align-content: flex-start;
   min-height: 20px;
+}
+
+/* A recipe category the dragged recipe is hovering over, marking where it
+   will move if dropped. */
+.recipe-drop-target {
+  background: var(--recipe-drop-bg);
+  outline: 2px dashed var(--recipe-drop-outline);
+  outline-offset: 3px;
+  border-radius: 8px;
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a

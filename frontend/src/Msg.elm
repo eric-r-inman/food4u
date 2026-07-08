@@ -54,4 +54,6 @@ type Msg
     | RecipeDragStart String
     | RecipeDragEnd
     | DropRecipeOnGroup String
+    | RecipeDragEnterCategory String
+    | DropRecipeOnCategory String
     | NoOp

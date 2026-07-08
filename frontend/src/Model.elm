@@ -37,6 +37,10 @@ type alias Model =
     , addValue : String
     , drag : Maybe Drag
     , recipeDrag : Maybe String
+
+    -- While a recipe is being dragged, the recipe category the pointer is
+    -- currently over, so it can be highlighted as the move target.
+    , recipeDropCategory : Maybe String
     , seq : Int
 
     -- Keys whose collapse is *toggled away from their default*. Food and

@@ -11,7 +11,7 @@ import Derived exposing (recipeMissing)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (on, onBlur, onClick, onInput)
+import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn)
 import Json.Decode as Decode
 import Model exposing (Model, isOpen)
 import Msg exposing (Msg(..))
@@ -286,12 +286,33 @@ viewRecipeCategory model nameToCat inStock stockedNoCart recipeSearch data categ
         -- filter force-expands the categories that still have recipes.
         isCollapsed =
             not (categoryHasMatch || filtering || isOpen False key model.toggled)
+
+        -- The category the dragged recipe is currently over, so it reads as
+        -- the move target.
+        isDropTarget =
+            model.recipeDrag /= Nothing && model.recipeDropCategory == Just category
+
+        -- Categories become recipe drop targets only while a recipe is
+        -- being dragged; a drop moves the recipe into this category.
+        dropAttrs =
+            if model.recipeDrag == Nothing then
+                []
+
+            else
+                [ preventDefaultOn "dragover" (Decode.succeed ( NoOp, True ))
+                , on "dragenter" (Decode.succeed (RecipeDragEnterCategory category))
+                , preventDefaultOn "drop" (Decode.succeed ( DropRecipeOnCategory category, True ))
+                ]
     in
     if filtering && List.isEmpty recipesInCat then
         text ""
 
     else
-        div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "8px" ), ( "margin-bottom", "16px" ) ])
+        div
+            (classList [ ( "recipe-drop-target", isDropTarget ) ]
+                :: dropAttrs
+                ++ styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "8px" ), ( "margin-bottom", "16px" ) ]
+            )
             (div
                 (onClick (ToggleCategory key)
                     :: styles
@@ -426,7 +447,7 @@ viewRecipe toggled nameToCat inStock stockedNoCart recipeSearch recipe =
                 (attribute "draggable" "true"
                     :: on "dragstart" (Decode.succeed (RecipeDragStart recipe.id))
                     :: on "dragend" (Decode.succeed RecipeDragEnd)
-                    :: title "Drag onto a pyramid category to link this recipe"
+                    :: title "Drag onto another recipe category to move this recipe, or a pyramid category to link it"
                     :: styles [ ( "cursor", "grab" ), ( "font-size", "13px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "padding", "0 2px" ), ( "user-select", "none" ) ]
                 )
                 [ text "⠿" ]

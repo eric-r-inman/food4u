@@ -64,6 +64,7 @@ init _ =
       , addValue = ""
       , drag = Nothing
       , recipeDrag = Nothing
+      , recipeDropCategory = Nothing
       , seq = 0
       , toggled = Set.empty
       , pyramidOpen = True
@@ -353,10 +354,30 @@ update msg model =
                     ( { model | drag = Nothing }, Cmd.none )
 
         RecipeDragStart rid ->
-            ( { model | recipeDrag = Just rid }, Cmd.none )
+            -- Collapse the recipe's own category as the drag begins, so the
+            -- other categories are in view to drop it onto.
+            ( { model
+                | recipeDrag = Just rid
+                , toggled = collapseRecipeCategory rid model
+              }
+            , Cmd.none
+            )
 
         RecipeDragEnd ->
-            ( { model | recipeDrag = Nothing }, Cmd.none )
+            ( { model | recipeDrag = Nothing, recipeDropCategory = Nothing }, Cmd.none )
+
+        RecipeDragEnterCategory category ->
+            ( { model | recipeDropCategory = Just category }, Cmd.none )
+
+        DropRecipeOnCategory category ->
+            case ( model.recipeDrag, model.data ) of
+                ( Just rid, Just data ) ->
+                    persistData
+                        { model | recipeDrag = Nothing, recipeDropCategory = Nothing }
+                        (mapRecipe rid (\r -> { r | category = category }) data)
+
+                _ ->
+                    ( { model | recipeDrag = Nothing, recipeDropCategory = Nothing }, Cmd.none )
 
         DropRecipeOnGroup gid ->
             case ( model.recipeDrag, model.data ) of
@@ -371,6 +392,7 @@ update msg model =
                         , derived = derive newData
                         , seq = newSeq
                         , recipeDrag = Nothing
+                        , recipeDropCategory = Nothing
 
                         -- Expand the target category so the new linked badge is visible.
                         , toggled = Set.insert gid model.toggled
@@ -700,6 +722,17 @@ ensureStaplesTracker data =
                 data.staples
                     ++ [ Card staplesTrackerId staplesTrackerName "" "" "" "" [] ]
         }
+
+
+{-| Collapse the category the given recipe lives in, by removing its toggle
+key so it returns to the default-collapsed state.
+-}
+collapseRecipeCategory : String -> Model -> Set String
+collapseRecipeCategory rid model =
+    model.data
+        |> Maybe.andThen (\data -> List.head (List.filter (\r -> r.id == rid) data.recipes))
+        |> Maybe.map (\r -> Set.remove ("recipe:" ++ r.category) model.toggled)
+        |> Maybe.withDefault model.toggled
 
 
 {-| The name and sodium flag of the dragged food, wherever it came from.
