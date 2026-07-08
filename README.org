@@ -4,9 +4,9 @@
 * Introduction
 
 Longevity Pantry is a small, browser-based app for managing a longevity-oriented
-kitchen.  It is a personal, single-user tool meant to run locally on one
-machine.  Its code, crates, and configuration keep the original =food4u= name
-for convenience.
+kitchen.  It runs locally as a personal, single-user tool, and can also be
+hosted with per-user accounts.  Its code, crates, and configuration keep the
+original =food4u= name for convenience.
 
 The page is four side-by-side columns, each collapsible to a vertical bar:
 
@@ -27,9 +27,9 @@ ingredients to the shopping list in one click.  Recipes can be linked to pyramid
 foods, and a recipe is flagged green when every ingredient is already stocked.
 
 The frontend is an [[https://elm-lang.org/][Elm]] single-page app served by a small Rust server (built on
-the rust-template foundation).  The whole model is a single JSON document the
-server persists to a file on disk.  Edits in the browser save automatically;
-there is no database to run.
+the rust-template foundation).  The server stores each user's model in a
+relational database — SQLite for a local install, PostgreSQL for a hosted one.
+Edits in the browser save automatically.
 
 * Running it
 
@@ -42,7 +42,9 @@ just dev
 
 This serves the app at =http://127.0.0.1:3000=.  When no OIDC provider is
 configured the server runs unauthenticated, so there is no login step for local
-use.
+use.  To try the signed-in, multi-account experience locally, =just login-demo=
+stands up a local identity provider alongside the server; see
+[[file:dev/oidc/login-demo.org][=dev/oidc/login-demo.org=]].
 
 Run everything through the Nix dev shell so the Rust, Elm, and formatter
 toolchains match:
@@ -55,21 +57,30 @@ nix develop --command just test
 
 * Architecture
 
-- =frontend/src/Main.elm= — the entire UI: the four-column layout, the pyramid,
-  recipes (including the pasted-text parser), the kitchen storage panes, the
-  shopping list with department grouping and text export, per-column search,
-  drag-and-drop, and the load/save wiring.
-- =crates/server= — serves the compiled frontend and exposes the model API.
-  =store.rs= owns persistence; =routes.rs= owns the endpoints.
-- =crates/server/src/seed/default_model.json= — the embedded default model,
-  generated from the original Claude Design mock-up.  It is the checked-in
-  source of truth and is served until the user saves their own changes.
+The frontend is an Elm single-page app, split into a module per column over a
+shared core for the model, the messages, and drag-and-drop.  It holds the whole
+model in memory and syncs it to the server over a small JSON API.
+
+The Rust server serves the compiled frontend and that API.  It resolves each
+request's user from the OIDC session — the signed-in account, or a single local
+user when no provider is configured — and reads and writes that user's model in
+a relational database behind one typed model and schema: SQLite for a local
+install, PostgreSQL for a hosted one.  A new account is seeded the default
+storage panes on its first read.
+
+The default model is embedded in the binary, generated from the original Claude
+Design mock-up.  A fresh store is populated from it once — along with any legacy
+JSON file an earlier version wrote, which is then kept only as a backup — so
+nothing is lost in the move to the database.
 
 ** Model API
 
-- =GET /api/model= — the current model, or the embedded default when no data
-  file exists yet.
-- =PUT /api/model= — persist the posted model document.
+The browser syncs over two JSON endpoints, each scoped to the requesting user:
+
+- =GET /api/model= — that user's model, seeding the default panes on a first
+  visit.
+- =PUT /api/model= — persist the posted model; it is checked against the typed
+  schema and rejected if it exceeds the per-user size limits.
 
 * Configuration
 
@@ -77,23 +88,32 @@ Configuration follows the foundation's staged precedence (CLI flags, then
 =food4u_*= environment variables, then a TOML config file, then compiled
 defaults).  The app-specific knobs:
 
-- =--data-file= / =food4u_data_file= — where the model JSON is persisted
-  (default =food4u-model.json= in the working directory).
+- =--database-url= / =food4u_database_url= — the relational store (default
+  =sqlite:food4u.db=; a =postgres://= url selects PostgreSQL for a hosted
+  deployment).
+- =--data-file= / =food4u_data_file= — a legacy JSON model imported once into an
+  empty store, then kept only as a backup (default =food4u-model.json=).
 - =--frontend-path= / =food4u_frontend_path= — the compiled frontend assets
   (default =frontend/public=).
 - =--base-url= / =food4u_base_url= — required; the public base URL.  =just dev=
   sets this to the local address for you.
 
+Authentication is off unless an OIDC provider is configured, through
+=food4u_oidc_issuer=, =food4u_oidc_client_id=, and
+=food4u_oidc_client_secret_file=.  With it off the server runs as a single local
+user; with it on, each account keeps its own kitchen.
+
 * Gotchas and tradeoffs
 
-- The model is stored as an opaque JSON document.  Its schema lives in Elm only;
-  the server persists and serves it without a parallel set of Rust types.  This
-  keeps the single-user app simple at the cost of server-side validation of the
-  model's shape.
-- The persisted file (=food4u-model.json=) is per-machine and git-ignored, so
-  edits survive rebuilds.  The embedded default seeds it only when the file does
-  not yet exist; the default starts with empty storage panes.  Delete the file
-  to start fresh from that default.
+- The server understands the model: typed Rust structs mirror the Elm schema and
+  a relational schema stores it, so a malformed document is rejected at the edge
+  rather than persisted.  The frontend still owns the schema's shape, and the
+  two definitions are kept in step by hand.
+- The relational store (=food4u.db= for SQLite) is the store of record and is
+  git-ignored, so edits survive rebuilds.  A fresh store is populated once from
+  the embedded default; delete the file to start over from it.
+- The SQLite backend is the verified path; the PostgreSQL backend that a hosted
+  deployment uses is written but not yet exercised against a live server in CI.
 - Drag-and-drop uses native HTML5 DnD.  A capture-phase listener in =index.html=
   seeds =dataTransfer= so drags initiate in Firefox and Safari as well as
   Chrome.
