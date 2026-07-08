@@ -44,6 +44,11 @@ type alias Model =
     , pasting : Maybe String
     , pasteValue : String
 
+    -- The storage pane whose name and description are being edited inline,
+    -- if any.  Editing surfaces the delete control and turns the pane's
+    -- header text into inputs.
+    , editingPane : Maybe String
+
     -- The signed-in identity from `/me`, once fetched.  Drives the
     -- sign-in / sign-out control in the toolbar.
     , me : Maybe Me

@@ -12,6 +12,7 @@ module Data exposing
     , foodInGroup
     , itemInStorage
     , listHasName
+    , mapCard
     , mapGroup
     , mapRecipe
     , mapStorage

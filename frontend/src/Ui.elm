@@ -6,6 +6,9 @@ module Ui exposing
     , dropZone
     , notepadButton
     , paneDeleteButton
+    , paneEditButton
+    , paneMetaInput
+    , paneNameInput
     , pasteInputId
     , recipeCartButton
     , recipeDeleteButton
@@ -261,6 +264,56 @@ paneDeleteButton msg =
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text "✕" ]
+
+
+{-| Toggles a pane's edit mode, revealing the delete control and turning
+the header text into inputs. Like the delete control it lives inside the
+collapse-toggle header, so its click must not propagate.
+-}
+paneEditButton : Msg -> Html Msg
+paneEditButton msg =
+    button
+        [ type_ "button"
+        , class "pane-edit-btn"
+        , title "Edit this pane"
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
+        [ text "✎" ]
+
+
+{-| The pane name as an editable field, shown in place of the title while
+the pane is in edit mode. Edits live-update the model and persist on blur;
+its click is stopped so editing does not collapse the pane.
+-}
+paneNameInput : String -> String -> Html Msg
+paneNameInput paneId currentName =
+    input
+        [ class "pane-name-input"
+        , value currentName
+        , placeholder "Pane name"
+        , type_ "text"
+        , onInput (EditPaneName paneId)
+        , onBlur PersistNow
+        , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
+        ]
+        []
+
+
+{-| The pane description (its `meta` line) as an editable field, shown in
+place of the subtitle while the pane is in edit mode.
+-}
+paneMetaInput : String -> String -> Html Msg
+paneMetaInput paneId currentMeta =
+    input
+        [ class "pane-meta-input"
+        , value currentMeta
+        , placeholder "Description"
+        , type_ "text"
+        , onInput (EditPaneMeta paneId)
+        , onBlur PersistNow
+        , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
+        ]
+        []
 
 
 removeButton : Msg -> Html Msg

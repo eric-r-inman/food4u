@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, paneDeleteButton, viewAdder, viewItem, viewSearchField)
+import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, paneDeleteButton, paneEditButton, paneMetaInput, paneNameInput, viewAdder, viewItem, viewSearchField)
 
 
 viewKitchenColumn : Model -> Data -> Html Msg
@@ -28,9 +28,10 @@ viewKitchenColumn model data =
         collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen []
 
     else
-        Lazy.lazy7 viewKitchenBody
+        Lazy.lazy8 viewKitchenBody
             model.adding
             model.addValue
+            model.editingPane
             model.kitchenSearch
             model.toggled
             model.derived.nameCategory
@@ -38,8 +39,8 @@ viewKitchenColumn model data =
             data.staples
 
 
-viewKitchenBody : Maybe AddTarget -> String -> String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
-viewKitchenBody adding addValue rawSearch toggled nameToCat ranks staples =
+viewKitchenBody : Maybe AddTarget -> String -> Maybe String -> String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
+viewKitchenBody adding addValue editingPane rawSearch toggled nameToCat ranks staples =
     let
         kitchenSearch =
             String.toLower (String.trim rawSearch)
@@ -54,14 +55,14 @@ viewKitchenBody adding addValue rawSearch toggled nameToCat ranks staples =
         [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
         , div [ class "kitchen-body" ]
             (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
-                :: List.map (viewPane toggled kitchenSearch nameToCat ranks) kitchenPanes
+                :: List.map (\c -> viewPane toggled kitchenSearch nameToCat ranks (editingPane == Just c.id) c) kitchenPanes
                 ++ [ viewAdder adding addValue AddPane "New pane name…" "+ Add pane" ]
             )
         ]
 
 
-viewPane : Set String -> String -> Dict String String -> Dict String Int -> Card -> Html Msg
-viewPane toggled search nameToCat ranks card =
+viewPane : Set String -> String -> Dict String String -> Dict String Int -> Bool -> Card -> Html Msg
+viewPane toggled search nameToCat ranks editing card =
     let
         stockLoc =
             StoragePane card.id
@@ -96,14 +97,28 @@ viewPane toggled search nameToCat ranks card =
                                 "▼"
                             )
                         ]
-                    , div (styles [ ( "font-size", "19px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text card.name ]
+                    , if editing then
+                        paneNameInput card.id card.name
+
+                      else
+                        div [ class "pane-name" ] [ text card.name ]
                     ]
                 , div [ class "pane-header-meta" ]
-                    [ div (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ) ]) [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
-                    , paneDeleteButton (RemovePane card.id)
-                    ]
+                    (div [ class "pane-item-count" ] [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
+                        :: paneEditButton (ToggleEditPane card.id)
+                        :: (if editing then
+                                [ paneDeleteButton (RemovePane card.id) ]
+
+                            else
+                                []
+                           )
+                    )
                 ]
-            , div (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "opacity", "0.92" ), ( "margin-top", "5px" ), ( "letter-spacing", "0.6px" ) ]) [ text card.meta ]
+            , if editing then
+                paneMetaInput card.id card.meta
+
+              else
+                div [ class "pane-meta" ] [ text card.meta ]
             ]
             :: (if paneCollapsed then
                     []

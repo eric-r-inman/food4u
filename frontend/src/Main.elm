@@ -23,7 +23,7 @@ it to a JSON file.
 import Browser
 import Browser.Dom as Dom
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
+import Data exposing (Card, Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -77,6 +77,7 @@ init _ =
       , pasting = Nothing
       , pasteValue = ""
       , me = Nothing
+      , editingPane = Nothing
       , derived = emptyDerived
       }
     , Cmd.batch [ fetchModel, fetchMe ]
@@ -160,6 +161,35 @@ update msg model =
                 (\data ->
                     persistData model
                         { data | staples = List.filter (\c -> c.id /= pid) data.staples }
+                )
+
+        ToggleEditPane pid ->
+            ( { model
+                | editingPane =
+                    if model.editingPane == Just pid then
+                        Nothing
+
+                    else
+                        Just pid
+              }
+            , Cmd.none
+            )
+
+        EditPaneName pid value ->
+            -- Live-edit locally; persisted on blur via PersistNow.
+            withData model
+                (\data ->
+                    ( { model | data = Just (mapCard pid (\c -> { c | name = value }) data) }
+                    , Cmd.none
+                    )
+                )
+
+        EditPaneMeta pid value ->
+            withData model
+                (\data ->
+                    ( { model | data = Just (mapCard pid (\c -> { c | meta = value }) data) }
+                    , Cmd.none
+                    )
                 )
 
         AddRecipeToCart rid ->

@@ -23,8 +23,10 @@
   --auth-link-fg: oklch(0.4 0.1 250);
   --auth-name-fg: oklch(0.4 0.02 70);
 
-  /* Shared value for the Kitchen pane delete control. */
+  /* Shared values for the Kitchen pane header controls and inputs, which
+     all sit on the pane's coloured rail. */
   --pane-btn-font: "IBM Plex Mono", monospace;
+  --pane-fg: #fff;
 }
 
 * {
@@ -274,7 +276,8 @@ button {
 /* The delete control on a Kitchen pane header.  It sits on the pane's
    coloured rail, so it reads as a translucent white chip rather than the
    bordered light-background delete used elsewhere. */
-.pane-delete-btn {
+.pane-delete-btn,
+.pane-edit-btn {
   font-family: var(--pane-btn-font);
   font-size: 11px;
   font-weight: 700;
@@ -283,8 +286,65 @@ button {
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.45);
   background: rgba(255, 255, 255, 0.14);
-  color: #fff;
+  color: var(--pane-fg);
   line-height: 1.2;
+}
+
+/* The dimmed monospace item count at the end of a pane header. */
+.pane-item-count {
+  font-family: var(--pane-btn-font);
+  font-size: 11px;
+  opacity: 0.82;
+}
+
+/* The pane name and description typography, shared by the static header
+   text and its edit-mode input so the two modes cannot drift apart. */
+.pane-name,
+.pane-name-input {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.pane-meta,
+.pane-meta-input {
+  font-family: var(--pane-btn-font);
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  margin-top: 5px;
+}
+
+/* The static subtitle is slightly dimmed; the editable field is full
+   strength so the text being typed reads clearly. */
+.pane-meta {
+  opacity: 0.92;
+}
+
+/* Edit-mode fields: white text on a faint underline, so they read as
+   inputs on the coloured rail without a boxed control breaking the
+   header. */
+.pane-name-input,
+.pane-meta-input {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  outline: none;
+  color: var(--pane-fg);
+  padding: 0 0 1px;
+}
+
+.pane-name-input {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.pane-meta-input {
+  width: 100%;
+}
+
+.pane-name-input::placeholder,
+.pane-meta-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a

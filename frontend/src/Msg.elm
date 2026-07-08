@@ -22,6 +22,9 @@ type Msg
     | RemoveFoodMsg Loc String
     | RemoveRecipe String
     | RemovePane String
+    | ToggleEditPane String
+    | EditPaneName String String
+    | EditPaneMeta String String
     | AddRecipeToCart String
     | EditRecipeName String String
     | EditRecipeInstructions String String
