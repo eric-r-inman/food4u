@@ -1,4 +1,4 @@
-module Model exposing (Drag, Indices, Model, derive, emptyDerived, isOpen)
+module Model exposing (Drag, Indices, Model, PaneEdit, derive, emptyDerived, isOpen)
 
 {-| The application model, the in-progress drag, and the indices cached on
 the model. The indices are recomputed once whenever the data changes (see
@@ -16,6 +16,17 @@ import Types exposing (AddTarget, Me, RecipeFilter)
 type alias Drag =
     { from : Loc
     , foodId : String
+    }
+
+
+{-| A buffered edit of one storage pane's name and description. `id`
+identifies the pane; `name` and `meta` are the working values shown in the
+header fields until the edit is committed or cancelled.
+-}
+type alias PaneEdit =
+    { id : String
+    , name : String
+    , meta : String
     }
 
 
@@ -44,10 +55,11 @@ type alias Model =
     , pasting : Maybe String
     , pasteValue : String
 
-    -- The storage pane whose name and description are being edited inline,
-    -- if any.  Editing surfaces the delete control and turns the pane's
-    -- header text into inputs.
-    , editingPane : Maybe String
+    -- The in-progress edit of a storage pane's name and description, if
+    -- any.  The edit is buffered here rather than applied to `data` as it
+    -- is typed, so cancelling it (Escape) simply drops the buffer with
+    -- nothing to undo; committing (Enter) writes it back and saves.
+    , editingPane : Maybe PaneEdit
 
     -- The signed-in identity from `/me`, once fetched.  Drives the
     -- sign-in / sign-out control in the toolbar.

@@ -14,7 +14,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Keyed as Keyed
 import Html.Lazy as Lazy
-import Model exposing (Model, isOpen)
+import Model exposing (Model, PaneEdit, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, styles)
@@ -39,7 +39,7 @@ viewKitchenColumn model data =
             data.staples
 
 
-viewKitchenBody : Maybe AddTarget -> String -> Maybe String -> String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
+viewKitchenBody : Maybe AddTarget -> String -> Maybe PaneEdit -> String -> Set String -> Dict String String -> Dict String Int -> List Card -> Html Msg
 viewKitchenBody adding addValue editingPane rawSearch toggled nameToCat ranks staples =
     let
         kitchenSearch =
@@ -55,15 +55,33 @@ viewKitchenBody adding addValue editingPane rawSearch toggled nameToCat ranks st
         [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
         , div [ class "kitchen-body" ]
             (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
-                :: List.map (\c -> viewPane toggled kitchenSearch nameToCat ranks (editingPane == Just c.id) c) kitchenPanes
+                :: List.map (\c -> viewPane toggled kitchenSearch nameToCat ranks (paneEditFor editingPane c) c) kitchenPanes
                 ++ [ viewAdder adding addValue AddPane "New pane name…" "+ Add pane" ]
             )
         ]
 
 
-viewPane : Set String -> String -> Dict String String -> Dict String Int -> Bool -> Card -> Html Msg
-viewPane toggled search nameToCat ranks editing card =
+{-| The buffered edit for this pane, if it is the one being edited.
+-}
+paneEditFor : Maybe PaneEdit -> Card -> Maybe PaneEdit
+paneEditFor editingPane card =
+    editingPane
+        |> Maybe.andThen
+            (\e ->
+                if e.id == card.id then
+                    Just e
+
+                else
+                    Nothing
+            )
+
+
+viewPane : Set String -> String -> Dict String String -> Dict String Int -> Maybe PaneEdit -> Card -> Html Msg
+viewPane toggled search nameToCat ranks edit card =
     let
+        editing =
+            edit /= Nothing
+
         stockLoc =
             StoragePane card.id
 
@@ -97,28 +115,31 @@ viewPane toggled search nameToCat ranks editing card =
                                 "▼"
                             )
                         ]
-                    , if editing then
-                        paneNameInput card.id card.name
+                    , case edit of
+                        Just e ->
+                            paneNameInput e.name
 
-                      else
-                        div [ class "pane-name" ] [ text card.name ]
+                        Nothing ->
+                            div [ class "pane-name" ] [ text card.name ]
                     ]
                 , div [ class "pane-header-meta" ]
-                    (div [ class "pane-item-count" ] [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
-                        :: paneEditButton (ToggleEditPane card.id)
-                        :: (if editing then
-                                [ paneDeleteButton (RemovePane card.id) ]
+                    (if editing then
+                        [ paneEditButton CommitPaneEdit
+                        , paneDeleteButton (RemovePane card.id)
+                        ]
 
-                            else
-                                []
-                           )
+                     else
+                        [ div [ class "pane-item-count" ] [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
+                        , paneEditButton (StartEditPane card.id)
+                        ]
                     )
                 ]
-            , if editing then
-                paneMetaInput card.id card.meta
+            , case edit of
+                Just e ->
+                    paneMetaInput e.meta
 
-              else
-                div [ class "pane-meta" ] [ text card.meta ]
+                Nothing ->
+                    div [ class "pane-meta" ] [ text card.meta ]
             ]
             :: (if paneCollapsed then
                     []

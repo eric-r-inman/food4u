@@ -282,39 +282,42 @@ paneEditButton msg =
 
 
 {-| The pane name as an editable field, shown in place of the title while
-the pane is in edit mode. Edits live-update the model and persist on blur;
-its click is stopped so editing does not collapse the pane.
+the pane is in edit mode. Edits are buffered and written back only on
+commit; its click is stopped so editing does not collapse the pane.
 -}
-paneNameInput : String -> String -> Html Msg
-paneNameInput paneId currentName =
+paneNameInput : String -> Html Msg
+paneNameInput currentName =
     input
         [ class "pane-name-input"
         , value currentName
         , placeholder "Pane name"
         , type_ "text"
-        , onInput (EditPaneName paneId)
-        , onBlur PersistNow
-        , onEnter CommitPaneEdit
+        , onInput EditPaneName
+        , paneEditKeys
         , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
         ]
         []
 
 
-{-| Fire `msg` when Enter is pressed and ignore every other key, so a pane
-field's Enter closes the editor (the decoder failing on other keys means
-no message is produced for them).
+{-| The keys that close a pane editor: Enter commits the buffered edit,
+Escape discards it. Any other key fails the decoder, so it produces no
+message and normal typing is unaffected.
 -}
-onEnter : Msg -> Attribute Msg
-onEnter msg =
+paneEditKeys : Attribute Msg
+paneEditKeys =
     on "keydown"
         (Decode.field "key" Decode.string
             |> Decode.andThen
                 (\key ->
-                    if key == "Enter" then
-                        Decode.succeed msg
+                    case key of
+                        "Enter" ->
+                            Decode.succeed CommitPaneEdit
 
-                    else
-                        Decode.fail "ignored"
+                        "Escape" ->
+                            Decode.succeed CancelPaneEdit
+
+                        _ ->
+                            Decode.fail "ignored"
                 )
         )
 
@@ -322,16 +325,15 @@ onEnter msg =
 {-| The pane description (its `meta` line) as an editable field, shown in
 place of the subtitle while the pane is in edit mode.
 -}
-paneMetaInput : String -> String -> Html Msg
-paneMetaInput paneId currentMeta =
+paneMetaInput : String -> Html Msg
+paneMetaInput currentMeta =
     input
         [ class "pane-meta-input"
         , value currentMeta
         , placeholder "Description"
         , type_ "text"
-        , onInput (EditPaneMeta paneId)
-        , onBlur PersistNow
-        , onEnter CommitPaneEdit
+        , onInput EditPaneMeta
+        , paneEditKeys
         , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
         ]
         []

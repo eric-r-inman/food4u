@@ -163,46 +163,45 @@ update msg model =
                         { data | staples = List.filter (\c -> c.id /= pid) data.staples }
                 )
 
-        ToggleEditPane pid ->
-            ( { model
-                | editingPane =
-                    if model.editingPane == Just pid then
-                        Nothing
+        StartEditPane pid ->
+            -- Seed the edit buffer from the pane's current name and
+            -- description; nothing is written back until it is committed.
+            withData model
+                (\data ->
+                    ( { model
+                        | editingPane =
+                            data.staples
+                                |> List.filter (\c -> c.id == pid)
+                                |> List.head
+                                |> Maybe.map (\c -> { id = pid, name = c.name, meta = c.meta })
+                      }
+                    , Cmd.none
+                    )
+                )
 
-                    else
-                        Just pid
-              }
+        EditPaneName value ->
+            ( { model | editingPane = Maybe.map (\e -> { e | name = value }) model.editingPane }
             , Cmd.none
             )
 
-        EditPaneName pid value ->
-            -- Live-edit locally; persisted on blur via PersistNow.
-            withData model
-                (\data ->
-                    ( { model | data = Just (mapCard pid (\c -> { c | name = value }) data) }
-                    , Cmd.none
-                    )
-                )
-
-        EditPaneMeta pid value ->
-            withData model
-                (\data ->
-                    ( { model | data = Just (mapCard pid (\c -> { c | meta = value }) data) }
-                    , Cmd.none
-                    )
-                )
+        EditPaneMeta value ->
+            ( { model | editingPane = Maybe.map (\e -> { e | meta = value }) model.editingPane }
+            , Cmd.none
+            )
 
         CommitPaneEdit ->
-            -- Leave edit mode and persist; the edits are already live in
-            -- the model, so this just saves them (as a blur would).
-            ( { model | editingPane = Nothing }
-            , case model.data of
-                Just data ->
-                    saveModel data
+            -- Write the buffered edit back to the pane and save.
+            case ( model.editingPane, model.data ) of
+                ( Just edit, Just data ) ->
+                    persistData { model | editingPane = Nothing }
+                        (mapCard edit.id (\c -> { c | name = edit.name, meta = edit.meta }) data)
 
-                Nothing ->
-                    Cmd.none
-            )
+                _ ->
+                    ( { model | editingPane = Nothing }, Cmd.none )
+
+        CancelPaneEdit ->
+            -- Drop the buffer; `data` was never touched, so nothing to undo.
+            ( { model | editingPane = Nothing }, Cmd.none )
 
         AddRecipeToCart rid ->
             addRecipeToCart rid model
