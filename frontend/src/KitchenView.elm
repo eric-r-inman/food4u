@@ -90,6 +90,12 @@ viewStaplesTracker toggled search derived card =
         missing item =
             not (Set.member (String.toLower item.name) derived.stockedNoCart)
 
+        -- A staple that is neither in a kitchen pane nor already on the
+        -- Shopping List — the ones the cart button would add.  When any
+        -- exist, the button turns green.
+        hasStaplesToAdd =
+            List.any (\i -> not (Set.member (String.toLower i.name) derived.inStock)) card.items
+
         sorted =
             List.sortBy (\item -> ( itemRank derived.nameCategory derived.categoryRanks item, String.toLower item.name )) card.items
     in
@@ -107,7 +113,7 @@ viewStaplesTracker toggled search derived card =
                     ]
                 , span [] [ text card.name ]
                 ]
-            , stapleCartButton AddStaplesToCart
+            , stapleCartButton hasStaplesToAdd AddStaplesToCart
             ]
             :: (if collapsed then
                     []

@@ -499,13 +499,14 @@ viewItem missing search nameToCat loc item =
 
 {-| The Staples Tracker's cart button: sends every missing (red) staple
 to the Shopping List. It lives in the tracker's collapse-toggle header, so
-its click must not propagate up and toggle the pane.
+its click must not propagate up and toggle the pane. It turns green while
+`active` — when there is at least one staple it would add.
 -}
-stapleCartButton : Msg -> Html Msg
-stapleCartButton msg =
+stapleCartButton : Bool -> Msg -> Html Msg
+stapleCartButton active msg =
     button
         [ type_ "button"
-        , class "staple-cart-btn"
+        , classList [ ( "staple-cart-btn", True ), ( "staple-cart-btn-active", active ) ]
         , title "Add missing staples to the Shopping List"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]

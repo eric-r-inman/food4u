@@ -34,9 +34,12 @@
   --pane-confirm-delete-border: oklch(0.7 0.15 25);
   --pane-confirm-delete-bg: oklch(0.62 0.2 25);
 
-  /* The near-solid white pill of the Staples Tracker cart button. */
+  /* The near-solid white pill of the Staples Tracker cart button, and the
+     green it turns when it has staples to add to the Shopping List. */
   --staple-cart-border: rgba(255, 255, 255, 0.9);
   --staple-cart-bg: rgba(255, 255, 255, 0.92);
+  --staple-cart-active-border: oklch(0.55 0.14 150);
+  --staple-cart-active-bg: oklch(0.72 0.16 150);
 
   /* The subtle border shared by the app's card frames. */
   --card-border: oklch(0.9 0.012 86);
@@ -512,6 +515,13 @@ button {
   border: 1px solid var(--staple-cart-border);
   background: var(--staple-cart-bg);
   line-height: 1.2;
+}
+
+/* Green while the tracker holds staples not yet in a kitchen pane or on
+   the Shopping List, signalling there is something to add. */
+.staple-cart-btn-active {
+  border-color: var(--staple-cart-active-border);
+  background: var(--staple-cart-active-bg);
 }
 
 .staples-tracker-body {

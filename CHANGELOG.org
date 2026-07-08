@@ -22,7 +22,8 @@
   delete a pane — with a confirmation — from the same editor.
 ** Fixes
 - The Staples Tracker now starts collapsed, and its shopping-cart button stands
-  out clearly against the header.
+  out clearly against the header — and turns green when it holds staples not yet
+  in the Kitchen or on the Shopping List.
 - Editing a Kitchen pane no longer clips the controls on the right edge, and
   clicking away from the pane closes the editor without saving.
 ** Breaking
