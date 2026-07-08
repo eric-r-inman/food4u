@@ -1,10 +1,12 @@
-#+title:     food4u
+#+title:     Longevity Pantry
 #+language:  en
 
 * Introduction
 
-food4u is a small, browser-based app for managing a longevity-oriented kitchen.
-It is a personal, single-user tool meant to run locally on one machine.
+Longevity Pantry is a small, browser-based app for managing a longevity-oriented
+kitchen.  It is a personal, single-user tool meant to run locally on one
+machine.  Its code, crates, and configuration keep the original =food4u= name
+for convenience.
 
 The page is four side-by-side columns, each collapsible to a vertical bar:
 

@@ -4,7 +4,7 @@
 Run the full OIDC sign-in flow entirely on your machine — no cloud provider, no
 accounts, no cost.  A local [[https://dexidp.io/][Dex]] instance stands in for a real identity provider,
 and its /mock/ connector logs you straight in as a fixed demo user, so a click
-on *Sign in* bounces you back into food4u already authenticated.
+on *Sign in* bounces you back into Longevity Pantry already authenticated.
 
 This is strictly a development aid.  The Dex configuration ships a hard-coded
 client secret and a passwordless connector, neither of which belongs anywhere
@@ -12,8 +12,8 @@ near a hosted deployment.
 
 * One command
 
-=just login-demo= builds the frontend, starts Dex, runs food4u wired to it, and
-opens the browser.  Dex stops again when you stop the server with =Ctrl-C=.
+=just login-demo= builds the frontend, starts Dex, runs the server wired to it,
+and opens the browser.  Dex stops again when you stop the server with =Ctrl-C=.
 Each account's kitchen persists in =login-demo.db=, so a signed-in user's panes
 survive a restart.
 

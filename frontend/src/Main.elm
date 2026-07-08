@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-{-| food4u — longevity staples, kitchen storage, and recipes.
+{-| Longevity Pantry — longevity staples, kitchen storage, and recipes.
 
 The page is four side-by-side columns, each independently scrolling and
 each collapsible to a slim vertical bar: Longevity Foods (the staples
@@ -790,7 +790,7 @@ viewToolbar me =
                     , ( "color", "oklch(0.4 0.07 128)" )
                     ]
                 )
-                [ text "food4u" ]
+                [ text "Longevity Pantry" ]
             , div [ class "toolbar-auth" ] (viewAuth me)
             ]
         ]
