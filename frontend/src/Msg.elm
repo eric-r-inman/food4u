@@ -28,6 +28,7 @@ type Msg
     | CommitPaneEdit
     | CancelPaneEdit
     | AddRecipeToCart String
+    | AddStaplesToCart
     | EditRecipeName String String
     | EditRecipeInstructions String String
     | PersistNow

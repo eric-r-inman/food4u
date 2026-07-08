@@ -8,6 +8,9 @@
 - Add and remove Kitchen storage panes.
 - Edit a Kitchen pane's name and description inline — a pencil opens the editor,
   Enter saves, and Escape cancels without saving.
+- A Staples Tracker pane in the Kitchen: drag in the foods you always want on
+  hand, see the ones you are out of turn red, and send those to the Shopping
+  List with one button.
 - Seed a new account with the default storage panes on its first sign-in.
 - =just login-demo= runs the app against a local identity provider for trying
   the signed-in experience.

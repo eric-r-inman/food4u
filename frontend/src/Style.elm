@@ -4,6 +4,7 @@ module Style exposing
     , chipBase
     , foodChipStyle
     , searchHighlightStyle
+    , stapleMissingStyle
     , styles
     )
 
@@ -133,4 +134,18 @@ searchHighlightStyle =
             , ( "border", "2px solid oklch(0.7 0.16 90)" )
             , ( "font-weight", "600" )
             , ( "color", "oklch(0.3 0.05 80)" )
+            ]
+
+
+{-| A staple that is not on hand in any kitchen pane, shown red in the
+Staples Tracker so a glance says what still needs buying.
+-}
+stapleMissingStyle : List (Attribute msg)
+stapleMissingStyle =
+    chipBase
+        ++ styles
+            [ ( "background", "oklch(0.94 0.05 25)" )
+            , ( "border", "2px solid oklch(0.62 0.18 25)" )
+            , ( "font-weight", "600" )
+            , ( "color", "oklch(0.48 0.17 25)" )
             ]

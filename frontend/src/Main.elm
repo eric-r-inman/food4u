@@ -23,7 +23,7 @@ it to a JSON file.
 import Browser
 import Browser.Dom as Dom
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName)
+import Data exposing (Card, Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -97,7 +97,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotModel (Ok data) ->
-            ( { model | data = Just data, derived = derive data, error = Nothing }, Cmd.none )
+            let
+                withTracker =
+                    ensureStaplesTracker data
+            in
+            ( { model | data = Just withTracker, derived = derive withTracker, error = Nothing }, Cmd.none )
 
         GotModel (Err _) ->
             ( { model | error = Just "Failed to load food data." }, Cmd.none )
@@ -205,6 +209,9 @@ update msg model =
 
         AddRecipeToCart rid ->
             addRecipeToCart rid model
+
+        AddStaplesToCart ->
+            addStaplesToCart model
 
         OpenRecipe rid ->
             case Maybe.andThen (\data -> List.head (List.filter (\r -> r.id == rid) data.recipes)) model.data of
@@ -637,6 +644,64 @@ addRecipeToCart rid model =
             ( model, Cmd.none )
 
 
+{-| Send every staple that is not already on hand or on the list — the red
+ones in the tracker — to the Shopping List.
+-}
+addStaplesToCart : Model -> ( Model, Cmd Msg )
+addStaplesToCart model =
+    case model.data of
+        Just data ->
+            let
+                stocked =
+                    inStockNames data
+
+                toAdd =
+                    data.staples
+                        |> List.filter (\c -> c.name == staplesTrackerName)
+                        |> List.concatMap .items
+                        |> List.filter (\i -> not (Set.member (String.toLower i.name) stocked))
+            in
+            case cartCardId data of
+                Just cid ->
+                    let
+                        ( newData, newSeq ) =
+                            List.foldl
+                                (\item ( d, s ) ->
+                                    ( pushItemTo (StoragePane cid) (Item (nextId s) item.name item.na) d
+                                    , s + 1
+                                    )
+                                )
+                                ( data, model.seq )
+                                toAdd
+                    in
+                    ( { model | data = Just newData, derived = derive newData, seq = newSeq }, saveModel newData )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        Nothing ->
+            ( model, Cmd.none )
+
+
+{-| Guarantee the permanent Staples Tracker pane exists, creating it empty
+when a loaded model has none yet. It is a storage card treated specially by
+name, so once present it drags, persists, and renders like any pane.
+-}
+ensureStaplesTracker : Data -> Data
+ensureStaplesTracker data =
+    if List.any (\c -> c.name == staplesTrackerName) data.staples then
+        data
+
+    else
+        { data
+            | staples =
+                -- The tracker renders from its own CSS class, not these
+                -- cosmetic Card fields, so meta/rail/line/note stay empty.
+                data.staples
+                    ++ [ Card staplesTrackerId staplesTrackerName "" "" "" "" [] ]
+        }
+
+
 {-| The name and sodium flag of the dragged food, wherever it came from.
 -}
 draggedNameNa : Drag -> Data -> Maybe ( String, Bool )
@@ -659,10 +724,13 @@ sequence.
 performDrop : Drag -> Loc -> Int -> Data -> ( Data, Int )
 performDrop drag target seq data =
     let
-        targetIsList =
+        -- The Shopping List and the Staples Tracker collect references:
+        -- dropping into either copies, so it never depletes the pyramid or
+        -- kitchen pane the food came from.
+        targetCollects =
             case target of
                 StoragePane cid ->
-                    Just cid == cartCardId data
+                    Just cid == cartCardId data || cid == staplesTrackerId
 
                 _ ->
                     False
@@ -681,9 +749,7 @@ performDrop drag target seq data =
                     True
 
                 _ ->
-                    -- Dropping into the Shopping List always copies, so it
-                    -- never depletes the pyramid or kitchen it came from.
-                    targetIsList
+                    targetCollects
     in
     case ( target, draggedNameNa drag data ) of
         ( PyramidGroup _, _ ) ->

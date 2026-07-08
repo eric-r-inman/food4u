@@ -14,6 +14,7 @@ module Ui exposing
     , recipeDeleteButton
     , recipeDropZone
     , removeButton
+    , stapleCartButton
     , viewAdder
     , viewItem
     , viewSearchField
@@ -33,7 +34,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
 import Msg exposing (Msg(..))
-import Style exposing (categoryChipBg, foodChipStyle, searchHighlightStyle, styles)
+import Style exposing (categoryChipBg, foodChipStyle, searchHighlightStyle, stapleMissingStyle, styles)
 import Types exposing (AddTarget)
 
 
@@ -432,10 +433,11 @@ recipeDropZone gid =
 
 {-| A single storage-pane item chip, tinted by its pyramid category and
 highlighted when it matches the current search. Shared by the Kitchen
-panes and the Shopping List sections.
+panes and the Shopping List sections. A `missing` staple (tracked but not
+on hand) overrides the tint with the red missing style.
 -}
-viewItem : String -> Dict String String -> Loc -> Item -> Html Msg
-viewItem search nameToCat loc item =
+viewItem : Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
+viewItem missing search nameToCat loc item =
     let
         bg =
             Dict.get (String.toLower item.name) nameToCat
@@ -443,7 +445,10 @@ viewItem search nameToCat loc item =
                 |> Maybe.withDefault "oklch(1 0 0)"
 
         chip =
-            if search /= "" && String.contains search (String.toLower item.name) then
+            if missing then
+                stapleMissingStyle
+
+            else if search /= "" && String.contains search (String.toLower item.name) then
                 searchHighlightStyle
 
             else
@@ -453,3 +458,18 @@ viewItem search nameToCat loc item =
         [ span [] [ text item.name ]
         , removeButton (RemoveFoodMsg loc item.id)
         ]
+
+
+{-| The Staples Tracker's cart button: sends every missing (red) staple
+to the Shopping List. It lives in the tracker's collapse-toggle header, so
+its click must not propagate up and toggle the pane.
+-}
+stapleCartButton : Msg -> Html Msg
+stapleCartButton msg =
+    button
+        [ type_ "button"
+        , class "staple-cart-btn"
+        , title "Add missing staples to the Shopping List"
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
+        [ text "🛒" ]

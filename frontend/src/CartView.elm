@@ -105,5 +105,5 @@ viewCartSection nameToCat loc ( dept, items ) =
             )
             [ text dept ]
         , div (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ) ])
-            (List.map (viewItem "" nameToCat loc) items)
+            (List.map (viewItem False "" nameToCat loc) items)
         ]

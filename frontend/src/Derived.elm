@@ -13,7 +13,7 @@ model (see Main's `Derived` record) so the views consult a precomputed
 result rather than rescanning every food and storage item on each render.
 -}
 
-import Data exposing (Data, Item, Recipe, shoppingCartName)
+import Data exposing (Data, Item, Recipe, shoppingCartName, staplesTrackerName)
 import Dict exposing (Dict)
 import Set exposing (Set)
 
@@ -51,23 +51,28 @@ itemRank nameToCat ranks item =
         |> Maybe.withDefault 100000
 
 
-{-| Lowercased names of every food currently stocked in a storage pane.
+{-| Lowercased names of every food stocked in a storage pane or already
+on the Shopping List. The Staples Tracker is excluded — it is a wishlist
+of foods to keep on hand, not stock — so a tracked staple still counts as
+something to buy.
 -}
 inStockNames : Data -> Set String
 inStockNames data =
     data.staples
+        |> List.filter (\c -> c.name /= staplesTrackerName)
         |> List.concatMap .items
         |> List.map (\i -> String.toLower i.name)
         |> Set.fromList
 
 
-{-| Lowercased names stocked in a real kitchen pane — excluding the
-Shopping List, which is a to-buy list rather than something on hand.
+{-| Lowercased names on hand in a real kitchen pane — excluding the
+Shopping List (a to-buy list) and the Staples Tracker (a wishlist),
+neither of which is something you actually have.
 -}
 stockedExcludingCart : Data -> Set String
 stockedExcludingCart data =
     data.staples
-        |> List.filter (\c -> c.name /= shoppingCartName)
+        |> List.filter (\c -> c.name /= shoppingCartName && c.name /= staplesTrackerName)
         |> List.concatMap .items
         |> List.map (\i -> String.toLower i.name)
         |> Set.fromList

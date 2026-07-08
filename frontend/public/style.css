@@ -27,6 +27,10 @@
      all sit on the pane's coloured rail. */
   --pane-btn-font: "IBM Plex Mono", monospace;
   --pane-fg: #fff;
+  --pane-rail-line: rgba(255, 255, 255, 0.5);
+
+  /* The subtle border shared by the app's card frames. */
+  --card-border: oklch(0.9 0.012 86);
 }
 
 * {
@@ -326,7 +330,7 @@ button {
 .pane-name-input,
 .pane-meta-input {
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid var(--pane-rail-line);
   background: transparent;
   outline: none;
   color: var(--pane-fg);
@@ -345,6 +349,75 @@ button {
 .pane-name-input::placeholder,
 .pane-meta-input::placeholder {
   color: rgba(255, 255, 255, 0.6);
+}
+
+/* The Staples Tracker: a permanent card at the top of the Kitchen holding
+   the foods to always keep on hand.  Its card frame mirrors the inline
+   cardStyle the other panes use. */
+.staples-tracker {
+  background: oklch(0.99 0.006 86);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px -28px rgba(60, 45, 20, 0.35);
+  overflow: hidden;
+}
+
+.staples-tracker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 16px;
+  background: oklch(0.5 0.09 265);
+  color: var(--pane-fg);
+  cursor: pointer;
+  user-select: none;
+}
+
+.staples-tracker-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.staples-tracker-caret {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.staple-cart-btn {
+  font-size: 13px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--pane-rail-line);
+  background: rgba(255, 255, 255, 0.16);
+  line-height: 1.2;
+}
+
+.staples-tracker-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 15px;
+}
+
+.staples-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: oklch(0.5 0.03 265);
+}
+
+.staples-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-content: flex-start;
+  min-height: 20px;
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a

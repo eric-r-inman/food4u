@@ -21,6 +21,8 @@ module Data exposing
     , pyramidHasName
     , removeFood
     , shoppingCartName
+    , staplesTrackerId
+    , staplesTrackerName
     )
 
 {-| The food model's schema and its JSON serialization. The model is a
@@ -41,6 +43,24 @@ specially.
 shoppingCartName : String
 shoppingCartName =
     "Shopping List"
+
+
+{-| The reserved name of the Staples Tracker pane: a permanent kitchen
+pane holding the foods the user always wants on hand. Like the Shopping
+List it is a storage card treated specially, so several queries single it
+out by name.
+-}
+staplesTrackerName : String
+staplesTrackerName =
+    "Staples Tracker"
+
+
+{-| The fixed id of the Staples Tracker card, so the frontend can create
+it once when absent and always address the same pane.
+-}
+staplesTrackerId : String
+staplesTrackerId =
+    "staples-tracker"
 
 
 type alias Data =
