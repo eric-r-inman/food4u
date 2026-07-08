@@ -4,8 +4,12 @@ module Ui exposing
     , columnTitleBar
     , draggable
     , dropZone
+    , editingPaneDomId
     , notepadButton
+    , paneColorButton
+    , paneColorSwatch
     , paneDeleteButton
+    , paneDeleteConfirm
     , paneEditButton
     , paneMetaInput
     , paneNameInput
@@ -51,6 +55,15 @@ addInputId =
 pasteInputId : String
 pasteInputId =
     "food4u-paste-input"
+
+
+{-| The dom id the pane being edited carries, so a mousedown-outside test
+can tell whether a click landed within it (and thus should not close the
+editor).
+-}
+editingPaneDomId : String
+editingPaneDomId =
+    "pane-editing"
 
 
 {-| A big title row that toggles a whole column open/closed, in the
@@ -267,9 +280,8 @@ paneDeleteButton msg =
         [ text "✕" ]
 
 
-{-| Toggles a pane's edit mode, revealing the delete control and turning
-the header text into inputs. Like the delete control it lives inside the
-collapse-toggle header, so its click must not propagate.
+{-| Toggles a pane's edit mode. In view mode it is the only right-hand
+control; in edit mode it is replaced by the recolour and delete controls.
 -}
 paneEditButton : Msg -> Html Msg
 paneEditButton msg =
@@ -282,9 +294,61 @@ paneEditButton msg =
         [ text "✎" ]
 
 
+{-| The inline delete confirmation shown after the delete control is
+clicked: a prompt with a confirming Delete and a Cancel.
+-}
+paneDeleteConfirm : Msg -> Msg -> Html Msg
+paneDeleteConfirm confirmMsg cancelMsg =
+    span [ class "pane-delete-confirm" ]
+        [ span [ class "pane-delete-confirm-label" ] [ text "Delete pane?" ]
+        , button
+            [ type_ "button"
+            , class "pane-confirm-delete"
+            , stopPropagationOn "click" (Decode.succeed ( confirmMsg, True ))
+            ]
+            [ text "Delete" ]
+        , button
+            [ type_ "button"
+            , class "pane-confirm-cancel"
+            , stopPropagationOn "click" (Decode.succeed ( cancelMsg, True ))
+            ]
+            [ text "Cancel" ]
+        ]
+
+
+{-| Toggles the colour picker for the pane being edited. Sits in the
+collapse-toggle header, so its click must not propagate.
+-}
+paneColorButton : Msg -> Html Msg
+paneColorButton msg =
+    button
+        [ type_ "button"
+        , class "pane-edit-btn"
+        , title "Recolour this pane"
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
+        [ text "🎨" ]
+
+
+{-| A single colour choice in the pane colour picker: a swatch filled with
+the colour (necessarily an inline value), ringed when it is the current
+choice. Its click must not propagate to the header toggle.
+-}
+paneColorSwatch : Bool -> String -> Html Msg
+paneColorSwatch selected color =
+    button
+        [ type_ "button"
+        , classList [ ( "pane-swatch", True ), ( "pane-swatch-selected", selected ) ]
+        , title "Use this colour"
+        , style "background" color
+        , stopPropagationOn "click" (Decode.succeed ( SetPaneColor color, True ))
+        ]
+        []
+
+
 {-| The pane name as an editable field, shown in place of the title while
 the pane is in edit mode. Edits are buffered and written back only on
-commit; its click is stopped so editing does not collapse the pane.
+commit (Enter, handled globally while editing).
 -}
 paneNameInput : String -> Html Msg
 paneNameInput currentName =
@@ -294,33 +358,8 @@ paneNameInput currentName =
         , placeholder "Pane name"
         , type_ "text"
         , onInput EditPaneName
-        , paneEditKeys
-        , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
         ]
         []
-
-
-{-| The keys that close a pane editor: Enter commits the buffered edit,
-Escape discards it. Any other key fails the decoder, so it produces no
-message and normal typing is unaffected.
--}
-paneEditKeys : Attribute Msg
-paneEditKeys =
-    on "keydown"
-        (Decode.field "key" Decode.string
-            |> Decode.andThen
-                (\key ->
-                    case key of
-                        "Enter" ->
-                            Decode.succeed CommitPaneEdit
-
-                        "Escape" ->
-                            Decode.succeed CancelPaneEdit
-
-                        _ ->
-                            Decode.fail "ignored"
-                )
-        )
 
 
 {-| The pane description (its `meta` line) as an editable field, shown in
@@ -334,8 +373,6 @@ paneMetaInput currentMeta =
         , placeholder "Description"
         , type_ "text"
         , onInput EditPaneMeta
-        , paneEditKeys
-        , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
         ]
         []
 

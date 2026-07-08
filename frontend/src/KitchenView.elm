@@ -17,9 +17,9 @@ import Html.Lazy as Lazy
 import Model exposing (Indices, Model, PaneEdit, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
-import Style exposing (cardStyle, styles)
+import Style exposing (cardStyle, panePalette, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, paneDeleteButton, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
+import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, editingPaneDomId, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
 
 
 viewKitchenColumn : Model -> Data -> Html Msg
@@ -83,10 +83,9 @@ viewStaplesTracker toggled search derived card =
         loc =
             StoragePane card.id
 
-        -- Defaults open so its note and staples are visible; the caret
-        -- collapses it like any other pane.
+        -- Defaults collapsed like the other panes; the caret expands it.
         collapsed =
-            not (isOpen True ("pane:" ++ card.id) toggled)
+            not (isOpen False ("pane:" ++ card.id) toggled)
 
         missing item =
             not (Set.member (String.toLower item.name) derived.stockedNoCart)
@@ -159,18 +158,38 @@ viewPane toggled search nameToCat ranks edit card =
         -- Kitchen search force-expands any pane that contains a match.
         paneCollapsed =
             not (paneHasMatch || isOpen (card.name == shoppingCartName) ("pane:" ++ card.id) toggled)
-    in
-    div
-        -- The whole pane is a drop target, so items can be dropped even
-        -- when it is collapsed (only its header is showing).
-        (cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ] ++ dropZone stockLoc)
-        (div
-            (onClick (ToggleCategory ("pane:" ++ card.id))
-                :: styles [ ( "background", card.rail ), ( "color", "#fff" ), ( "padding", "13px 16px" ), ( "cursor", "pointer" ), ( "user-select", "none" ) ]
-            )
-            [ div (styles [ ( "display", "flex" ), ( "justify-content", "space-between" ), ( "align-items", "baseline" ), ( "gap", "10px" ) ])
-                [ div (styles [ ( "display", "flex" ), ( "align-items", "baseline" ), ( "gap", "8px" ) ])
-                    [ span (styles [ ( "font-size", "10px" ), ( "opacity", "0.8" ) ])
+
+        -- The buffered colour while editing previews live; otherwise the
+        -- pane's own colour.
+        rail =
+            edit |> Maybe.map .rail |> Maybe.withDefault card.rail
+
+        -- View mode shows the count and the edit control; editing shows the
+        -- recolour and delete controls, and the delete confirmation replaces
+        -- them once delete is clicked.
+        controls =
+            case edit of
+                Just e ->
+                    if e.confirmingDelete then
+                        [ paneDeleteConfirm (RemovePane card.id) CancelDeletePane ]
+
+                    else
+                        [ paneColorButton TogglePaneColorPicker
+                        , paneDeleteButton RequestDeletePane
+                        ]
+
+                Nothing ->
+                    [ div [ class "pane-item-count" ] [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
+                    , paneEditButton (StartEditPane card.id)
+                    ]
+
+        title =
+            case edit of
+                Just e ->
+                    [ paneNameInput e.name ]
+
+                Nothing ->
+                    [ span [ class "pane-caret" ]
                         [ text
                             (if paneCollapsed then
                                 "▶"
@@ -179,39 +198,73 @@ viewPane toggled search nameToCat ranks edit card =
                                 "▼"
                             )
                         ]
-                    , case edit of
-                        Just e ->
-                            paneNameInput e.name
-
-                        Nothing ->
-                            div [ class "pane-name" ] [ text card.name ]
+                    , div [ class "pane-name" ] [ text card.name ]
                     ]
-                , div [ class "pane-header-meta" ]
-                    (if editing then
-                        [ paneEditButton CommitPaneEdit
-                        , paneDeleteButton (RemovePane card.id)
-                        ]
 
-                     else
-                        [ div [ class "pane-item-count" ] [ text (String.fromInt (List.length card.items) ++ " ITEMS") ]
-                        , paneEditButton (StartEditPane card.id)
-                        ]
-                    )
-                ]
-            , case edit of
+        metaRow =
+            case edit of
                 Just e ->
                     paneMetaInput e.meta
 
                 Nothing ->
                     div [ class "pane-meta" ] [ text card.meta ]
-            ]
-            :: (if paneCollapsed then
+
+        swatches =
+            case edit of
+                Just e ->
+                    if e.colorOpen && not e.confirmingDelete then
+                        [ div [ class "pane-swatches" ]
+                            (List.map (\c -> paneColorSwatch (c == e.rail) c) panePalette)
+                        ]
+
+                    else
+                        []
+
+                Nothing ->
                     []
 
-                else
-                    [ Keyed.node "div"
-                        (styles [ ( "padding", "14px 15px" ), ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ), ( "min-height", "44px" ), ( "flex", "1" ) ])
-                        (List.map (\item -> ( item.id, viewItem False search nameToCat stockLoc item )) (sortItems card.items))
+        header =
+            div
+                (class "pane-head"
+                    :: classList [ ( "pane-head-editing", editing ) ]
+                    :: style "background" rail
+                    :: (if editing then
+                            []
+
+                        else
+                            [ onClick (ToggleCategory ("pane:" ++ card.id)) ]
+                       )
+                )
+                (div [ class "pane-head-row" ]
+                    [ div [ class "pane-head-title" ] title
+                    , div [ class "pane-header-meta" ] controls
                     ]
+                    :: metaRow
+                    :: swatches
+                )
+
+        body =
+            if paneCollapsed then
+                []
+
+            else
+                [ Keyed.node "div"
+                    (styles [ ( "padding", "14px 15px" ), ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ), ( "min-height", "44px" ), ( "flex", "1" ) ])
+                    (List.map (\item -> ( item.id, viewItem False search nameToCat stockLoc item )) (sortItems card.items))
+                ]
+    in
+    div
+        -- The whole pane is a drop target, so items can be dropped even
+        -- when it is collapsed (only its header is showing).  While it is
+        -- being edited it carries the id the click-outside test looks for.
+        (cardStyle
+            ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ]
+            ++ dropZone stockLoc
+            ++ (if editing then
+                    [ id editingPaneDomId ]
+
+                else
+                    []
                )
         )
+        (header :: body)

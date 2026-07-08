@@ -3,6 +3,7 @@ module Style exposing
     , categoryChipBg
     , chipBase
     , foodChipStyle
+    , panePalette
     , searchHighlightStyle
     , stapleMissingStyle
     , styles
@@ -20,6 +21,25 @@ import Html.Attributes exposing (style)
 styles : List ( String, String ) -> List (Attribute msg)
 styles =
     List.map (\( k, v ) -> style k v)
+
+
+{-| The header colours already used across the app's columns and panes —
+the only choices offered when recolouring a pane's title row, so a
+recoloured pane stays within the established palette.
+-}
+panePalette : List String
+panePalette =
+    [ "oklch(0.55 0.08 74)" -- Kitchen / Pantry
+    , "oklch(0.5 0.085 64)" -- Counter
+    , "oklch(0.5 0.11 45)" -- Spice Cupboard
+    , "oklch(0.52 0.1 42)" -- Shopping List column
+    , "oklch(0.5 0.09 150)" -- Shopping List pane
+    , "oklch(0.49 0.06 232)" -- Refrigerator
+    , "oklch(0.52 0.06 212)" -- Freezer
+    , "oklch(0.43 0.06 250)" -- Recipes
+    , "oklch(0.5 0.09 265)" -- Staples Tracker
+    , "oklch(0.5 0.08 300)" -- Apothecary
+    ]
 
 
 cardStyle : List (Attribute msg)

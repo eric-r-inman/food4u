@@ -18,5 +18,11 @@
 - =just login-demo= runs the app against a local identity provider for trying
   the signed-in experience.
 - Rename the app to Longevity Pantry (the code keeps the =food4u= name).
+- Recolour a Kitchen pane's header from the app's palette while editing it, and
+  delete a pane — with a confirmation — from the same editor.
 ** Fixes
+- The Staples Tracker now starts collapsed, and its shopping-cart button stands
+  out clearly against the header.
+- Editing a Kitchen pane no longer clips the controls on the right edge, and
+  clicking away from the pane closes the editor without saving.
 ** Breaking

@@ -25,6 +25,10 @@ type Msg
     | StartEditPane String
     | EditPaneName String
     | EditPaneMeta String
+    | TogglePaneColorPicker
+    | SetPaneColor String
+    | RequestDeletePane
+    | CancelDeletePane
     | CommitPaneEdit
     | CancelPaneEdit
     | AddRecipeToCart String

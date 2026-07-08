@@ -22,6 +22,7 @@ it to a JSON file.
 
 import Browser
 import Browser.Dom as Dom
+import Browser.Events
 import CartView exposing (viewCartColumn)
 import Data exposing (Card, Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
@@ -43,7 +44,7 @@ import Shopping exposing (cartCardId, shoppingListText)
 import Style exposing (styles)
 import Task
 import Types exposing (AddTarget(..), Me, RecipeFilter(..))
-import Ui exposing (addInputId, pasteInputId)
+import Ui exposing (addInputId, editingPaneDomId, pasteInputId)
 
 
 main : Program () Model Msg
@@ -86,8 +87,75 @@ init _ =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    -- While a pane is being edited: a mousedown outside it closes the editor
+    -- without saving, and Enter/Escape commit/cancel from anywhere (so a
+    -- colour-only change need not return focus to a text field first).
+    case model.editingPane of
+        Just _ ->
+            Sub.batch
+                [ Browser.Events.onMouseDown (clickOutside editingPaneDomId CancelPaneEdit)
+                , Browser.Events.onKeyDown paneEditKey
+                ]
+
+        Nothing ->
+            Sub.none
+
+
+{-| Enter commits the pane edit, Escape cancels it; any other key produces
+no message.
+-}
+paneEditKey : Decode.Decoder Msg
+paneEditKey =
+    Decode.field "key" Decode.string
+        |> Decode.andThen
+            (\key ->
+                case key of
+                    "Enter" ->
+                        Decode.succeed CommitPaneEdit
+
+                    "Escape" ->
+                        Decode.succeed CancelPaneEdit
+
+                    _ ->
+                        Decode.fail "ignored"
+            )
+
+
+{-| Fire `msg` when a click's target is not the element with `domId` nor a
+descendant of it — i.e. a click outside that element.
+-}
+clickOutside : String -> Msg -> Decode.Decoder Msg
+clickOutside domId msg =
+    Decode.field "target" (isInside domId)
+        |> Decode.andThen
+            (\inside ->
+                if inside then
+                    Decode.fail "click was inside"
+
+                else
+                    Decode.succeed msg
+            )
+
+
+{-| Whether the decoded node, or any of its ancestors, has the given id.
+Walks up `parentNode` until a match is found or the root is reached.
+-}
+isInside : String -> Decode.Decoder Bool
+isInside domId =
+    Decode.oneOf
+        [ Decode.field "id" Decode.string
+            |> Decode.andThen
+                (\id ->
+                    if id == domId then
+                        Decode.succeed True
+
+                    else
+                        Decode.field "parentNode" (Decode.lazy (\_ -> isInside domId))
+                )
+        , Decode.field "parentNode" (Decode.lazy (\_ -> isInside domId))
+        , Decode.succeed False
+        ]
 
 
 
@@ -164,13 +232,13 @@ update msg model =
         RemovePane pid ->
             withData model
                 (\data ->
-                    persistData model
+                    persistData { model | editingPane = Nothing }
                         { data | staples = List.filter (\c -> c.id /= pid) data.staples }
                 )
 
         StartEditPane pid ->
-            -- Seed the edit buffer from the pane's current name and
-            -- description; nothing is written back until it is committed.
+            -- Seed the edit buffer from the pane's current name, description,
+            -- and colour; nothing is written back until it is committed.
             withData model
                 (\data ->
                     ( { model
@@ -178,7 +246,16 @@ update msg model =
                             data.staples
                                 |> List.filter (\c -> c.id == pid)
                                 |> List.head
-                                |> Maybe.map (\c -> { id = pid, name = c.name, meta = c.meta })
+                                |> Maybe.map
+                                    (\c ->
+                                        { id = pid
+                                        , name = c.name
+                                        , meta = c.meta
+                                        , rail = c.rail
+                                        , colorOpen = False
+                                        , confirmingDelete = False
+                                        }
+                                    )
                       }
                     , Cmd.none
                     )
@@ -194,12 +271,32 @@ update msg model =
             , Cmd.none
             )
 
+        TogglePaneColorPicker ->
+            ( { model | editingPane = Maybe.map (\e -> { e | colorOpen = not e.colorOpen }) model.editingPane }
+            , Cmd.none
+            )
+
+        SetPaneColor color ->
+            ( { model | editingPane = Maybe.map (\e -> { e | rail = color }) model.editingPane }
+            , Cmd.none
+            )
+
+        RequestDeletePane ->
+            ( { model | editingPane = Maybe.map (\e -> { e | confirmingDelete = True }) model.editingPane }
+            , Cmd.none
+            )
+
+        CancelDeletePane ->
+            ( { model | editingPane = Maybe.map (\e -> { e | confirmingDelete = False }) model.editingPane }
+            , Cmd.none
+            )
+
         CommitPaneEdit ->
             -- Write the buffered edit back to the pane and save.
             case ( model.editingPane, model.data ) of
                 ( Just edit, Just data ) ->
                     persistData { model | editingPane = Nothing }
-                        (mapCard edit.id (\c -> { c | name = edit.name, meta = edit.meta }) data)
+                        (mapCard edit.id (\c -> { c | name = edit.name, meta = edit.meta, rail = edit.rail }) data)
 
                 _ ->
                     ( { model | editingPane = Nothing }, Cmd.none )

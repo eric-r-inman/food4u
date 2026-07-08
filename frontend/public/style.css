@@ -28,6 +28,15 @@
   --pane-btn-font: "IBM Plex Mono", monospace;
   --pane-fg: #fff;
   --pane-rail-line: rgba(255, 255, 255, 0.5);
+  --pane-rail-fill: rgba(255, 255, 255, 0.14);
+
+  /* The delete-confirmation button on a pane header. */
+  --pane-confirm-delete-border: oklch(0.7 0.15 25);
+  --pane-confirm-delete-bg: oklch(0.62 0.2 25);
+
+  /* The near-solid white pill of the Staples Tracker cart button. */
+  --staple-cart-border: rgba(255, 255, 255, 0.9);
+  --staple-cart-bg: rgba(255, 255, 255, 0.92);
 
   /* The subtle border shared by the app's card frames. */
   --card-border: oklch(0.9 0.012 86);
@@ -273,12 +282,53 @@ button {
   text-decoration: none;
 }
 
+/* A Kitchen pane header: its colour is set inline (per pane); this owns
+   the padding and the white text on that rail. */
+.pane-head {
+  padding: 13px 16px;
+  color: var(--pane-fg);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* While editing, the header no longer toggles collapse, so it is not a
+   pointer target. */
+.pane-head-editing {
+  cursor: default;
+}
+
+/* The top row of a pane header: the title on the left, the controls on the
+   right.  The title flexes and may shrink to nothing so the controls are
+   never pushed past the edge and clipped. */
+.pane-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pane-head-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.pane-caret {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
 /* The right-hand cluster of a Kitchen pane header: the item count and the
-   delete control, sitting together at the end of the header row. */
+   edit/recolour/delete controls.  Fixed-width so it stays fully visible as
+   the title shrinks. */
 .pane-header-meta {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 0 0 auto;
 }
 
 /* The delete control on a Kitchen pane header.  It sits on the pane's
@@ -293,7 +343,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--pane-rail-fill);
   color: var(--pane-fg);
   line-height: 1.2;
 }
@@ -355,6 +405,66 @@ button {
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* The pane colour picker: a wrapping row of swatches under the header,
+   each filled with its colour inline and ringed when it is the current
+   choice. */
+.pane-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pane-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1px solid var(--pane-rail-line);
+  cursor: pointer;
+  padding: 0;
+}
+
+.pane-swatch-selected {
+  outline: 2px solid var(--pane-fg);
+  outline-offset: 1px;
+}
+
+/* The inline delete confirmation in a pane header. */
+.pane-delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pane-delete-confirm-label {
+  font-family: var(--pane-btn-font);
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+.pane-confirm-delete,
+.pane-confirm-cancel {
+  font-family: var(--pane-btn-font);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.pane-confirm-delete {
+  border: 1px solid var(--pane-confirm-delete-border);
+  background: var(--pane-confirm-delete-bg);
+  color: var(--pane-fg);
+}
+
+.pane-confirm-cancel {
+  border: 1px solid var(--pane-rail-line);
+  background: var(--pane-rail-fill);
+  color: var(--pane-fg);
+}
+
 /* The Staples Tracker: a permanent card at the top of the Kitchen holding
    the foods to always keep on hand.  Its card frame mirrors the inline
    cardStyle the other panes use. */
@@ -392,13 +502,15 @@ button {
   opacity: 0.8;
 }
 
+/* A near-solid white pill so the shopping-cart icon reads clearly against
+   the tracker's coloured header rather than fading into it. */
 .staple-cart-btn {
-  font-size: 13px;
-  padding: 3px 9px;
+  font-size: 15px;
+  padding: 3px 10px;
   border-radius: 6px;
   cursor: pointer;
-  border: 1px solid var(--pane-rail-line);
-  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--staple-cart-border);
+  background: var(--staple-cart-bg);
   line-height: 1.2;
 }
 

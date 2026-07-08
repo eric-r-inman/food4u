@@ -19,14 +19,18 @@ type alias Drag =
     }
 
 
-{-| A buffered edit of one storage pane's name and description. `id`
-identifies the pane; `name` and `meta` are the working values shown in the
-header fields until the edit is committed or cancelled.
+{-| A buffered edit of one storage pane. `id` identifies the pane; `name`,
+`meta`, and `rail` (the header colour) are the working values shown until
+the edit is committed or cancelled. `colorOpen` tracks the colour picker,
+and `confirmingDelete` the pending delete confirmation.
 -}
 type alias PaneEdit =
     { id : String
     , name : String
     , meta : String
+    , rail : String
+    , colorOpen : Bool
+    , confirmingDelete : Bool
     }
 
 
