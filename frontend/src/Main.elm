@@ -192,6 +192,18 @@ update msg model =
                     )
                 )
 
+        CommitPaneEdit ->
+            -- Leave edit mode and persist; the edits are already live in
+            -- the model, so this just saves them (as a blur would).
+            ( { model | editingPane = Nothing }
+            , case model.data of
+                Just data ->
+                    saveModel data
+
+                Nothing ->
+                    Cmd.none
+            )
+
         AddRecipeToCart rid ->
             addRecipeToCart rid model
 

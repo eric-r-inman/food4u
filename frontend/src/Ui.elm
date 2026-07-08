@@ -294,9 +294,29 @@ paneNameInput paneId currentName =
         , type_ "text"
         , onInput (EditPaneName paneId)
         , onBlur PersistNow
+        , onEnter CommitPaneEdit
         , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
         ]
         []
+
+
+{-| Fire `msg` when Enter is pressed and ignore every other key, so a pane
+field's Enter closes the editor (the decoder failing on other keys means
+no message is produced for them).
+-}
+onEnter : Msg -> Attribute Msg
+onEnter msg =
+    on "keydown"
+        (Decode.field "key" Decode.string
+            |> Decode.andThen
+                (\key ->
+                    if key == "Enter" then
+                        Decode.succeed msg
+
+                    else
+                        Decode.fail "ignored"
+                )
+        )
 
 
 {-| The pane description (its `meta` line) as an editable field, shown in
@@ -311,6 +331,7 @@ paneMetaInput paneId currentMeta =
         , type_ "text"
         , onInput (EditPaneMeta paneId)
         , onBlur PersistNow
+        , onEnter CommitPaneEdit
         , stopPropagationOn "click" (Decode.succeed ( NoOp, True ))
         ]
         []

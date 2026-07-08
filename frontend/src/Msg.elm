@@ -25,6 +25,7 @@ type Msg
     | ToggleEditPane String
     | EditPaneName String String
     | EditPaneMeta String String
+    | CommitPaneEdit
     | AddRecipeToCart String
     | EditRecipeName String String
     | EditRecipeInstructions String String
