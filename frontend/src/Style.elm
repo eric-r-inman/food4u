@@ -7,6 +7,7 @@ module Style exposing
     , searchHighlightStyle
     , stapleMissingStyle
     , styles
+    , tierChipBg
     )
 
 {-| Presentational helpers shared across the columns: the inline-style
@@ -85,6 +86,29 @@ foodChipStyle bg inStock =
             , ( "font-weight", "500" )
             , ( "color", "oklch(0.32 0.012 70)" )
             ]
+
+
+{-| A light badge tint in the hue of the given rail colour (an
+`oklch(l c h)` string), so a set of chips can share one colour derived from
+a header. Falls back to white if the colour does not parse.
+-}
+tierChipBg : String -> String
+tierChipBg rail =
+    oklchHue rail
+        |> Maybe.map (\hue -> "oklch(0.93 0.055 " ++ hue ++ ")")
+        |> Maybe.withDefault "oklch(1 0 0)"
+
+
+{-| The hue component of an `oklch(l c h)` colour string.
+-}
+oklchHue : String -> Maybe String
+oklchHue color =
+    color
+        |> String.replace "oklch(" ""
+        |> String.replace ")" ""
+        |> String.words
+        |> List.drop 2
+        |> List.head
 
 
 {-| Very light background tint for each pyramid category, so foods read

@@ -15,7 +15,7 @@ import Html.Lazy as Lazy
 import Model exposing (Model, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
-import Style exposing (cardStyle, categoryChipBg, foodChipStyle, searchHighlightStyle, styles)
+import Style exposing (cardStyle, foodChipStyle, searchHighlightStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..))
 import Ui exposing (collapsedColumnBar, columnTitleBar, notepadButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
 
@@ -117,8 +117,10 @@ viewCategory toggled adding addValue inStock search tier group =
         isCollapsed =
             not (categoryHasMatch || isOpen False group.id toggled)
 
+        -- Every food in a tier shares the tier's badge tint, regardless of
+        -- its sub-category.
         bg =
-            categoryChipBg group.label
+            tierChipBg tier.rail
     in
     div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "8px" ) ] ++ recipeDropZone group.id)
         (div
