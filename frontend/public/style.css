@@ -47,6 +47,16 @@
   /* The recipe category highlighted as a drag-move target. */
   --recipe-drop-bg: oklch(0.96 0.03 250);
   --recipe-drop-outline: oklch(0.62 0.1 250);
+
+  /* The AI recipe assistant's accent, and its muted accent text. */
+  --ai-accent: oklch(0.52 0.14 285);
+  --ai-accent-border: oklch(0.42 0.13 285);
+  --ai-muted: oklch(0.45 0.08 285);
+
+  /* Shared surface, input, and muted-text tokens used across form controls. */
+  --surface: #fff;
+  --input-border: oklch(0.86 0.012 86);
+  --muted-text: oklch(0.45 0.02 60);
 }
 
 * {
@@ -544,6 +554,228 @@ button {
   gap: 7px;
   align-content: flex-start;
   min-height: 20px;
+}
+
+/* The "or" separators and the "AI" button in a recipe category's add row. */
+.recipe-or {
+  font-size: 12.5px;
+  color: oklch(0.55 0.012 70);
+}
+
+.recipe-ai-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--ai-accent-border);
+  border-radius: 6px;
+  background: var(--ai-accent);
+  color: var(--pane-fg);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The AI recipe assistant panel, shown in a recipe category. */
+.ai-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid oklch(0.86 0.03 285);
+  border-radius: 9px;
+  background: oklch(0.98 0.01 285);
+}
+
+.ai-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: oklch(0.4 0.1 285);
+}
+
+.ai-close {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: oklch(0.55 0.02 70);
+  line-height: 1;
+  padding: 2px 4px;
+}
+
+.ai-note,
+.ai-disclaimer {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: oklch(0.48 0.02 70);
+}
+
+.ai-disclaimer {
+  color: oklch(0.5 0.12 60);
+}
+
+.ai-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-label {
+  font-family: var(--pane-btn-font);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: oklch(0.5 0.03 285);
+}
+
+.ai-input {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--input-border);
+  border-radius: 7px;
+  font-size: 13px;
+  color: oklch(0.3 0.012 70);
+  outline: none;
+}
+
+.ai-providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-provider {
+  padding: 5px 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 7px;
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-text);
+  cursor: pointer;
+}
+
+.ai-provider-selected {
+  border-color: var(--ai-accent-border);
+  background: var(--ai-accent);
+  color: var(--pane-fg);
+}
+
+.ai-link {
+  font-size: 11.5px;
+  color: oklch(0.45 0.12 285);
+}
+
+.ai-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: oklch(0.35 0.015 70);
+  cursor: pointer;
+}
+
+.ai-more-toggle {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ai-muted);
+  padding: 0;
+}
+
+.ai-more {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ai-btn-primary {
+  border: 1px solid var(--ai-accent-border);
+  background: var(--ai-accent);
+  color: var(--pane-fg);
+}
+
+.ai-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ai-btn-secondary {
+  border: 1px solid var(--input-border);
+  background: var(--surface);
+  color: var(--muted-text);
+}
+
+.ai-loading {
+  padding: 12px 0;
+  font-size: 13px;
+  color: var(--ai-muted);
+}
+
+.ai-error {
+  margin: 0;
+  font-size: 12.5px;
+  color: oklch(0.5 0.16 25);
+}
+
+.ai-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.ai-preview-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: oklch(0.3 0.015 70);
+}
+
+.ai-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-chip {
+  padding: 3px 8px;
+  border: 1px solid oklch(0.88 0.012 86);
+  border-radius: 6px;
+  background: oklch(0.98 0.006 86);
+  font-size: 12.5px;
+  color: oklch(0.32 0.012 70);
+}
+
+.ai-instructions {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: oklch(0.35 0.012 70);
+  white-space: pre-wrap;
 }
 
 /* A recipe category the dragged recipe is hovering over, marking where it

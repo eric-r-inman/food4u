@@ -1,4 +1,4 @@
-module Model exposing (Drag, Indices, Model, PaneEdit, derive, emptyDerived, isOpen)
+module Model exposing (AiState, Drag, Indices, Model, PaneEdit, derive, emptyDerived, initialAi, isOpen)
 
 {-| The application model, the in-progress drag, and the indices cached on
 the model. The indices are recomputed once whenever the data changes (see
@@ -6,6 +6,7 @@ the model. The indices are recomputed once whenever the data changes (see
 every food and storage item on each render.
 -}
 
+import Ai
 import Data exposing (Data, Loc)
 import Derived
 import Dict exposing (Dict)
@@ -16,6 +17,41 @@ import Types exposing (AddTarget, Me, RecipeFilter)
 type alias Drag =
     { from : Loc
     , foodId : String
+    }
+
+
+{-| The AI recipe assistant's state. `settings` and `prefs` persist across
+sessions; the rest is the transient state of the panel: which category it
+is open for, whether the settings view is showing, the current form fields,
+and where generation stands.
+-}
+type alias AiState =
+    { settings : Ai.Settings
+    , prefs : Ai.Prefs
+    , open : Maybe String
+    , configuring : Bool
+    , request : String
+    , useKitchen : Bool
+    , moreOptions : Bool
+    , addMissing : Bool
+    , status : Ai.Status
+    }
+
+
+{-| The initial assistant state, seeded with the settings and preferences
+restored from the browser.
+-}
+initialAi : Ai.Settings -> Ai.Prefs -> AiState
+initialAi settings prefs =
+    { settings = settings
+    , prefs = prefs
+    , open = Nothing
+    , configuring = False
+    , request = ""
+    , useKitchen = False
+    , moreOptions = False
+    , addMissing = True
+    , status = Ai.Idle
     }
 
 
@@ -72,6 +108,10 @@ type alias Model =
     -- The signed-in identity from `/me`, once fetched.  Drives the
     -- sign-in / sign-out control in the toolbar.
     , me : Maybe Me
+
+    -- The AI recipe assistant: the user's provider settings and remembered
+    -- preferences, plus the transient state of an open generation panel.
+    , ai : AiState
 
     -- Indices derived from `data`, recomputed only when the data changes
     -- (see `derive`), so the views consult them instead of rescanning

@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 {-| Longevity Pantry — longevity staples, kitchen storage, and recipes.
 
@@ -20,6 +20,7 @@ it to a JSON file.
 
 -}
 
+import Ai
 import Browser
 import Browser.Dom as Dom
 import Browser.Events
@@ -33,8 +34,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput)
 import Http
 import Json.Decode as Decode
+import Json.Encode as Encode
 import KitchenView exposing (viewKitchenColumn)
-import Model exposing (Drag, Model, derive, emptyDerived, isOpen)
+import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen)
 import Msg exposing (Msg(..))
 import PyramidView exposing (viewPyramidColumn)
 import RecipeParser exposing (parsePastedRecipe)
@@ -47,7 +49,14 @@ import Types exposing (AddTarget(..), Me, RecipeFilter(..))
 import Ui exposing (addInputId, editingPaneDomId, pasteInputId)
 
 
-main : Program () Model Msg
+{-| Persist the AI settings and preferences to the browser's localStorage.
+The value is the object `Ai.encodeStore` produces; the API key it carries
+is the user's own and stays on their machine.
+-}
+port persistAi : Encode.Value -> Cmd msg
+
+
+main : Program Decode.Value Model Msg
 main =
     Browser.element
         { init = init
@@ -57,8 +66,12 @@ main =
         }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+init : Decode.Value -> ( Model, Cmd Msg )
+init flags =
+    let
+        ( settings, prefs ) =
+            Ai.decodeStore flags
+    in
     ( { data = Nothing
       , error = Nothing
       , adding = Nothing
@@ -80,6 +93,7 @@ init _ =
       , pasteValue = ""
       , me = Nothing
       , editingPane = Nothing
+      , ai = initialAi settings prefs
       , derived = emptyDerived
       }
     , Cmd.batch [ fetchModel, fetchMe ]
@@ -523,6 +537,92 @@ update msg model =
                 _ ->
                     ( { model | recipeDrag = Nothing }, Cmd.none )
 
+        OpenAi category ->
+            let
+                ai =
+                    model.ai
+            in
+            ( { model
+                | ai =
+                    { ai
+                        | open = Just category
+                        , configuring = ai.settings.apiKey == ""
+                        , status = Ai.Idle
+                        , request = ""
+                    }
+              }
+            , Cmd.none
+            )
+
+        CloseAi ->
+            ( mapAi (\ai -> { ai | open = Nothing }) model, Cmd.none )
+
+        AiToggleConfigure ->
+            ( mapAi (\ai -> { ai | configuring = not ai.configuring }) model, Cmd.none )
+
+        AiSetProvider provider ->
+            persistedAi (\s -> { s | provider = provider, model = Ai.defaultModel provider }) identity model
+
+        AiSetKey key ->
+            persistedAi (\s -> { s | apiKey = key }) identity model
+
+        AiSetModel modelName ->
+            persistedAi (\s -> { s | model = modelName }) identity model
+
+        AiSetInclude value ->
+            persistedAi identity (\p -> { p | include = value }) model
+
+        AiSetExclude value ->
+            persistedAi identity (\p -> { p | exclude = value }) model
+
+        AiSetAllergies value ->
+            persistedAi identity (\p -> { p | allergies = value }) model
+
+        AiSetRequest value ->
+            ( mapAi (\ai -> { ai | request = value }) model, Cmd.none )
+
+        AiToggleKitchen ->
+            ( mapAi (\ai -> { ai | useKitchen = not ai.useKitchen }) model, Cmd.none )
+
+        AiToggleMoreOptions ->
+            ( mapAi (\ai -> { ai | moreOptions = not ai.moreOptions }) model, Cmd.none )
+
+        AiToggleAddMissing ->
+            ( mapAi (\ai -> { ai | addMissing = not ai.addMissing }) model, Cmd.none )
+
+        AiGenerate ->
+            case ( model.ai.open, model.data ) of
+                ( Just category, Just _ ) ->
+                    ( mapAi (\ai -> { ai | status = Ai.Loading }) model
+                    , Ai.generate model.ai.settings
+                        { category = category
+                        , request = model.ai.request
+                        , prefs = model.ai.prefs
+                        , kitchen =
+                            if model.ai.useKitchen then
+                                Set.toList model.derived.stockedNoCart
+
+                            else
+                                []
+                        }
+                        GotAiRecipe
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        GotAiRecipe (Ok recipe) ->
+            ( mapAi (\ai -> { ai | status = Ai.Ready recipe }) model, Cmd.none )
+
+        GotAiRecipe (Err error) ->
+            ( mapAi (\ai -> { ai | status = Ai.Failed (Ai.httpErrorMessage error) }) model, Cmd.none )
+
+        AiAccept ->
+            acceptAiRecipe model
+
+        AiBackToForm ->
+            ( mapAi (\ai -> { ai | status = Ai.Idle }) model, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
 
@@ -955,6 +1055,125 @@ performDrop drag target seq data =
 
                     Nothing ->
                         ( data, seq )
+
+
+
+-- AI ASSISTANT
+
+
+{-| Apply a change to the AI substate.
+-}
+mapAi : (Model.AiState -> Model.AiState) -> Model -> Model
+mapAi fn model =
+    { model | ai = fn model.ai }
+
+
+{-| Change the persisted AI settings and/or preferences, and write the new
+values back to the browser.
+-}
+persistedAi : (Ai.Settings -> Ai.Settings) -> (Ai.Prefs -> Ai.Prefs) -> Model -> ( Model, Cmd Msg )
+persistedAi onSettings onPrefs model =
+    let
+        ai =
+            model.ai
+
+        settings =
+            onSettings ai.settings
+
+        prefs =
+            onPrefs ai.prefs
+    in
+    ( { model | ai = { ai | settings = settings, prefs = prefs } }
+    , persistAi (Ai.encodeStore settings prefs)
+    )
+
+
+{-| Turn the previewed recipe into a real recipe in its category, adding
+its not-on-hand ingredients to the Shopping List when the option is set,
+then save and close the panel.
+-}
+acceptAiRecipe : Model -> ( Model, Cmd Msg )
+acceptAiRecipe model =
+    case ( model.ai.status, model.ai.open, model.data ) of
+        ( Ai.Ready generated, Just category, Just data ) ->
+            let
+                ai =
+                    model.ai
+
+                ( ingredients, seqAfter ) =
+                    List.foldl
+                        (\ing ( acc, s ) -> ( acc ++ [ Item (nextId s) ing.name False ], s + 1 ))
+                        ( [], model.seq )
+                        generated.ingredients
+
+                recipe =
+                    Recipe (nextId seqAfter) generated.name category ingredients (aiInstructions generated)
+
+                withRecipe =
+                    { data | recipes = data.recipes ++ [ recipe ] }
+
+                ( finalData, finalSeq ) =
+                    if ai.addMissing then
+                        addMissingToCart recipe (seqAfter + 1) withRecipe
+
+                    else
+                        ( withRecipe, seqAfter + 1 )
+            in
+            ( { model
+                | data = Just finalData
+                , derived = derive finalData
+                , seq = finalSeq
+                , ai = { ai | open = Nothing, status = Ai.Idle }
+              }
+            , saveModel finalData
+            )
+
+        _ ->
+            ( model, Cmd.none )
+
+
+{-| Add a recipe's ingredients that are not already on hand or on the list
+to the Shopping List, minting ids from `seq`.
+-}
+addMissingToCart : Recipe -> Int -> Data -> ( Data, Int )
+addMissingToCart recipe seq data =
+    let
+        stocked =
+            inStockNames data
+
+        toAdd =
+            recipe.ingredients
+                |> List.filter (\i -> not (Set.member (String.toLower i.name) stocked))
+    in
+    case cartCardId data of
+        Just cid ->
+            List.foldl
+                (\ing ( d, s ) -> ( pushItemTo (StoragePane cid) (Item (nextId s) ing.name ing.na) d, s + 1 ))
+                ( data, seq )
+                toAdd
+
+        Nothing ->
+            ( data, seq )
+
+
+{-| The generated recipe's instructions, prefixed with its ingredient list
+and amounts (the app stores amounts in the instructions text, since the
+ingredient chips carry only names).
+-}
+aiInstructions : Ai.GeneratedRecipe -> String
+aiInstructions generated =
+    let
+        line ingredient =
+            if String.trim ingredient.amount == "" then
+                "- " ++ ingredient.name
+
+            else
+                "- " ++ ingredient.amount ++ " " ++ ingredient.name
+    in
+    "Ingredients:\n"
+        ++ String.join "\n" (List.map line generated.ingredients)
+        ++ "\n\n"
+        ++ generated.instructions
 
 
 

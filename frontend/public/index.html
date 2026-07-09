@@ -31,7 +31,27 @@
         true,
       );
 
-      Elm.Main.init({ node: document.getElementById("app") });
+      // The AI assistant's settings (provider, the user's own API key, and
+      // recipe preferences) live in this browser only, never on the server.
+      // Restore them as init flags, and persist them when the app asks.
+      var aiStore = "longevity-pantry-ai";
+      var flags = null;
+      try {
+        flags = JSON.parse(localStorage.getItem(aiStore) || "null");
+      } catch (_) {}
+
+      var app = Elm.Main.init({
+        node: document.getElementById("app"),
+        flags: flags,
+      });
+
+      if (app.ports && app.ports.persistAi) {
+        app.ports.persistAi.subscribe(function (value) {
+          try {
+            localStorage.setItem(aiStore, JSON.stringify(value));
+          } catch (_) {}
+        });
+      }
     </script>
   </body>
 </html>

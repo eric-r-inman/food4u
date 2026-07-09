@@ -6,6 +6,7 @@ category can be filtered to "can make now" / "almost there", and a new
 recipe added by name or parsed from pasted text.
 -}
 
+import AiView
 import Data exposing (Data, Item, Loc(..), Recipe)
 import Derived exposing (recipeMissing)
 import Dict exposing (Dict)
@@ -108,7 +109,10 @@ buttons, or — while pasting — a textarea that parses a pasted recipe.
 -}
 viewRecipeFooter : Model -> String -> Html Msg
 viewRecipeFooter model category =
-    if model.pasting == Just category then
+    if model.ai.open == Just category then
+        AiView.viewPanel model category
+
+    else if model.pasting == Just category then
         div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "7px" ) ])
             [ textarea
                 (value model.pasteValue
@@ -165,12 +169,12 @@ viewRecipeFooter model category =
             ]
 
     else
-        div (styles [ ( "display", "flex" ), ( "align-items", "center" ), ( "gap", "8px" ) ])
+        div (styles [ ( "display", "flex" ), ( "align-items", "center" ), ( "flex-wrap", "wrap" ), ( "gap", "8px" ) ])
             (viewAdder model.adding model.addValue (AddRecipe category) "New recipe name" "+ Add"
                 :: (if model.adding == Just (AddRecipe category) then
                         -- Once the name input is showing, offer "or Paste"
                         -- to its right.
-                        [ span (styles [ ( "font-size", "12.5px" ), ( "color", "oklch(0.55 0.012 70)" ) ]) [ text "or" ]
+                        [ span [ class "recipe-or" ] [ text "or" ]
                         , button
                             (class "noprint"
                                 :: type_ "button"
@@ -192,6 +196,11 @@ viewRecipeFooter model category =
                     else
                         []
                    )
+                ++ [ span [ class "recipe-or" ] [ text "or" ]
+                   , button
+                        [ class "recipe-ai-btn noprint", type_ "button", onClick (OpenAi category) ]
+                        [ text "✨ AI" ]
+                   ]
             )
 
 

@@ -5,6 +5,7 @@ the per-column view modules can depend on it without a cycle back through
 Main.
 -}
 
+import Ai
 import Data exposing (Data, Loc)
 import Http
 import Types exposing (AddTarget, Me, RecipeFilter)
@@ -60,4 +61,21 @@ type Msg
     | DropRecipeOnGroup String
     | RecipeDragEnterCategory String
     | DropRecipeOnCategory String
+    | OpenAi String
+    | CloseAi
+    | AiToggleConfigure
+    | AiSetProvider Ai.Provider
+    | AiSetKey String
+    | AiSetModel String
+    | AiSetInclude String
+    | AiSetExclude String
+    | AiSetAllergies String
+    | AiSetRequest String
+    | AiToggleKitchen
+    | AiToggleMoreOptions
+    | AiToggleAddMissing
+    | AiGenerate
+    | GotAiRecipe (Result Http.Error Ai.GeneratedRecipe)
+    | AiAccept
+    | AiBackToForm
     | NoOp
