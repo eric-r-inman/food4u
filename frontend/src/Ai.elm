@@ -35,18 +35,19 @@ import Json.Encode as Encode
 
 
 {-| The LLM providers the assistant can call directly from the browser.
-Both allow browser-origin requests (Gemini natively; Anthropic via its
-explicit opt-in header). Gemini has a free tier for hosted users;
-Anthropic is here for a local install using the owner's own Claude key.
+All allow browser-origin requests (Gemini and OpenAI natively; Anthropic
+via its explicit opt-in header). Gemini has a free tier for hosted users;
+OpenAI (ChatGPT) and Anthropic (Claude) use the user's own paid key.
 -}
 type Provider
     = Gemini
+    | OpenAi
     | Anthropic
 
 
 allProviders : List Provider
 allProviders =
-    [ Gemini, Anthropic ]
+    [ Gemini, OpenAi, Anthropic ]
 
 
 providerLabel : Provider -> String
@@ -54,6 +55,9 @@ providerLabel provider =
     case provider of
         Gemini ->
             "Google Gemini (free tier)"
+
+        OpenAi ->
+            "OpenAI (ChatGPT)"
 
         Anthropic ->
             "Anthropic Claude"
@@ -67,6 +71,9 @@ providerKeyUrl provider =
         Gemini ->
             "https://aistudio.google.com/apikey"
 
+        OpenAi ->
+            "https://platform.openai.com/api-keys"
+
         Anthropic ->
             "https://console.anthropic.com/settings/keys"
 
@@ -79,6 +86,9 @@ defaultModel provider =
     case provider of
         Gemini ->
             "gemini-2.0-flash"
+
+        OpenAi ->
+            "gpt-4o-mini"
 
         Anthropic ->
             "claude-haiku-4-5-20251001"
@@ -206,6 +216,9 @@ providerTag provider =
         Gemini ->
             "gemini"
 
+        OpenAi ->
+            "openai"
+
         Anthropic ->
             "anthropic"
 
@@ -215,6 +228,9 @@ providerFromTag tag =
     case tag of
         "gemini" ->
             Just Gemini
+
+        "openai" ->
+            Just OpenAi
 
         "anthropic" ->
             Just Anthropic
@@ -332,6 +348,9 @@ providerUrl settings =
                 ++ ":generateContent?key="
                 ++ settings.apiKey
 
+        OpenAi ->
+            "https://api.openai.com/v1/chat/completions"
+
         Anthropic ->
             "https://api.anthropic.com/v1/messages"
 
@@ -341,6 +360,9 @@ providerHeaders settings =
     case settings.provider of
         Gemini ->
             []
+
+        OpenAi ->
+            [ Http.header "Authorization" ("Bearer " ++ settings.apiKey) ]
 
         Anthropic ->
             [ Http.header "x-api-key" settings.apiKey
@@ -372,6 +394,21 @@ providerBody settings prompt =
                   , Encode.object
                         [ ( "responseMimeType", Encode.string "application/json" )
                         , ( "temperature", Encode.float 0.7 )
+                        ]
+                  )
+                ]
+
+        OpenAi ->
+            Encode.object
+                [ ( "model", Encode.string settings.model )
+                , ( "temperature", Encode.float 0.7 )
+                , ( "response_format", Encode.object [ ( "type", Encode.string "json_object" ) ] )
+                , ( "messages"
+                  , Encode.list identity
+                        [ Encode.object
+                            [ ( "role", Encode.string "user" )
+                            , ( "content", Encode.string prompt )
+                            ]
                         ]
                   )
                 ]
@@ -420,6 +457,12 @@ envelopeTextDecoder provider =
                             (Decode.index 0 (Decode.field "text" Decode.string))
                         )
                     )
+                )
+
+        OpenAi ->
+            Decode.field "choices"
+                (Decode.index 0
+                    (Decode.field "message" (Decode.field "content" Decode.string))
                 )
 
         Anthropic ->

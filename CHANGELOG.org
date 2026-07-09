@@ -7,9 +7,9 @@
   assistant that creates a recipe from the meal category, your remembered
   preferences and allergies, and — if you like — what is in your Kitchen; you
   preview it before it is added, and its missing ingredients can go straight to
-  the Shopping List.  You bring your own LLM key (Google Gemini's free tier, or
-  Anthropic Claude); the request goes from your browser directly to the provider
-  and your key is kept only in your browser.
+  the Shopping List.  You bring your own LLM key (Google Gemini's free tier,
+  OpenAI/ChatGPT, or Anthropic Claude); the request goes from your browser
+  directly to the provider and your key is kept only in your browser.
 - Sign in and sign out through an OIDC identity provider, with each account
   keeping its own kitchen.
 - Add and remove Kitchen storage panes.
