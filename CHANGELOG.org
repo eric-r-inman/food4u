@@ -3,6 +3,8 @@
 
 * Upcoming
 ** Added
+- Add your own food category to any tier of the Longevity Foods pyramid, then
+  fill it with foods like the built-in categories.
 - Generate recipes with AI: an "AI" button in each recipe category opens an
   assistant that creates a recipe from the meal category, your remembered
   preferences and allergies, and — if you like — what is in your Kitchen; you

@@ -97,7 +97,9 @@ viewTier toggled adding addValue inStock search tier =
                 , ( "gap", "12px" )
                 ]
             )
-            (List.map (viewCategory toggled adding addValue inStock search tier) tier.groups)
+            (List.map (viewCategory toggled adding addValue inStock search tier) tier.groups
+                ++ [ viewAdder adding addValue (AddCategory tier.id) "New category…" "+ Add category" ]
+            )
         ]
 
 

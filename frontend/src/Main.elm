@@ -25,7 +25,7 @@ import Browser
 import Browser.Dom as Dom
 import Browser.Events
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushItemTo, pyramidHasName, removeFood, shoppingCartName, staplesTrackerId, staplesTrackerName)
+import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -671,6 +671,9 @@ commitAdd target model =
 
                             AddPane ->
                                 { data | staples = data.staples ++ [ newPane newId value ] }
+
+                            AddCategory tierId ->
+                                pushGroup tierId (Group newId value []) data
                 in
                 ( { model | data = Just newData, derived = derive newData, seq = model.seq + 1, adding = Nothing, addValue = "" }
                 , saveModel newData

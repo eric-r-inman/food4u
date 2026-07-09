@@ -17,6 +17,7 @@ module Data exposing
     , mapRecipe
     , mapStorage
     , pushFood
+    , pushGroup
     , pushItemTo
     , pyramidHasName
     , removeFood
@@ -352,6 +353,24 @@ mapCard cid fn data =
 pushFood : String -> Food -> Data -> Data
 pushFood gid food =
     mapGroup gid (\g -> { g | foods = g.foods ++ [ food ] })
+
+
+{-| Append a new category (group) to the end of a pyramid tier's groups.
+-}
+pushGroup : String -> Group -> Data -> Data
+pushGroup tierId group data =
+    { data
+        | tiers =
+            List.map
+                (\t ->
+                    if t.id == tierId then
+                        { t | groups = t.groups ++ [ group ] }
+
+                    else
+                        t
+                )
+                data.tiers
+    }
 
 
 mapRecipe : String -> (Recipe -> Recipe) -> Data -> Data
