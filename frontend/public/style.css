@@ -53,6 +53,10 @@
   --ai-accent-border: oklch(0.42 0.13 285);
   --ai-muted: oklch(0.45 0.08 285);
 
+  /* The dashed "AI" button in a recipe add row (matching the Paste button). */
+  --recipe-ai-border: oklch(0.74 0.05 250);
+  --recipe-ai-fg: oklch(0.45 0.08 250);
+
   /* Shared surface, input, and muted-text tokens used across form controls. */
   --surface: #fff;
   --input-border: oklch(0.86 0.012 86);
@@ -562,12 +566,14 @@ button {
   color: oklch(0.55 0.012 70);
 }
 
+/* The "AI" button matches the sibling "Paste" button's dashed, low-key
+   look so the two read as peers in the add row. */
 .recipe-ai-btn {
-  padding: 4px 10px;
-  border: 1px solid var(--ai-accent-border);
+  padding: 4px 9px;
+  border: 1px dashed var(--recipe-ai-border);
   border-radius: 6px;
-  background: var(--ai-accent);
-  color: var(--pane-fg);
+  background: transparent;
+  color: var(--recipe-ai-fg);
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;

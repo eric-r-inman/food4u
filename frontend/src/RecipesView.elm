@@ -173,7 +173,7 @@ viewRecipeFooter model category =
             (viewAdder model.adding model.addValue (AddRecipe category) "New recipe name" "+ Add"
                 :: (if model.adding == Just (AddRecipe category) then
                         -- Once the name input is showing, offer "or Paste"
-                        -- to its right.
+                        -- and "or AI" to its right.
                         [ span [ class "recipe-or" ] [ text "or" ]
                         , button
                             (class "noprint"
@@ -191,16 +191,15 @@ viewRecipeFooter model category =
                                     ]
                             )
                             [ text "Paste" ]
+                        , span [ class "recipe-or" ] [ text "or" ]
+                        , button
+                            [ class "recipe-ai-btn noprint", type_ "button", onClick (OpenAi category) ]
+                            [ text "AI" ]
                         ]
 
                     else
                         []
                    )
-                ++ [ span [ class "recipe-or" ] [ text "or" ]
-                   , button
-                        [ class "recipe-ai-btn noprint", type_ "button", onClick (OpenAi category) ]
-                        [ text "✨ AI" ]
-                   ]
             )
 
 
