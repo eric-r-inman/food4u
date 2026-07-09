@@ -75,7 +75,7 @@ type Msg
     | AiToggleMoreOptions
     | AiToggleAddMissing
     | AiGenerate
-    | GotAiRecipe (Result Http.Error Ai.GeneratedRecipe)
+    | GotAiRecipe (Result String Ai.GeneratedRecipe)
     | AiAccept
     | AiBackToForm
     | NoOp

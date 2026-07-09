@@ -12,7 +12,6 @@ module Ai exposing
     , defaultSettings
     , encodeStore
     , generate
-    , httpErrorMessage
     , providerKeyUrl
     , providerLabel
     )
@@ -316,7 +315,7 @@ the browser directly to the provider using the user's key.
 generate :
     Settings
     -> { category : String, request : String, prefs : Prefs, kitchen : List String }
-    -> (Result Http.Error GeneratedRecipe -> msg)
+    -> (Result String GeneratedRecipe -> msg)
     -> Cmd msg
 generate settings inputs toMsg =
     let
@@ -333,7 +332,7 @@ generate settings inputs toMsg =
         , headers = providerHeaders settings
         , url = providerUrl settings
         , body = Http.jsonBody (providerBody settings prompt)
-        , expect = Http.expectJson toMsg (providerDecoder settings.provider)
+        , expect = Http.expectStringResponse toMsg (responseToResult settings.provider)
         , timeout = Just 60000
         , tracker = Nothing
         }
@@ -508,24 +507,70 @@ stripCodeFence raw =
         trimmed
 
 
-{-| A human-readable explanation of an HTTP failure, for the panel.
+{-| Turn a raw response into either the recipe or a message to show. Unlike
+`Http.expectJson`, this keeps the error body so the provider's own
+explanation (a quota notice, a bad-model message) can be surfaced.
 -}
-httpErrorMessage : Http.Error -> String
-httpErrorMessage error =
-    case error of
-        Http.BadUrl _ ->
-            "The request address was invalid — check the model name."
+responseToResult : Provider -> Http.Response String -> Result String GeneratedRecipe
+responseToResult provider response =
+    case response of
+        Http.BadUrl_ _ ->
+            Err "The request address was invalid — check the model name."
 
-        Http.Timeout ->
-            "The request timed out. Try again."
+        Http.Timeout_ ->
+            Err "The request timed out. Try again."
 
-        Http.NetworkError ->
-            "Could not reach the provider. Check your connection, and that this provider allows browser requests."
+        Http.NetworkError_ ->
+            Err "Could not reach the provider. Check your connection, and that this provider allows browser requests."
 
-        Http.BadStatus status ->
-            "The provider rejected the request (status "
-                ++ String.fromInt status
-                ++ "). Check your API key and model name."
+        Http.BadStatus_ metadata body ->
+            Err (statusMessage metadata.statusCode body)
 
-        Http.BadBody message ->
-            message
+        Http.GoodStatus_ _ body ->
+            Decode.decodeString (providerDecoder provider) body
+                |> Result.mapError
+                    (\_ -> "The model replied, but not with a recipe in the expected format. Try again.")
+
+
+{-| A message for a rejected request, distinguishing the common cases and
+folding in the provider's own error text when it sends one.
+-}
+statusMessage : Int -> String -> String
+statusMessage status body =
+    let
+        detail =
+            providerErrorText body
+                |> Maybe.map (\message -> " — " ++ message)
+                |> Maybe.withDefault ""
+    in
+    if status == 429 then
+        "Rate limit or quota reached (429)"
+            ++ detail
+            ++ ".  You may be sending requests too quickly, or the account's quota (including a free tier) is used up — wait a minute, or check the provider's plan, billing, and limits."
+
+    else if status == 401 || status == 403 then
+        "The provider rejected your API key (status "
+            ++ String.fromInt status
+            ++ ")"
+            ++ detail
+            ++ ".  Check the key."
+
+    else if status == 404 then
+        "Not found (404)" ++ detail ++ " — check the model name."
+
+    else
+        "The provider rejected the request (status "
+            ++ String.fromInt status
+            ++ ")"
+            ++ detail
+            ++ "."
+
+
+{-| The provider's error message, if the error body carries the usual
+`{ "error": { "message": … } }` shape.
+-}
+providerErrorText : String -> Maybe String
+providerErrorText body =
+    body
+        |> Decode.decodeString (Decode.field "error" (Decode.field "message" Decode.string))
+        |> Result.toMaybe

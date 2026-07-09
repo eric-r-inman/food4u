@@ -614,8 +614,8 @@ update msg model =
         GotAiRecipe (Ok recipe) ->
             ( mapAi (\ai -> { ai | status = Ai.Ready recipe }) model, Cmd.none )
 
-        GotAiRecipe (Err error) ->
-            ( mapAi (\ai -> { ai | status = Ai.Failed (Ai.httpErrorMessage error) }) model, Cmd.none )
+        GotAiRecipe (Err message) ->
+            ( mapAi (\ai -> { ai | status = Ai.Failed message }) model, Cmd.none )
 
         AiAccept ->
             acceptAiRecipe model
