@@ -21,6 +21,9 @@
 - Recolour a Kitchen pane's header from the app's palette while editing it, and
   delete a pane — with a confirmation — from the same editor.
 ** Fixes
+- Adding items after a fresh page load — by dragging, by the Staples Tracker
+  cart button, and so on — no longer occasionally fails to save; newly created
+  items are given ids that cannot collide with existing ones.
 - The Staples Tracker now starts collapsed, and its shopping-cart button stands
   out clearly against the header — and turns green when it holds staples not yet
   in the Kitchen or on the Shopping List.
