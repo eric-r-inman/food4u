@@ -28,6 +28,8 @@
 - Recolour a Kitchen pane's header from the app's palette while editing it, and
   delete a pane — with a confirmation — from the same editor.
 ** Fixes
+- The "Paste" and "AI" buttons in a recipe category now work: pressing one no
+  longer dismisses the add row before the click takes effect.
 - Adding items after a fresh page load — by dragging, by the Staples Tracker
   cart button, and so on — no longer occasionally fails to save; newly created
   items are given ids that cannot collide with existing ones.

@@ -104,6 +104,17 @@ viewRecipeFilterBar active =
         ]
 
 
+{-| Keep the new-recipe name input focused when the sibling Paste or AI
+button is pressed. The input commits (and clears itself) on blur; without
+this, pressing those buttons would blur the input, remove them in the
+re-render, and the click would never land — so nothing would happen.
+Preventing the mousedown default stops the blur.
+-}
+keepAddInput : Attribute Msg
+keepAddInput =
+    preventDefaultOn "mousedown" (Decode.succeed ( NoOp, True ))
+
+
 {-| The add-recipe footer for a category: the inline "+ Add" / "Paste"
 buttons, or — while pasting — a textarea that parses a pasted recipe.
 -}
@@ -179,6 +190,7 @@ viewRecipeFooter model category =
                             (class "noprint"
                                 :: type_ "button"
                                 :: onClick (StartPaste category)
+                                :: keepAddInput
                                 :: styles
                                     [ ( "padding", "4px 9px" )
                                     , ( "border", "1px dashed oklch(0.74 0.05 250)" )
@@ -193,7 +205,7 @@ viewRecipeFooter model category =
                             [ text "Paste" ]
                         , span [ class "recipe-or" ] [ text "or" ]
                         , button
-                            [ class "recipe-ai-btn noprint", type_ "button", onClick (OpenAi category) ]
+                            [ class "recipe-ai-btn noprint", type_ "button", onClick (OpenAi category), keepAddInput ]
                             [ text "AI" ]
                         ]
 
