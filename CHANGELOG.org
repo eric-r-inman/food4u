@@ -3,6 +3,10 @@
 
 * Upcoming
 ** Added
+- Bookmark a recipe from its header, between the drag grip and the cart button —
+  a marker for remembering a recipe, such as one whose ingredients you have just
+  sent to the Shopping List. A recipe category's title row shows how many of its
+  recipes are bookmarked.
 - Select several items and move them together: a "Select: off / on" toggle in
   its own row under the page title turns on a tap-to-select circle on every item
   badge. Move the whole selection either by dragging one selected badge, or —

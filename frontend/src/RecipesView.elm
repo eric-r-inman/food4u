@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (bookmarkButton, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 recipeCategories : List String
@@ -299,6 +299,9 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                 |> List.filter (\r -> r.category == category)
                 |> List.filter (matchesRecipeFilter model.recipeFilter stockedNoCart)
 
+        bookmarkedCount =
+            List.length (List.filter .bookmarked recipesInCat)
+
         categoryHasMatch =
             recipeSearch /= "" && List.any (\r -> String.contains recipeSearch (String.toLower r.name)) recipesInCat
 
@@ -361,6 +364,11 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                         )
                     ]
                 , span [] [ text category ]
+                , if bookmarkedCount > 0 then
+                    span [ class "recipe-cat-bookmarks", title "Bookmarked recipes" ] [ text ("🔖 " ++ String.fromInt bookmarkedCount) ]
+
+                  else
+                    text ""
                 , span (styles [ ( "margin-left", "auto" ), ( "opacity", "0.55" ), ( "font-weight", "500" ) ]) [ text (String.fromInt (List.length recipesInCat)) ]
                 ]
                 :: (if isCollapsed then
@@ -477,6 +485,7 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                     :: styles [ ( "cursor", "grab" ), ( "font-size", "13px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "padding", "0 2px" ), ( "user-select", "none" ) ]
                 )
                 [ text "⠿" ]
+            , bookmarkButton recipe.bookmarked (ToggleBookmark recipe.id)
             , recipeCartButton cartActive (AddRecipeToCart recipe.id)
             , recipeDeleteButton (RemoveRecipe recipe.id)
             ]

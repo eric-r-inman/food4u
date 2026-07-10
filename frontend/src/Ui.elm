@@ -1,5 +1,6 @@
 module Ui exposing
     ( addInputId
+    , bookmarkButton
     , categoryDeleteControl
     , collapsedColumnBar
     , columnTitleBar
@@ -287,6 +288,26 @@ recipeCartButton active msg =
         , onClick msg
         ]
         [ text "🛒" ]
+
+
+{-| The recipe header's bookmark toggle: a user marker to remember a
+recipe. Full-colour when bookmarked, greyed and desaturated when not.
+-}
+bookmarkButton : Bool -> Msg -> Html Msg
+bookmarkButton on msg =
+    button
+        [ type_ "button"
+        , classList [ ( "recipe-bookmark-btn", True ), ( "recipe-bookmark-btn-on", on ) ]
+        , title
+            (if on then
+                "Remove bookmark"
+
+             else
+                "Bookmark this recipe"
+            )
+        , onClick msg
+        ]
+        [ text "🔖" ]
 
 
 {-| A small but always-visible delete control for a recipe (unlike the

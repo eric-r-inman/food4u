@@ -22,6 +22,7 @@ type Msg
     | CancelAdd
     | RemoveFoodMsg Loc String
     | RemoveRecipe String
+    | ToggleBookmark String
     | RemovePane String
     | RemoveCategory String
     | RequestDelete String

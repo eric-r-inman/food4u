@@ -92,6 +92,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
         na: false,
       }],
       instructions: "Toss it.".into(),
+      bookmarked: false,
     }],
   };
 

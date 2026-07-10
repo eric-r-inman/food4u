@@ -67,7 +67,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .map_err(read)?;
 
   let recipes = sqlx::query_as::<_, RecipeRow>(
-    "select id, name, category, instructions from recipes \
+    "select id, name, category, instructions, bookmarked from recipes \
      where user_id = $1 order by position",
   )
   .bind(user_id)
@@ -235,14 +235,15 @@ pub async fn save(
 
   for (recipe_pos, recipe) in model.recipes.iter().enumerate() {
     sqlx::query(
-      "insert into recipes (id, user_id, name, category, instructions, position) \
-       values ($1, $2, $3, $4, $5, $6)",
+      "insert into recipes (id, user_id, name, category, instructions, bookmarked, position) \
+       values ($1, $2, $3, $4, $5, $6, $7)",
     )
     .bind(&recipe.id)
     .bind(user_id)
     .bind(&recipe.name)
     .bind(&recipe.category)
     .bind(&recipe.instructions)
+    .bind(recipe.bookmarked)
     .bind(recipe_pos as i64)
     .execute(&mut *tx)
     .await

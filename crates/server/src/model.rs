@@ -97,4 +97,6 @@ pub struct Recipe {
   pub ingredients: Vec<Item>,
   #[serde(default)]
   pub instructions: String,
+  #[serde(default)]
+  pub bookmarked: bool,
 }

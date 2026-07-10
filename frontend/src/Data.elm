@@ -100,6 +100,10 @@ type alias Recipe =
     , category : String
     , ingredients : List Item
     , instructions : String
+
+    -- A user marker to remember a recipe, e.g. one whose ingredients were
+    -- just sent to the Shopping List. Absent in older saved data.
+    , bookmarked : Bool
     }
 
 
@@ -223,7 +227,7 @@ dataDecoder =
 
 recipeDecoder : Decoder Recipe
 recipeDecoder =
-    Decode.map5 Recipe
+    Decode.map6 Recipe
         (Decode.field "id" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.field "category" Decode.string)
@@ -232,6 +236,12 @@ recipeDecoder =
         (Decode.oneOf
             [ Decode.field "instructions" Decode.string
             , Decode.succeed ""
+            ]
+        )
+        -- "bookmarked" is absent in older saved data; default to false.
+        (Decode.oneOf
+            [ Decode.field "bookmarked" Decode.bool
+            , Decode.succeed False
             ]
         )
 
@@ -319,6 +329,7 @@ encodeRecipe recipe =
         , ( "category", Encode.string recipe.category )
         , ( "ingredients", Encode.list encodeItem recipe.ingredients )
         , ( "instructions", Encode.string recipe.instructions )
+        , ( "bookmarked", Encode.bool recipe.bookmarked )
         ]
 
 

@@ -252,6 +252,10 @@ update msg model =
                         )
                 )
 
+        ToggleBookmark rid ->
+            withData model
+                (\data -> persistData model (mapRecipe rid (\r -> { r | bookmarked = not r.bookmarked }) data))
+
         RemovePane pid ->
             withData model
                 (\data ->
@@ -739,7 +743,7 @@ commitAdd target model =
                                 pushItemTo loc (Item newId value False) data
 
                             AddRecipe category ->
-                                { data | recipes = data.recipes ++ [ Recipe newId value category [] "" ] }
+                                { data | recipes = data.recipes ++ [ Recipe newId value category [] "" False ] }
 
                             AddPane ->
                                 { data | staples = data.staples ++ [ newPane newId value ] }
@@ -862,7 +866,7 @@ commitPaste category model =
                             parsed.ingredients
 
                     recipe =
-                        Recipe (nextId seqAfter) parsed.name category ingredients parsed.instructions
+                        Recipe (nextId seqAfter) parsed.name category ingredients parsed.instructions False
 
                     newData =
                         { data | recipes = data.recipes ++ [ recipe ] }
@@ -1366,7 +1370,7 @@ acceptAiRecipe model =
                         generated.ingredients
 
                 recipe =
-                    Recipe (nextId seqAfter) generated.name category ingredients (aiInstructions generated)
+                    Recipe (nextId seqAfter) generated.name category ingredients (aiInstructions generated) False
 
                 withRecipe =
                     { data | recipes = data.recipes ++ [ recipe ] }
