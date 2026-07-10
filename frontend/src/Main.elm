@@ -184,11 +184,15 @@ update msg model =
             let
                 withTracker =
                     ensureStaplesTracker data
+
+                -- Start the id sequence past every id already in the model, so
+                -- freshly minted ids never collide with persisted ones (which
+                -- a reset-to-zero sequence would, and the store rejects). The
+                -- default Shopping List categories are minted from here.
+                ( withCategories, seqAfter ) =
+                    ensureCartCategories (nextSeq withTracker) withTracker
             in
-            -- Start the id sequence past every id already in the model, so
-            -- freshly minted ids never collide with persisted ones (which a
-            -- reset-to-zero sequence would, and the store rejects).
-            ( { model | data = Just withTracker, derived = derive withTracker, seq = nextSeq withTracker, error = Nothing }, Cmd.none )
+            ( { model | data = Just withCategories, derived = derive withCategories, seq = seqAfter, error = Nothing }, Cmd.none )
 
         GotModel (Err _) ->
             ( { model | error = Just "Failed to load food data." }, Cmd.none )
@@ -991,6 +995,50 @@ addStaplesToCart model =
 
         Nothing ->
             ( model, Cmd.none )
+
+
+{-| The Shopping List categories a model starts with, in aisle-ish order,
+so a new or never-organised list already has somewhere to sort foods into.
+-}
+defaultCartCategories : List String
+defaultCartCategories =
+    [ "Produce"
+    , "Dry Goods"
+    , "Canned"
+    , "Dairy"
+    , "Frozen"
+    , "Bulk"
+    , "Bakery"
+    , "Meat & Seafood"
+    , "Baking"
+    , "Condiments & Sauces"
+    , "Coffee & Tea"
+    , "Cereals"
+    , "Snacks"
+    , "Health & Wellness"
+    ]
+
+
+{-| Seed the default Shopping List categories when a loaded model has none
+of its own yet — so the feature arrives populated for existing users and
+fresh accounts alike, while a list that already has categories (even after
+some were deleted) is left untouched. Returns the model and the id sequence
+advanced past the minted categories.
+-}
+ensureCartCategories : Int -> Data -> ( Data, Int )
+ensureCartCategories seq data =
+    if List.any (\c -> c.zone == cartZone) data.staples then
+        ( data, seq )
+
+    else
+        let
+            ( cards, seqAfter ) =
+                List.foldl
+                    (\name ( acc, s ) -> ( acc ++ [ newCartCategory (nextId s) name ], s + 1 ))
+                    ( [], seq )
+                    defaultCartCategories
+        in
+        ( { data | staples = data.staples ++ cards }, seqAfter )
 
 
 {-| Guarantee the permanent Staples Tracker pane exists, creating it empty
