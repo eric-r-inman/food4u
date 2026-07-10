@@ -3,6 +3,13 @@
 
 * Upcoming
 ** Added
+- Organize the Shopping List into your own categories: add a category, drag
+  to-buy items into it, and delete a category — with a confirmation — from the ✕
+  on its title row.  Recipe and staple additions still land in the main list,
+  ready to sort.  (The automatic grocery-department grouping is replaced by
+  these categories.)
+- Delete a Longevity Foods category with the ✕ on its title row, with a
+  confirmation.
 - Add your own food category to any tier of the Longevity Foods pyramid, then
   fill it with foods like the built-in categories.
 - Generate recipes with AI: an "AI" button in each recipe category opens an

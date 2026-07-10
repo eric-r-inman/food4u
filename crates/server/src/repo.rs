@@ -76,6 +76,7 @@ pub(crate) struct CardRow {
   rail: String,
   line: String,
   note: String,
+  zone: String,
 }
 
 #[derive(sqlx::FromRow)]
@@ -136,7 +137,7 @@ pub async fn load(
   .map_err(read)?;
 
   let locations = sqlx::query_as::<_, CardRow>(
-    "select id, name, meta, rail, line, note from storage_locations \
+    "select id, name, meta, rail, line, note, zone from storage_locations \
      where user_id = ? order by position",
   )
   .bind(user_id)
@@ -259,6 +260,7 @@ pub(crate) fn assemble(
         rail: row.rail,
         line: row.line,
         note: row.note,
+        zone: row.zone,
       })
       .collect(),
     recipes: recipes
@@ -382,8 +384,8 @@ pub async fn save(
   for (loc_pos, card) in model.staples.iter().enumerate() {
     sqlx::query(
       "insert into storage_locations \
-       (id, user_id, name, meta, rail, line, note, position) \
-       values (?, ?, ?, ?, ?, ?, ?, ?)",
+       (id, user_id, name, meta, rail, line, note, zone, position) \
+       values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&card.id)
     .bind(user_id)
@@ -392,6 +394,7 @@ pub async fn save(
     .bind(&card.rail)
     .bind(&card.line)
     .bind(&card.note)
+    .bind(&card.zone)
     .bind(loc_pos as i64)
     .execute(&mut *tx)
     .await
@@ -632,8 +635,8 @@ pub async fn provision_default_panes(
   for (position, pane) in panes.iter().enumerate() {
     sqlx::query(
       "insert or ignore into storage_locations \
-       (id, user_id, name, meta, rail, line, note, position) \
-       values (?, ?, ?, ?, ?, ?, ?, ?)",
+       (id, user_id, name, meta, rail, line, note, zone, position) \
+       values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(format!("{user_id}-{}", pane.id))
     .bind(user_id)
@@ -642,6 +645,7 @@ pub async fn provision_default_panes(
     .bind(&pane.rail)
     .bind(&pane.line)
     .bind(&pane.note)
+    .bind(&pane.zone)
     .bind(position as i64)
     .execute(&mut *tx)
     .await

@@ -56,8 +56,11 @@ pub struct Food {
   pub recipe_id: String,
 }
 
-/// A storage pane — a kitchen location or the Shopping List — and its
-/// items.
+/// A storage pane — a kitchen location, the Shopping List, or one of the
+/// Shopping List's user-created categories — and its items.  `zone`
+/// separates the Kitchen column's panes from the Shopping List column's
+/// categories; it defaults to `kitchen` so documents written before the
+/// zone existed decode as ordinary kitchen panes.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Card {
   pub id: String,
@@ -66,7 +69,14 @@ pub struct Card {
   pub rail: String,
   pub line: String,
   pub note: String,
+  #[serde(default = "kitchen_zone")]
+  pub zone: String,
   pub items: Vec<Item>,
+}
+
+/// The default zone for a storage location: the Kitchen column.
+fn kitchen_zone() -> String {
+  "kitchen".to_string()
 }
 
 /// A single stored item within a storage pane or a recipe's ingredient.

@@ -25,7 +25,7 @@ import Browser
 import Browser.Dom as Dom
 import Browser.Events
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, dataDecoder, encodeData, foodInGroup, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, shoppingCartName, staplesTrackerId, staplesTrackerName)
+import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -93,6 +93,7 @@ init flags =
       , pasteValue = ""
       , me = Nothing
       , editingPane = Nothing
+      , confirmingDelete = Nothing
       , ai = initialAi settings prefs
       , derived = emptyDerived
       }
@@ -249,9 +250,19 @@ update msg model =
         RemovePane pid ->
             withData model
                 (\data ->
-                    persistData { model | editingPane = Nothing }
+                    persistData { model | editingPane = Nothing, confirmingDelete = Nothing }
                         { data | staples = List.filter (\c -> c.id /= pid) data.staples }
                 )
+
+        RemoveCategory gid ->
+            withData model
+                (\data -> persistData { model | confirmingDelete = Nothing } (removeGroup gid data))
+
+        RequestDelete id ->
+            ( { model | confirmingDelete = Just id }, Cmd.none )
+
+        CancelDelete ->
+            ( { model | confirmingDelete = Nothing }, Cmd.none )
 
         StartEditPane pid ->
             -- Seed the edit buffer from the pane's current name, description,
@@ -420,15 +431,23 @@ update msg model =
             )
 
         ClearCart ->
+            -- Empty every Shopping List card — the reserved cart and each
+            -- category — but keep the categories themselves.
             withData model
                 (\data ->
-                    case cartCardId data of
-                        Just cid ->
-                            persistData model
-                                (mapStorage (StoragePane cid) (always []) data)
+                    persistData model
+                        { data
+                            | staples =
+                                List.map
+                                    (\c ->
+                                        if isShoppingCard c then
+                                            { c | items = [] }
 
-                        Nothing ->
-                            ( model, Cmd.none )
+                                        else
+                                            c
+                                    )
+                                    data.staples
+                        }
                 )
 
         ToggleCategory gid ->
@@ -674,6 +693,9 @@ commitAdd target model =
 
                             AddCategory tierId ->
                                 pushGroup tierId (Group newId value []) data
+
+                            AddCartCategory ->
+                                { data | staples = data.staples ++ [ newCartCategory newId value ] }
                 in
                 ( { model | data = Just newData, derived = derive newData, seq = model.seq + 1, adding = Nothing, addValue = "" }
                 , saveModel newData
@@ -745,6 +767,23 @@ newPane id name =
     , rail = "oklch(0.55 0.08 74)"
     , line = "oklch(0.86 0.04 74)"
     , note = ""
+    , zone = "kitchen"
+    , items = []
+    }
+
+
+{-| A fresh, empty Shopping List category — a storage card in the shopping
+zone, so it renders in the Shopping List column and collects dragged foods.
+-}
+newCartCategory : String -> String -> Card
+newCartCategory id name =
+    { id = id
+    , name = name
+    , meta = ""
+    , rail = "oklch(0.5 0.09 150)"
+    , line = "oklch(0.86 0.04 150)"
+    , note = ""
+    , zone = cartZone
     , items = []
     }
 
@@ -967,9 +1006,10 @@ ensureStaplesTracker data =
         { data
             | staples =
                 -- The tracker renders from its own CSS class, not these
-                -- cosmetic Card fields, so meta/rail/line/note stay empty.
+                -- cosmetic Card fields, so meta/rail/line/note stay empty. It
+                -- is a Kitchen-column pane, so its zone is the default.
                 data.staples
-                    ++ [ Card staplesTrackerId staplesTrackerName "" "" "" "" [] ]
+                    ++ [ Card staplesTrackerId staplesTrackerName "" "" "" "" "kitchen" [] ]
         }
 
 
@@ -982,6 +1022,18 @@ collapseRecipeCategory rid model =
         |> Maybe.andThen (\data -> List.head (List.filter (\r -> r.id == rid) data.recipes))
         |> Maybe.map (\r -> Set.remove ("recipe:" ++ r.category) model.toggled)
         |> Maybe.withDefault model.toggled
+
+
+{-| Whether the storage card with this id is a Shopping List card (the
+reserved cart or one of its categories).
+-}
+isShoppingCardId : String -> Data -> Bool
+isShoppingCardId cid data =
+    data.staples
+        |> List.filter (\c -> c.id == cid)
+        |> List.head
+        |> Maybe.map isShoppingCard
+        |> Maybe.withDefault False
 
 
 {-| The name and sodium flag of the dragged food, wherever it came from.
@@ -1006,13 +1058,25 @@ sequence.
 performDrop : Drag -> Loc -> Int -> Data -> ( Data, Int )
 performDrop drag target seq data =
     let
-        -- The Shopping List and the Staples Tracker collect references:
-        -- dropping into either copies, so it never depletes the pyramid or
-        -- kitchen pane the food came from.
+        sourceIsShopping =
+            case drag.from of
+                StoragePane fid ->
+                    isShoppingCardId fid data
+
+                _ ->
+                    False
+
+        -- A Shopping List card and the Staples Tracker collect references:
+        -- dropping in from the pyramid or a kitchen pane copies, so it never
+        -- depletes the source.  Moving between two Shopping List cards,
+        -- though, is a move — that is how a category gets filled — so a
+        -- shopping-to-shopping drop does not collect.
         targetCollects =
             case target of
                 StoragePane cid ->
-                    Just cid == cartCardId data || cid == staplesTrackerId
+                    (isShoppingCardId cid data && not sourceIsShopping)
+                        || cid
+                        == staplesTrackerId
 
                 _ ->
                     False

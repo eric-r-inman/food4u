@@ -1,5 +1,6 @@
 module Ui exposing
     ( addInputId
+    , categoryDeleteControl
     , collapsedColumnBar
     , columnTitleBar
     , draggable
@@ -375,6 +376,40 @@ paneMetaInput currentMeta =
         , onInput EditPaneMeta
         ]
         []
+
+
+{-| A category header's delete control, shared by the Longevity and
+Shopping List columns: a small always-visible ✕ that, once clicked, is
+replaced by a Delete/Cancel confirmation. It sits inside a header that is
+itself a collapse toggle, so every click stops propagation.
+-}
+categoryDeleteControl : Bool -> Msg -> Msg -> Msg -> Html Msg
+categoryDeleteControl confirming requestMsg confirmMsg cancelMsg =
+    if confirming then
+        span [ class "cat-delete-confirm" ]
+            [ span [ class "cat-delete-confirm-label" ] [ text "Delete?" ]
+            , button
+                [ type_ "button"
+                , class "cat-confirm-delete"
+                , stopPropagationOn "click" (Decode.succeed ( confirmMsg, True ))
+                ]
+                [ text "Delete" ]
+            , button
+                [ type_ "button"
+                , class "cat-confirm-cancel"
+                , stopPropagationOn "click" (Decode.succeed ( cancelMsg, True ))
+                ]
+                [ text "Cancel" ]
+            ]
+
+    else
+        button
+            [ type_ "button"
+            , class "cat-delete-btn"
+            , title "Delete this category"
+            , stopPropagationOn "click" (Decode.succeed ( requestMsg, True ))
+            ]
+            [ text "✕" ]
 
 
 removeButton : Msg -> Html Msg

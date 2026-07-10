@@ -47,6 +47,7 @@ fn sample() -> Model {
       rail: "".into(),
       line: "".into(),
       note: "".into(),
+      zone: "shopping".into(),
       items: vec![Item {
         id: "i1".into(),
         name: "Rice".into(),

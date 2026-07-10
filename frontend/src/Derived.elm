@@ -14,7 +14,7 @@ model (see Main's `Derived` record) so the views consult a precomputed
 result rather than rescanning every food and storage item on each render.
 -}
 
-import Data exposing (Data, Item, Recipe, shoppingCartName, staplesTrackerName)
+import Data exposing (Data, Item, Recipe, isShoppingCard, staplesTrackerName)
 import Dict exposing (Dict)
 import Set exposing (Set)
 
@@ -78,14 +78,14 @@ inStockNames data =
         |> Set.fromList
 
 
-{-| Lowercased names on hand in a real kitchen pane — excluding the
-Shopping List (a to-buy list) and the Staples Tracker (a wishlist),
-neither of which is something you actually have.
+{-| Lowercased names on hand in a real kitchen pane — excluding every
+Shopping List card (a to-buy list and its categories) and the Staples
+Tracker (a wishlist), none of which is something you actually have.
 -}
 stockedExcludingCart : Data -> Set String
 stockedExcludingCart data =
     data.staples
-        |> List.filter (\c -> c.name /= shoppingCartName && c.name /= staplesTrackerName)
+        |> List.filter (\c -> not (isShoppingCard c) && c.name /= staplesTrackerName)
         |> List.concatMap .items
         |> List.map (\i -> String.toLower i.name)
         |> Set.fromList

@@ -7,9 +7,11 @@ module Data exposing
     , Loc(..)
     , Recipe
     , Tier
+    , cartZone
     , dataDecoder
     , encodeData
     , foodInGroup
+    , isShoppingCard
     , itemInStorage
     , listHasName
     , mapCard
@@ -21,6 +23,7 @@ module Data exposing
     , pushItemTo
     , pyramidHasName
     , removeFood
+    , removeGroup
     , shoppingCartName
     , staplesTrackerId
     , staplesTrackerName
@@ -62,6 +65,24 @@ it once when absent and always address the same pane.
 staplesTrackerId : String
 staplesTrackerId =
     "staples-tracker"
+
+
+{-| The `zone` a storage card carries when it belongs to the Shopping List
+column's own categories rather than the Kitchen. Kitchen panes default to
+`"kitchen"`.
+-}
+cartZone : String
+cartZone =
+    "shopping"
+
+
+{-| Whether a storage card belongs to the Shopping List column: the
+reserved Shopping List card (identified by its name, so documents predating
+the zone still resolve it) or one of its user-added categories.
+-}
+isShoppingCard : Card -> Bool
+isShoppingCard card =
+    card.name == shoppingCartName || card.zone == cartZone
 
 
 type alias Data =
@@ -120,6 +141,11 @@ type alias Card =
     , rail : String
     , line : String
     , note : String
+
+    -- Which column the card belongs to: "kitchen" for a Kitchen pane,
+    -- "shopping" for one of the Shopping List's categories. Absent in
+    -- documents predating the field; defaults to "kitchen".
+    , zone : String
     , items : List Item
     }
 
@@ -211,13 +237,19 @@ foodDecoder =
 
 cardDecoder : Decoder Card
 cardDecoder =
-    Decode.map7 Card
+    Decode.map8 Card
         (Decode.field "id" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.field "meta" Decode.string)
         (Decode.field "rail" Decode.string)
         (Decode.field "line" Decode.string)
         (Decode.field "note" Decode.string)
+        -- "zone" is absent in older saved data; default to a kitchen pane.
+        (Decode.oneOf
+            [ Decode.field "zone" Decode.string
+            , Decode.succeed "kitchen"
+            ]
+        )
         (Decode.field "items" (Decode.list itemDecoder))
 
 
@@ -294,6 +326,7 @@ encodeCard card =
         , ( "rail", Encode.string card.rail )
         , ( "line", Encode.string card.line )
         , ( "note", Encode.string card.note )
+        , ( "zone", Encode.string card.zone )
         , ( "items", Encode.list encodeItem card.items )
         ]
 
@@ -369,6 +402,19 @@ pushGroup tierId group data =
                     else
                         t
                 )
+                data.tiers
+    }
+
+
+{-| Remove a pyramid category (group) by id, wherever it lives, dropping its
+foods with it.
+-}
+removeGroup : String -> Data -> Data
+removeGroup gid data =
+    { data
+        | tiers =
+            List.map
+                (\t -> { t | groups = List.filter (\g -> g.id /= gid) t.groups })
                 data.tiers
     }
 

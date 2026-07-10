@@ -105,6 +105,11 @@ type alias Model =
     -- nothing to undo; committing (Enter) writes it back and saves.
     , editingPane : Maybe PaneEdit
 
+    -- The id of the pyramid category or Shopping List category whose
+    -- delete is awaiting confirmation, if any.  The header shows a
+    -- confirm/cancel prompt in place of its delete control while set.
+    , confirmingDelete : Maybe String
+
     -- The signed-in identity from `/me`, once fetched.  Drives the
     -- sign-in / sign-out control in the toolbar.
     , me : Maybe Me

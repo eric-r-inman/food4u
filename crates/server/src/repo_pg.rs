@@ -48,7 +48,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .map_err(read)?;
 
   let locations = sqlx::query_as::<_, CardRow>(
-    "select id, name, meta, rail, line, note from storage_locations \
+    "select id, name, meta, rail, line, note, zone from storage_locations \
      where user_id = $1 order by position",
   )
   .bind(user_id)
@@ -201,8 +201,8 @@ pub async fn save(
   for (loc_pos, card) in model.staples.iter().enumerate() {
     sqlx::query(
       "insert into storage_locations \
-       (id, user_id, name, meta, rail, line, note, position) \
-       values ($1, $2, $3, $4, $5, $6, $7, $8)",
+       (id, user_id, name, meta, rail, line, note, zone, position) \
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
     )
     .bind(&card.id)
     .bind(user_id)
@@ -211,6 +211,7 @@ pub async fn save(
     .bind(&card.rail)
     .bind(&card.line)
     .bind(&card.note)
+    .bind(&card.zone)
     .bind(loc_pos as i64)
     .execute(&mut *tx)
     .await
@@ -304,8 +305,8 @@ pub async fn provision_default_panes(
   for (position, pane) in panes.iter().enumerate() {
     sqlx::query(
       "insert into storage_locations \
-       (id, user_id, name, meta, rail, line, note, position) \
-       values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict do nothing",
+       (id, user_id, name, meta, rail, line, note, zone, position) \
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict do nothing",
     )
     .bind(format!("{user_id}-{}", pane.id))
     .bind(user_id)
@@ -314,6 +315,7 @@ pub async fn provision_default_panes(
     .bind(&pane.rail)
     .bind(&pane.line)
     .bind(&pane.note)
+    .bind(&pane.zone)
     .bind(position as i64)
     .execute(&mut *tx)
     .await

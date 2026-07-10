@@ -1,12 +1,14 @@
 module CartView exposing (viewCartColumn)
 
-{-| The Shopping List column: a to-buy list grouped into grocery
-departments, with export and clear-all controls. The cart is still a
-storage pane in the data (so drag/drop and the recipe cart button keep
-working); here it is rendered on its own rather than inside the Kitchen.
+{-| The Shopping List column: a to-buy list the user organises into their
+own categories. The reserved "Shopping List" card is the uncategorised
+bucket recipe and staple additions land in; the user adds named categories
+below it and drags items into them. Each card is a storage pane in the
+data (so drag/drop, the recipe cart button, and export keep working); the
+`zone` field is what files them here rather than in the Kitchen.
 -}
 
-import Data exposing (Card, Data, Item, Loc(..), shoppingCartName)
+import Data exposing (Card, Data, Loc(..), isShoppingCard, shoppingCartName)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -14,15 +16,16 @@ import Html.Events exposing (onClick)
 import Html.Lazy as Lazy
 import Model exposing (Indices, Model)
 import Msg exposing (Msg(..))
-import Shopping exposing (groupByDepartment)
 import Style exposing (cardStyle, styles)
-import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, viewItem)
+import Types exposing (AddTarget(..))
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, dropZone, viewAdder, viewItem)
 
 
 viewCartColumn : Model -> Data -> Html Msg
 viewCartColumn model data =
     if not model.cartOpen then
-        -- Even collapsed, the cart bar accepts dropped foods.
+        -- Even collapsed, the cart bar accepts foods dropped onto the
+        -- uncategorised bucket.
         collapsedColumnBar "Shopping List"
             "oklch(0.52 0.1 42)"
             ToggleCart
@@ -35,17 +38,23 @@ viewCartColumn model data =
             )
 
     else
-        -- The cart reads only the department map and the storage list, and
-        -- nothing about the drag state, so it re-renders only when the
-        -- stored data changes — not on a keystroke in another column.
-        Lazy.lazy2 viewCartBody model.derived data.staples
+        -- The cart reads only the derived tints and the storage list, plus
+        -- the add/confirm UI state, so it re-renders only when those change
+        -- — not on a keystroke in another column.
+        Lazy.lazy5 viewCartBody model.derived data.staples model.adding model.addValue model.confirmingDelete
 
 
-viewCartBody : Indices -> List Card -> Html Msg
-viewCartBody derived staples =
+viewCartBody : Indices -> List Card -> Maybe AddTarget -> String -> Maybe String -> Html Msg
+viewCartBody derived staples adding addValue confirmingDelete =
     let
-        cartMaybe =
-            List.head (List.filter (\c -> c.name == shoppingCartName) staples)
+        shoppingCards =
+            List.filter isShoppingCard staples
+
+        -- The reserved bucket sorts first, its user categories after, in the
+        -- order they were added.
+        ordered =
+            List.filter (\c -> c.name == shoppingCartName) shoppingCards
+                ++ List.filter (\c -> c.name /= shoppingCartName) shoppingCards
     in
     div (class "cart-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
         [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart
@@ -57,53 +66,53 @@ viewCartBody derived staples =
                 [ type_ "button", class "cart-btn cart-btn-clear", onClick ClearCart ]
                 [ text "🗑  Clear all" ]
             ]
-        , case cartMaybe of
-            Just cart ->
-                let
-                    loc =
-                        StoragePane cart.id
-
-                    sections =
-                        groupByDepartment derived.nameCategory cart.items
-                in
-                -- The whole body is the drop target, so foods can be
-                -- dropped anywhere in the panel — not just on the chips.
-                div
-                    (class "cart-body"
-                        :: styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "14px" ) ]
-                        ++ dropZone loc
-                    )
-                    (if List.isEmpty cart.items then
-                        [ span (styles [ ( "font-size", "12px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "font-style", "italic" ) ]) [ text "Drag foods here, or use a recipe's 🛒 button." ] ]
-
-                     else
-                        List.map (viewCartSection derived.nameTierRail loc) sections
-                    )
-
-            Nothing ->
-                div [ class "cart-body" ] []
+        , div [ class "cart-body" ]
+            (List.map (viewCartCard derived.nameTierRail confirmingDelete) ordered
+                ++ [ viewAdder adding addValue AddCartCategory "New category…" "+ Add category" ]
+            )
         ]
 
 
-{-| One grocery-department section of the Shopping List: a header plus the
-items in that department.
+{-| One Shopping List card: its coloured title row (with a delete control
+for user categories, but not the reserved bucket) and a drop area holding
+its item chips.
 -}
-viewCartSection : Dict String String -> Loc -> ( String, List Item ) -> Html Msg
-viewCartSection nameToTierRail loc ( dept, items ) =
-    div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "7px" ) ])
-        [ div
-            (styles
-                [ ( "font-family", "'IBM Plex Mono',monospace" )
-                , ( "font-size", "10.5px" )
-                , ( "font-weight", "600" )
-                , ( "letter-spacing", "0.6px" )
-                , ( "text-transform", "uppercase" )
-                , ( "color", "oklch(0.45 0.07 150)" )
-                , ( "border-bottom", "1px solid oklch(0.9 0.012 86)" )
-                , ( "padding-bottom", "4px" )
-                ]
+viewCartCard : Dict String String -> Maybe String -> Card -> Html Msg
+viewCartCard nameToTierRail confirmingDelete card =
+    let
+        loc =
+            StoragePane card.id
+
+        railBg =
+            if card.rail == "" then
+                "oklch(0.52 0.1 42)"
+
+            else
+                card.rail
+
+        -- The reserved bucket is permanent; only user categories can be
+        -- deleted.
+        controls =
+            if card.name == shoppingCartName then
+                []
+
+            else
+                [ categoryDeleteControl (confirmingDelete == Just card.id) (RequestDelete card.id) (RemovePane card.id) CancelDelete ]
+
+        body =
+            if List.isEmpty card.items then
+                [ span [ class "cart-empty-hint" ] [ text "Drag foods here." ] ]
+
+            else
+                card.items
+                    |> List.sortBy (\i -> String.toLower i.name)
+                    |> List.map (viewItem False "" nameToTierRail loc)
+    in
+    div (class "cart-cat" :: dropZone loc)
+        [ div (class "cart-cat-head" :: [ style "background" railBg ])
+            (span [ class "cart-cat-title" ] [ text card.name ]
+                :: span [ class "cart-cat-count" ] [ text (String.fromInt (List.length card.items)) ]
+                :: controls
             )
-            [ text dept ]
-        , div (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ) ])
-            (List.map (viewItem False "" nameToTierRail loc) items)
+        , div [ class "cart-cat-body" ] body
         ]

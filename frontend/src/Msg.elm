@@ -23,6 +23,9 @@ type Msg
     | RemoveFoodMsg Loc String
     | RemoveRecipe String
     | RemovePane String
+    | RemoveCategory String
+    | RequestDelete String
+    | CancelDelete
     | StartEditPane String
     | EditPaneName String
     | EditPaneMeta String

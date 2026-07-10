@@ -75,6 +75,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
       rail: "#222".into(),
       line: "#333".into(),
       note: "".into(),
+      zone: "kitchen".into(),
       items: vec![Item {
         id: "i1".into(),
         name: "Rice".into(),

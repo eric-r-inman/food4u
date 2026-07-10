@@ -17,7 +17,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, foodChipStyle, searchHighlightStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..))
-import Ui exposing (collapsedColumnBar, columnTitleBar, notepadButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, notepadButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
 
 
 viewPyramidColumn : Model -> Data -> Html Msg
@@ -30,17 +30,18 @@ viewPyramidColumn model data =
         -- keystroke or drag in another column does not rebuild and re-diff
         -- the ~500-food tree.  Nothing here consults the drag state, so a
         -- drag never re-renders the pyramid at all.
-        Lazy.lazy6 viewPyramidBody
+        Lazy.lazy7 viewPyramidBody
             model.search
             model.toggled
             model.adding
             model.addValue
+            model.confirmingDelete
             model.derived.inStock
             data.tiers
 
 
-viewPyramidBody : String -> Set String -> Maybe AddTarget -> String -> Set String -> List Tier -> Html Msg
-viewPyramidBody rawSearch toggled adding addValue inStock tiers =
+viewPyramidBody : String -> Set String -> Maybe AddTarget -> String -> Maybe String -> Set String -> List Tier -> Html Msg
+viewPyramidBody rawSearch toggled adding addValue confirmingDelete inStock tiers =
     let
         search =
             String.toLower (String.trim rawSearch)
@@ -53,13 +54,13 @@ viewPyramidBody rawSearch toggled adding addValue inStock tiers =
         , div [ class "pyramid-body" ]
             [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput
             , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
-                (List.map (viewTier toggled adding addValue inStock search) tiers)
+                (List.map (viewTier toggled adding addValue confirmingDelete inStock search) tiers)
             ]
         ]
 
 
-viewTier : Set String -> Maybe AddTarget -> String -> Set String -> String -> Tier -> Html Msg
-viewTier toggled adding addValue inStock search tier =
+viewTier : Set String -> Maybe AddTarget -> String -> Maybe String -> Set String -> String -> Tier -> Html Msg
+viewTier toggled adding addValue confirmingDelete inStock search tier =
     let
         foodCount =
             tier.groups |> List.concatMap .foods |> List.length
@@ -97,14 +98,14 @@ viewTier toggled adding addValue inStock search tier =
                 , ( "gap", "12px" )
                 ]
             )
-            (List.map (viewCategory toggled adding addValue inStock search tier) tier.groups
+            (List.map (viewCategory toggled adding addValue confirmingDelete inStock search tier) tier.groups
                 ++ [ viewAdder adding addValue (AddCategory tier.id) "New category…" "+ Add category" ]
             )
         ]
 
 
-viewCategory : Set String -> Maybe AddTarget -> String -> Set String -> String -> Tier -> Group -> Html Msg
-viewCategory toggled adding addValue inStock search tier group =
+viewCategory : Set String -> Maybe AddTarget -> String -> Maybe String -> Set String -> String -> Tier -> Group -> Html Msg
+viewCategory toggled adding addValue confirmingDelete inStock search tier group =
     let
         loc =
             PyramidGroup group.id
@@ -152,6 +153,7 @@ viewCategory toggled adding addValue inStock search tier group =
                 ]
             , span [] [ text group.label ]
             , span (styles [ ( "margin-left", "auto" ), ( "opacity", "0.55" ), ( "font-weight", "500" ) ]) [ text (String.fromInt (List.length group.foods)) ]
+            , categoryDeleteControl (confirmingDelete == Just group.id) (RequestDelete group.id) (RemoveCategory group.id) CancelDelete
             ]
             :: (if isCollapsed then
                     []
