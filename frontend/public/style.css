@@ -41,6 +41,15 @@
   --select-toggle-on-bg: oklch(0.52 0.1 145);
   --select-toggle-on-fg: #fff;
 
+  /* The "Deselect all" button beside the toggle, and the fat green
+     "Move selected here" arrow on pane and category headers. */
+  --deselect-border: oklch(0.82 0.03 60);
+  --deselect-bg: #fff;
+  --deselect-fg: oklch(0.45 0.02 60);
+  --move-here-bg: oklch(0.58 0.16 145);
+  --move-here-hover-bg: oklch(0.52 0.17 145);
+  --move-here-fg: #fff;
+
   /* The delete-confirmation button on a pane header. */
   --pane-confirm-delete-border: oklch(0.7 0.15 25);
   --pane-confirm-delete-bg: oklch(0.62 0.2 25);
@@ -653,11 +662,41 @@ button {
   color: var(--select-toggle-on-fg);
 }
 
+.deselect-all-btn {
+  font-family: var(--pane-btn-font);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid var(--deselect-border);
+  background: var(--deselect-bg);
+  color: var(--deselect-fg);
+}
+
 /* On a phone the toggle is the point; drop the hint to save the row. */
 @media (max-width: 640px) {
   .select-bar-hint {
     display: none;
   }
+}
+
+/* The fat green "Move selected here" arrow on a pane or category header. */
+.move-here-btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 3px 9px;
+  background: var(--move-here-bg);
+  color: var(--move-here-fg);
+}
+
+.move-here-btn:hover {
+  background: var(--move-here-hover-bg);
 }
 
 /* The tap-to-select circle at the left of an item badge while its column

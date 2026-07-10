@@ -58,6 +58,8 @@ type Msg
     | ClearCart
     | ToggleSelectMode
     | ToggleItemSelected String
+    | MoveSelectedTo Loc
+    | DeselectAll
     | DragStart Loc String
     | DragEnd
     | DropOn Loc

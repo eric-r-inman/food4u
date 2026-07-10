@@ -474,6 +474,29 @@ update msg model =
             , Cmd.none
             )
 
+        MoveSelectedTo target ->
+            -- Move every selected item into the clicked area, keeping them
+            -- selected (at their new home if they moved) so a further
+            -- destination can be chosen.
+            withData model
+                (\data ->
+                    let
+                        ( newData, newSeq, newKeys ) =
+                            moveSelectedHere target (Set.toList model.selection.items) model.seq data
+                    in
+                    ( { model
+                        | data = Just newData
+                        , derived = derive newData
+                        , seq = newSeq
+                        , selection = { active = model.selection.active, items = Set.fromList newKeys }
+                      }
+                    , saveModel newData
+                    )
+                )
+
+        DeselectAll ->
+            ( { model | selection = { active = model.selection.active, items = Set.empty } }, Cmd.none )
+
         DragStart loc foodId ->
             ( { model | drag = Just (Drag loc foodId) }, Cmd.none )
 
@@ -1195,9 +1218,36 @@ performDrop drag target seq data =
                         ( data, seq )
 
 
+{-| Apply one selected item at a target, whatever the target is: added as a
+pyramid food (a pyramid group is otherwise never a drop target), or dropped
+into a storage or recipe list with the usual copy-or-move rules. A drop onto
+the item's own location is a no-op.
+-}
+dropOneHere : Loc -> String -> Loc -> Int -> Data -> ( Data, Int )
+dropOneHere from foodId target seq data =
+    case target of
+        PyramidGroup gid ->
+            draggedNameNa (Drag from foodId) data
+                |> Maybe.map
+                    (\( name, na ) ->
+                        if pyramidHasName name data then
+                            ( data, seq )
+
+                        else
+                            ( pushFood gid (Food (nextId seq) name "F" False na "") data, seq + 1 )
+                    )
+                |> Maybe.withDefault ( data, seq )
+
+        _ ->
+            if from == target then
+                ( data, seq )
+
+            else
+                performDrop (Drag from foodId) target seq data
+
+
 {-| Drop every selected item onto one target, each with its own copy/move
-semantics, skipping any already at the target, threading the id sequence
-through the sequence of drops.
+semantics, threading the id sequence through the sequence of drops.
 -}
 performMultiDrop : List String -> Loc -> Int -> Data -> ( Data, Int )
 performMultiDrop keys target seq data =
@@ -1205,17 +1255,56 @@ performMultiDrop keys target seq data =
         (\key ( d, s ) ->
             case parseSelKey key of
                 Just ( from, foodId ) ->
-                    if from == target then
-                        ( d, s )
-
-                    else
-                        performDrop (Drag from foodId) target s d
+                    dropOneHere from foodId target s d
 
                 Nothing ->
                     ( d, s )
         )
         ( data, seq )
         keys
+
+
+{-| Move every selected item to a target and report their new selection
+keys, so a "move selected here" leaves the same items selected — at their
+new location for an item that moved, at the source for a copy.
+-}
+moveSelectedHere : Loc -> List String -> Int -> Data -> ( Data, Int, List String )
+moveSelectedHere target keys seq data =
+    List.foldl
+        (\key ( d, s, acc ) ->
+            case parseSelKey key of
+                Just ( from, foodId ) ->
+                    let
+                        ( d2, s2 ) =
+                            dropOneHere from foodId target s d
+
+                        newKey =
+                            if itemStillAt from foodId d2 then
+                                selKey from foodId
+
+                            else
+                                selKey target foodId
+                    in
+                    ( d2, s2, newKey :: acc )
+
+                Nothing ->
+                    ( d, s, key :: acc )
+        )
+        ( data, seq, [] )
+        keys
+
+
+{-| Whether the item is still at the given location after a drop — true for
+a copy (the source is kept), false for a move (the source is emptied).
+-}
+itemStillAt : Loc -> String -> Data -> Bool
+itemStillAt loc foodId data =
+    case loc of
+        PyramidGroup gid ->
+            foodInGroup gid foodId data /= Nothing
+
+        _ ->
+            itemInStorage loc foodId data /= Nothing
 
 
 toggleMember : comparable -> Set comparable -> Set comparable
@@ -1389,7 +1478,7 @@ view : Model -> Html Msg
 view model =
     div [ class "app-root" ]
         [ viewToolbar model.me
-        , viewSelectBar model.selection.active
+        , viewSelectBar model.selection.active (Set.size model.selection.items)
         , viewError model.error
         , case model.data of
             Just data ->
@@ -1474,14 +1563,21 @@ viewToolbar me =
 
 {-| The app-wide select-mode row under the title bar: one toggle that, when
 on, marks every column's item badges with a tap-to-select circle so several
-can be moved with a single drag.
+can be moved at once — by dragging one, or with the ⬇ on a destination. A
+"Deselect all" appears once more than one item is picked.
 -}
-viewSelectBar : Bool -> Html Msg
-viewSelectBar active =
+viewSelectBar : Bool -> Int -> Html Msg
+viewSelectBar active selectedCount =
     div [ class "noprint", class "select-bar" ]
-        [ selectToggle active ToggleSelectMode
-        , span [ class "select-bar-hint" ] [ text "Tap item badges to select several, then drag one to move them all." ]
-        ]
+        (selectToggle active ToggleSelectMode
+            :: (if selectedCount > 1 then
+                    [ button [ type_ "button", class "deselect-all-btn", onClick DeselectAll ] [ text "Deselect all" ] ]
+
+                else
+                    []
+               )
+            ++ [ span [ class "select-bar-hint" ] [ text "Tap item badges to select, then drag one — or press the ⬇ on a destination — to move them all." ] ]
+        )
 
 
 {-| The sign-in / sign-out control. Empty in a local unauthenticated run;

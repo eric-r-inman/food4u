@@ -17,7 +17,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, foodChipStyle, searchHighlightStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..))
-import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, notepadButton, recipeDropZone, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, moveHereButton, notepadButton, recipeDropZone, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 viewPyramidColumn : Model -> Data -> Html Msg
@@ -126,6 +126,15 @@ viewCategory toggled adding addValue confirmingDelete selectMode selected inStoc
         -- its sub-category.
         bg =
             tierChipBg tier.rail
+
+        -- While items are selected, a green arrow adds the whole selection
+        -- to this category as pyramid foods.
+        moveControl =
+            if selectMode && not (Set.isEmpty selected) then
+                [ moveHereButton (MoveSelectedTo loc) ]
+
+            else
+                []
     in
     div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "8px" ) ] ++ recipeDropZone group.id)
         (div
@@ -146,7 +155,7 @@ viewCategory toggled adding addValue confirmingDelete selectMode selected inStoc
                     , ( "user-select", "none" )
                     ]
             )
-            [ span (styles [ ( "font-size", "9px" ), ( "opacity", "0.7" ) ])
+            ([ span (styles [ ( "font-size", "9px" ), ( "opacity", "0.7" ) ])
                 [ text
                     (if isCollapsed then
                         "▶"
@@ -155,10 +164,12 @@ viewCategory toggled adding addValue confirmingDelete selectMode selected inStoc
                         "▼"
                     )
                 ]
-            , span [] [ text group.label ]
-            , span (styles [ ( "margin-left", "auto" ), ( "opacity", "0.55" ), ( "font-weight", "500" ) ]) [ text (String.fromInt (List.length group.foods)) ]
-            , categoryDeleteControl (confirmingDelete == Just group.id) (RequestDelete group.id) (RemoveCategory group.id) CancelDelete
-            ]
+             , span [] [ text group.label ]
+             , span (styles [ ( "margin-left", "auto" ), ( "opacity", "0.55" ), ( "font-weight", "500" ) ]) [ text (String.fromInt (List.length group.foods)) ]
+             ]
+                ++ moveControl
+                ++ [ categoryDeleteControl (confirmingDelete == Just group.id) (RequestDelete group.id) (RemoveCategory group.id) CancelDelete ]
+            )
             :: (if isCollapsed then
                     []
 

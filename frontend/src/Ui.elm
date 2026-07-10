@@ -6,6 +6,7 @@ module Ui exposing
     , draggable
     , dropZone
     , editingPaneDomId
+    , moveHereButton
     , notepadButton
     , paneColorButton
     , paneColorSwatch
@@ -136,6 +137,22 @@ column is in select mode: an empty ring, filled when the item is selected.
 selectionCircle : Bool -> Html Msg
 selectionCircle selected =
     span [ classList [ ( "sel-circle", True ), ( "sel-circle-on", selected ) ] ] []
+
+
+{-| The fat green down-arrow shown on a pane or category header while items
+are selected: pressing it moves the whole selection into that area. It sits
+in a header that is itself a collapse or edit toggle, so its click must not
+propagate.
+-}
+moveHereButton : Msg -> Html Msg
+moveHereButton msg =
+    button
+        [ type_ "button"
+        , class "move-here-btn"
+        , title "Move selected here"
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
+        [ text "⬇" ]
 
 
 {-| The slim vertical bar a Pyramid/Kitchen column collapses to, in the

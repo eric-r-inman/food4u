@@ -18,7 +18,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, panePalette, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, editingPaneDomId, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
+import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, editingPaneDomId, moveHereButton, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
 
 
 viewKitchenColumn : Model -> Data -> Html Msg
@@ -196,6 +196,15 @@ viewPane toggled search selectMode selected derived edit card =
                     , paneEditButton (StartEditPane card.id)
                     ]
 
+        -- While items are selected (and the pane is not being edited), a
+        -- green arrow moves the whole selection into this pane.
+        moveControl =
+            if selectMode && not (Set.isEmpty selected) && edit == Nothing then
+                [ moveHereButton (MoveSelectedTo stockLoc) ]
+
+            else
+                []
+
         title =
             case edit of
                 Just e ->
@@ -250,7 +259,7 @@ viewPane toggled search selectMode selected derived edit card =
                 )
                 (div [ class "pane-head-row" ]
                     [ div [ class "pane-head-title" ] title
-                    , div [ class "pane-header-meta" ] controls
+                    , div [ class "pane-header-meta" ] (moveControl ++ controls)
                     ]
                     :: metaRow
                     :: swatches

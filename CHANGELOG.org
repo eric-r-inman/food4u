@@ -5,8 +5,12 @@
 ** Added
 - Select several items and move them together: a "Select: off / on" toggle in
   its own row under the page title turns on a tap-to-select circle on every item
-  badge. Dragging one selected badge then moves the whole selection at once — a
-  friendlier alternative to dragging items one at a time. Badges still drag
+  badge. Move the whole selection either by dragging one selected badge, or —
+  with no dragging at all, so it works on a phone — by pressing the green ⬇
+  "Move selected here" arrow that appears on each Kitchen pane, Longevity
+  category, and Shopping List category while items are selected; the items stay
+  selected so you can send them somewhere else too. A "Deselect all" button
+  appears beside the toggle once more than one item is picked. Badges still drag
   individually with a click-and-hold.
 - Organize the Shopping List into your own categories: it starts with a default
   set (Produce, Canned & Dry Goods, Dairy, and so on), and you can add your own,

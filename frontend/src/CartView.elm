@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, dropZone, viewAdder, viewItem)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, dropZone, moveHereButton, viewAdder, viewItem)
 
 
 viewCartColumn : Model -> Data -> Html Msg
@@ -103,6 +103,15 @@ viewCartCard nameToTierRail toggled selectMode selected confirmingDelete card =
             else
                 [ categoryDeleteControl (confirmingDelete == Just card.id) (RequestDelete card.id) (RemovePane card.id) CancelDelete ]
 
+        -- While items are selected, a green arrow moves the whole selection
+        -- into this list.
+        moveControl =
+            if selectMode && not (Set.isEmpty selected) then
+                [ moveHereButton (MoveSelectedTo loc) ]
+
+            else
+                []
+
         body =
             if collapsed then
                 []
@@ -131,7 +140,7 @@ viewCartCard nameToTierRail toggled selectMode selected confirmingDelete card =
                 ]
                 :: span [] [ text card.name ]
                 :: span [ class "cart-cat-count" ] [ text (String.fromInt (List.length card.items)) ]
-                :: controls
+                :: (moveControl ++ controls)
             )
             :: body
         )
