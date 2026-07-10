@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, dropZone, selectToggle, viewAdder, viewItem)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, dropZone, viewAdder, viewItem)
 
 
 viewCartColumn : Model -> Data -> Html Msg
@@ -48,7 +48,7 @@ viewCartBody : Indices -> List Card -> Set String -> Maybe AddTarget -> String -
 viewCartBody derived staples toggled adding addValue confirmingDelete selection =
     let
         selectMode =
-            Set.member "cart" selection.columns
+            selection.active
 
         shoppingCards =
             List.filter isShoppingCard staples
@@ -60,7 +60,7 @@ viewCartBody derived staples toggled adding addValue confirmingDelete selection 
                 ++ List.filter (\c -> c.name /= shoppingCartName) shoppingCards
     in
     div (class "cart-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart [ selectToggle selectMode (ToggleSelectMode "cart") ]
+        [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart
         , div [ class "cart-toolbar" ]
             [ button
                 [ type_ "button", class "cart-btn cart-btn-export", onClick ExportShoppingList ]

@@ -46,7 +46,7 @@ import Shopping exposing (cartCardId, shoppingListText)
 import Style exposing (styles)
 import Task
 import Types exposing (AddTarget(..), Me, RecipeFilter(..))
-import Ui exposing (addInputId, editingPaneDomId, pasteInputId)
+import Ui exposing (addInputId, editingPaneDomId, pasteInputId, selectToggle)
 
 
 {-| Persist the AI settings and preferences to the browser's localStorage.
@@ -457,22 +457,17 @@ update msg model =
             , Cmd.none
             )
 
-        ToggleSelectMode column ->
-            -- Toggling a column's select mode starts a fresh selection, so
-            -- no stale picks linger from a previous round.
-            ( { model
-                | selection =
-                    { columns = toggleMember column model.selection.columns
-                    , items = Set.empty
-                    }
-              }
+        ToggleSelectMode ->
+            -- Flipping select mode starts a fresh selection, so no stale
+            -- picks linger from a previous round.
+            ( { model | selection = { active = not model.selection.active, items = Set.empty } }
             , Cmd.none
             )
 
         ToggleItemSelected key ->
             ( { model
                 | selection =
-                    { columns = model.selection.columns
+                    { active = model.selection.active
                     , items = toggleMember key model.selection.items
                     }
               }
@@ -501,7 +496,7 @@ update msg model =
                             , derived = derive newData
                             , seq = newSeq
                             , drag = Nothing
-                            , selection = { columns = model.selection.columns, items = Set.empty }
+                            , selection = { active = model.selection.active, items = Set.empty }
                           }
                         , saveModel newData
                         )
@@ -1394,6 +1389,7 @@ view : Model -> Html Msg
 view model =
     div [ class "app-root" ]
         [ viewToolbar model.me
+        , viewSelectBar model.selection.active
         , viewError model.error
         , case model.data of
             Just data ->
@@ -1473,6 +1469,18 @@ viewToolbar me =
                 [ text "Longevity Pantry" ]
             , div [ class "toolbar-auth" ] (viewAuth me)
             ]
+        ]
+
+
+{-| The app-wide select-mode row under the title bar: one toggle that, when
+on, marks every column's item badges with a tap-to-select circle so several
+can be moved with a single drag.
+-}
+viewSelectBar : Bool -> Html Msg
+viewSelectBar active =
+    div [ class "noprint", class "select-bar" ]
+        [ selectToggle active ToggleSelectMode
+        , span [ class "select-bar-hint" ] [ text "Tap item badges to select several, then drag one to move them all." ]
         ]
 
 

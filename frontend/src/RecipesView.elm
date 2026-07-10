@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, selectAttrs, selectLead, selectToggle, viewAdder, viewSearchField)
+import Ui exposing (dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 recipeCategories : List String
@@ -247,7 +247,6 @@ viewRecipes model data =
                 [ span (styles [ ( "font-size", "10px" ), ( "opacity", "0.85" ) ]) [ text "▼" ]
                 , span (styles [ ( "font-size", "18px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text "Recipes" ]
                 , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt (List.length data.recipes) ++ " RECIPES") ]
-                , div [ class "col-title-trailing" ] [ selectToggle (Set.member "recipes" model.selection.columns) (ToggleSelectMode "recipes") ]
                 ]
             , div [ class "recipes-body" ]
                 (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput
@@ -374,7 +373,7 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                          else
                             [ viewRecipeFooter model category ]
                         )
-                            ++ List.map (viewRecipe model.toggled (Set.member "recipes" model.selection.columns) model.selection.items nameToTierRail inStock stockedNoCart recipeSearch) recipesInCat
+                            ++ List.map (viewRecipe model.toggled model.selection.active model.selection.items nameToTierRail inStock stockedNoCart recipeSearch) recipesInCat
                    )
             )
 

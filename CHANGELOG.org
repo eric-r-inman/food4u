@@ -3,11 +3,11 @@
 
 * Upcoming
 ** Added
-- Select several items and move them together: each column's title bar has a
-  "Select: off / on" toggle; turn it on and every item badge shows a circle you
-  tap to select. Dragging one selected badge then moves the whole selection at
-  once — a friendlier alternative to dragging items one at a time. Badges still
-  drag individually with a click-and-hold.
+- Select several items and move them together: a "Select: off / on" toggle in
+  its own row under the page title turns on a tap-to-select circle on every item
+  badge. Dragging one selected badge then moves the whole selection at once — a
+  friendlier alternative to dragging items one at a time. Badges still drag
+  individually with a click-and-hold.
 - Organize the Shopping List into your own categories: it starts with a default
   set (Produce, Canned & Dry Goods, Dairy, and so on), and you can add your own,
   drag to-buy items into any of them, and delete a category — with a

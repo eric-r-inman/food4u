@@ -30,9 +30,16 @@
   --pane-rail-line: rgba(255, 255, 255, 0.5);
   --pane-rail-fill: rgba(255, 255, 255, 0.14);
 
-  /* The dark label of the "Select: on" toggle once it is switched on and
-     reads as a solid white pill on the column's coloured title bar. */
-  --select-on-fg: oklch(0.32 0.02 70);
+  /* The app-wide select-mode row under the title bar, and its toggle: a
+     bordered pill that fills green when switched on. */
+  --select-bar-bg: oklch(0.98 0.008 86);
+  --select-bar-border: oklch(0.9 0.012 86);
+  --select-bar-hint-fg: oklch(0.5 0.012 70);
+  --select-toggle-border: oklch(0.82 0.05 145);
+  --select-toggle-bg: #fff;
+  --select-toggle-fg: oklch(0.42 0.06 145);
+  --select-toggle-on-bg: oklch(0.52 0.1 145);
+  --select-toggle-on-fg: #fff;
 
   /* The delete-confirmation button on a pane header. */
   --pane-confirm-delete-border: oklch(0.7 0.15 25);
@@ -612,33 +619,45 @@ button {
   color: var(--cart-empty-hint-fg);
 }
 
-/* The "Select: off / on" toggle at the right of a column's title bar. It
-   sits on the coloured rail, so it reuses the pane header control's
-   translucent-white treatment; switched on, it fills to a solid pill. */
-.col-title-trailing {
-  margin-left: auto;
+/* The app-wide select-mode row under the page title bar, and its toggle. */
+.select-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 14px;
+  padding: 9px 20px;
+  background: var(--select-bar-bg);
+  border-bottom: 1px solid var(--select-bar-border);
+}
+
+.select-bar-hint {
+  font-size: 12.5px;
+  color: var(--select-bar-hint-fg);
 }
 
 .select-toggle {
   font-family: var(--pane-btn-font);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 4px 11px;
+  padding: 5px 13px;
   border-radius: 20px;
   cursor: pointer;
   white-space: nowrap;
-  border: 1px solid var(--pane-rail-line);
-  background: var(--pane-rail-fill);
-  color: var(--pane-fg);
+  border: 1px solid var(--select-toggle-border);
+  background: var(--select-toggle-bg);
+  color: var(--select-toggle-fg);
 }
 
 .select-toggle-on {
-  background: var(--pane-fg);
-  border-color: var(--pane-fg);
-  color: var(--select-on-fg);
+  background: var(--select-toggle-on-bg);
+  border-color: var(--select-toggle-on-bg);
+  color: var(--select-toggle-on-fg);
+}
+
+/* On a phone the toggle is the point; drop the hint to save the row. */
+@media (max-width: 640px) {
+  .select-bar-hint {
+    display: none;
+  }
 }
 
 /* The tap-to-select circle at the left of an item badge while its column

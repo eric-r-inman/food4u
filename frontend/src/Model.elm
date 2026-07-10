@@ -20,22 +20,22 @@ type alias Drag =
     }
 
 
-{-| Tap-to-select state, a drag alternative. `columns` holds the keys of
-the columns currently in select mode ("pyramid", "recipes", "kitchen",
-"cart"), so their item badges show a selection circle; `items` holds the
-selection keys (see `Data.selKey`) of the tapped badges. Kept as one record
-so a whole column view takes it as a single lazy input. Dragging a selected
+{-| Tap-to-select state, a drag alternative. `active` is the single
+app-wide select mode toggled from the bar under the title; while on, every
+column's item badges show a selection circle. `items` holds the selection
+keys (see `Data.selKey`) of the tapped badges. Kept as one record so a
+whole column view takes it as a single lazy input. Dragging a selected
 badge moves every selected item at once.
 -}
 type alias Selection =
-    { columns : Set String
+    { active : Bool
     , items : Set String
     }
 
 
 noSelection : Selection
 noSelection =
-    { columns = Set.empty, items = Set.empty }
+    { active = False, items = Set.empty }
 
 
 {-| The AI recipe assistant's state. `settings` and `prefs` persist across

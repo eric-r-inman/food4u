@@ -73,11 +73,10 @@ editingPaneDomId =
 
 {-| A big title row that toggles a whole column open/closed, in the
 "Longevity Foods" style. With `Just color` it is a filled rail bar with
-white text; with `Nothing` it is dark text on the card background. Any
-`trailing` controls are pushed to the right edge of the row.
+white text; with `Nothing` it is dark text on the card background.
 -}
-columnTitleBar : Maybe String -> String -> Msg -> List (Html Msg) -> Html Msg
-columnTitleBar maybeBg titleText toggleMsg trailing =
+columnTitleBar : Maybe String -> String -> Msg -> Html Msg
+columnTitleBar maybeBg titleText toggleMsg =
     let
         ( bg, fg, bottomBorder ) =
             case maybeBg of
@@ -102,21 +101,14 @@ columnTitleBar maybeBg titleText toggleMsg trailing =
                 , ( "flex", "0 0 auto" )
                 ]
         )
-        (span (styles [ ( "font-size", "13px" ), ( "opacity", "0.55" ) ]) [ text "▼" ]
-            :: span (styles [ ( "font-size", "28px" ), ( "font-weight", "800" ), ( "letter-spacing", "-0.8px" ) ]) [ text titleText ]
-            :: (if List.isEmpty trailing then
-                    []
-
-                else
-                    [ div [ class "col-title-trailing" ] trailing ]
-               )
-        )
+        [ span (styles [ ( "font-size", "13px" ), ( "opacity", "0.55" ) ]) [ text "▼" ]
+        , span (styles [ ( "font-size", "28px" ), ( "font-weight", "800" ), ( "letter-spacing", "-0.8px" ) ]) [ text titleText ]
+        ]
 
 
-{-| The "Select: off / on" toggle shown at the right of a column's title
-bar. Turning it on marks the column's item badges with a tap-to-select
-circle, a drag alternative for touch. Its click must not toggle the whole
-column open/closed.
+{-| The app-wide "Select: off / on" toggle shown in its own row under the
+page title. Turning it on marks every column's item badges with a
+tap-to-select circle, a drag alternative for touch.
 -}
 selectToggle : Bool -> Msg -> Html Msg
 selectToggle on msg =
