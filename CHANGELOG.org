@@ -48,6 +48,10 @@
 - Recolour a Kitchen pane's header from the app's palette while editing it, and
   delete a pane — with a confirmation — from the same editor.
 ** Fixes
+- A recipe's cart button is now green only when the recipe has an ingredient
+  that is neither in the Kitchen nor already on the Shopping List; when there is
+  nothing left to add it is greyed out, so a glance says which recipes still
+  need shopping.
 - The "Paste" and "AI" buttons in a recipe category now work: pressing one no
   longer dismisses the add row before the click takes effect.
 - Adding items after a fresh page load — by dragging, by the Staples Tracker

@@ -274,25 +274,18 @@ notepadButton msg =
 
 
 {-| Sends every not-yet-stocked ingredient of the recipe to the Shopping
-Cart pane.
+List. It is green while `active` — when the recipe has an ingredient that is
+neither in the Kitchen nor already on the Shopping List — and greyed out
+when there is nothing left to add.
 -}
-recipeCartButton : Msg -> Html Msg
-recipeCartButton msg =
+recipeCartButton : Bool -> Msg -> Html Msg
+recipeCartButton active msg =
     button
-        (type_ "button"
-            :: onClick msg
-            :: title "Add missing ingredients to Shopping List"
-            :: styles
-                [ ( "font-size", "12px" )
-                , ( "padding", "2px 7px" )
-                , ( "border-radius", "5px" )
-                , ( "cursor", "pointer" )
-                , ( "border", "1px solid oklch(0.8 0.06 150)" )
-                , ( "background", "oklch(0.95 0.04 150)" )
-                , ( "color", "oklch(0.4 0.1 150)" )
-                , ( "line-height", "1.2" )
-                ]
-        )
+        [ type_ "button"
+        , classList [ ( "recipe-cart-btn", True ), ( "recipe-cart-btn-active", active ) ]
+        , title "Add missing ingredients to Shopping List"
+        , onClick msg
+        ]
         [ text "🛒" ]
 
 

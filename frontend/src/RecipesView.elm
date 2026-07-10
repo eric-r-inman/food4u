@@ -398,6 +398,12 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
         -- True when every ingredient is on hand: can be made without shopping.
         allStocked =
             not (List.isEmpty recipe.ingredients) && List.isEmpty missing
+
+        -- The cart button has work — and so shows green — when some
+        -- ingredient is neither in the Kitchen nor already on the Shopping
+        -- List (the two the `inStock` set covers).
+        cartActive =
+            List.any (\i -> not (Set.member (String.toLower i.name) inStock)) recipe.ingredients
     in
     div
         (styles
@@ -471,7 +477,7 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                     :: styles [ ( "cursor", "grab" ), ( "font-size", "13px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "padding", "0 2px" ), ( "user-select", "none" ) ]
                 )
                 [ text "⠿" ]
-            , recipeCartButton (AddRecipeToCart recipe.id)
+            , recipeCartButton cartActive (AddRecipeToCart recipe.id)
             , recipeDeleteButton (RemoveRecipe recipe.id)
             ]
             :: (if collapsed then

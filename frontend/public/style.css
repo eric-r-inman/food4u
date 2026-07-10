@@ -50,6 +50,15 @@
   --move-here-hover-bg: oklch(0.52 0.17 145);
   --move-here-fg: #fff;
 
+  /* The recipe header's cart button: a green pill when the recipe still has
+     something to buy, a muted grey one when everything is already stocked. */
+  --recipe-cart-border: oklch(0.86 0.008 86);
+  --recipe-cart-bg: oklch(0.96 0.004 86);
+  --recipe-cart-fg: oklch(0.6 0.008 86);
+  --recipe-cart-active-border: oklch(0.8 0.06 150);
+  --recipe-cart-active-bg: oklch(0.95 0.04 150);
+  --recipe-cart-active-fg: oklch(0.4 0.1 150);
+
   /* The delete-confirmation button on a pane header. */
   --pane-confirm-delete-border: oklch(0.7 0.15 25);
   --pane-confirm-delete-bg: oklch(0.62 0.2 25);
@@ -680,6 +689,30 @@ button {
   .select-bar-hint {
     display: none;
   }
+}
+
+/* The recipe header's cart button: greyed (and its emoji desaturated) until
+   the recipe has an ingredient that is neither stocked nor on the list, when
+   it goes full-colour green. */
+.recipe-cart-btn {
+  font-size: 12px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1.2;
+  border: 1px solid var(--recipe-cart-border);
+  background: var(--recipe-cart-bg);
+  color: var(--recipe-cart-fg);
+  filter: grayscale(1);
+  opacity: 0.65;
+}
+
+.recipe-cart-btn-active {
+  border-color: var(--recipe-cart-active-border);
+  background: var(--recipe-cart-active-bg);
+  color: var(--recipe-cart-active-fg);
+  filter: none;
+  opacity: 1;
 }
 
 /* The fat green "Move selected here" arrow on a pane or category header. */
