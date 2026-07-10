@@ -12,7 +12,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Lazy
-import Model exposing (Model)
+import Model exposing (Indices, Model)
 import Msg exposing (Msg(..))
 import Shopping exposing (groupByDepartment)
 import Style exposing (cardStyle, styles)
@@ -38,11 +38,11 @@ viewCartColumn model data =
         -- The cart reads only the department map and the storage list, and
         -- nothing about the drag state, so it re-renders only when the
         -- stored data changes — not on a keystroke in another column.
-        Lazy.lazy2 viewCartBody model.derived.nameCategory data.staples
+        Lazy.lazy2 viewCartBody model.derived data.staples
 
 
-viewCartBody : Dict String String -> List Card -> Html Msg
-viewCartBody nameToCat staples =
+viewCartBody : Indices -> List Card -> Html Msg
+viewCartBody derived staples =
     let
         cartMaybe =
             List.head (List.filter (\c -> c.name == shoppingCartName) staples)
@@ -64,7 +64,7 @@ viewCartBody nameToCat staples =
                         StoragePane cart.id
 
                     sections =
-                        groupByDepartment nameToCat cart.items
+                        groupByDepartment derived.nameCategory cart.items
                 in
                 -- The whole body is the drop target, so foods can be
                 -- dropped anywhere in the panel — not just on the chips.
@@ -77,7 +77,7 @@ viewCartBody nameToCat staples =
                         [ span (styles [ ( "font-size", "12px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "font-style", "italic" ) ]) [ text "Drag foods here, or use a recipe's 🛒 button." ] ]
 
                      else
-                        List.map (viewCartSection nameToCat loc) sections
+                        List.map (viewCartSection derived.nameTierRail loc) sections
                     )
 
             Nothing ->
@@ -89,7 +89,7 @@ viewCartBody nameToCat staples =
 items in that department.
 -}
 viewCartSection : Dict String String -> Loc -> ( String, List Item ) -> Html Msg
-viewCartSection nameToCat loc ( dept, items ) =
+viewCartSection nameToTierRail loc ( dept, items ) =
     div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "7px" ) ])
         [ div
             (styles
@@ -105,5 +105,5 @@ viewCartSection nameToCat loc ( dept, items ) =
             )
             [ text dept ]
         , div (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ) ])
-            (List.map (viewItem False "" nameToCat loc) items)
+            (List.map (viewItem False "" nameToTierRail loc) items)
         ]

@@ -1,6 +1,5 @@
 module Style exposing
     ( cardStyle
-    , categoryChipBg
     , chipBase
     , foodChipStyle
     , panePalette
@@ -109,65 +108,6 @@ oklchHue color =
         |> String.words
         |> List.drop 2
         |> List.head
-
-
-{-| Very light background tint for each pyramid category, so foods read
-at a glance by the group they belong to. Unmapped categories fall back
-to white.
--}
-categoryChipBg : String -> String
-categoryChipBg label =
-    case label of
-        "Oils & healthy fats" ->
-            "oklch(0.96 0.06 98)"
-
-        "Leafy greens" ->
-            "oklch(0.92 0.075 150)"
-
-        "Vegetables" ->
-            "oklch(0.95 0.05 135)"
-
-        "Whole grains" ->
-            "oklch(0.93 0.035 82)"
-
-        "Fruit" ->
-            "oklch(0.94 0.05 315)"
-
-        "Herbs & spices" ->
-            "oklch(0.95 0.045 175)"
-
-        "Tea & botanicals" ->
-            "oklch(0.95 0.006 250)"
-
-        "Legumes & pulses" ->
-            "oklch(0.93 0.07 52)"
-
-        "Nuts & seeds" ->
-            "oklch(0.9 0.045 62)"
-
-        "Soy & fermented" ->
-            "oklch(0.96 0.08 105)"
-
-        "Cultured dairy · moderate" ->
-            "oklch(0.99 0.002 86)"
-
-        "Supplements" ->
-            "oklch(0.95 0.035 300)"
-
-        "Oily & white fish" ->
-            "oklch(0.94 0.05 245)"
-
-        "Eggs & poultry" ->
-            "oklch(0.95 0.05 210)"
-
-        "Sweeteners & extras" ->
-            "oklch(0.95 0.08 58)"
-
-        "Limit" ->
-            "oklch(0.95 0.08 58)"
-
-        _ ->
-            "oklch(1 0 0)"
 
 
 searchHighlightStyle : List (Attribute msg)

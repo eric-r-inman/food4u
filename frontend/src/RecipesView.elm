@@ -17,7 +17,7 @@ import Json.Decode as Decode
 import Model exposing (Model, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
-import Style exposing (cardStyle, categoryChipBg, chipBase, foodChipStyle, styles)
+import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
 import Ui exposing (dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, viewAdder, viewSearchField)
 
@@ -251,7 +251,7 @@ viewRecipes model data =
             , div [ class "recipes-body" ]
                 (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput
                     :: viewRecipeFilterBar model.recipeFilter
-                    :: List.map (viewRecipeCategory model model.derived.nameCategory model.derived.inStock model.derived.stockedNoCart recipeSearch data) recipeCategories
+                    :: List.map (viewRecipeCategory model model.derived.nameTierRail model.derived.inStock model.derived.stockedNoCart recipeSearch data) recipeCategories
                 )
             ]
 
@@ -286,7 +286,7 @@ viewRecipes model data =
 
 
 viewRecipeCategory : Model -> Dict String String -> Set String -> Set String -> String -> Data -> String -> Html Msg
-viewRecipeCategory model nameToCat inStock stockedNoCart recipeSearch data category =
+viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data category =
     let
         key =
             "recipe:" ++ category
@@ -373,13 +373,13 @@ viewRecipeCategory model nameToCat inStock stockedNoCart recipeSearch data categ
                          else
                             [ viewRecipeFooter model category ]
                         )
-                            ++ List.map (viewRecipe model.toggled nameToCat inStock stockedNoCart recipeSearch) recipesInCat
+                            ++ List.map (viewRecipe model.toggled nameToTierRail inStock stockedNoCart recipeSearch) recipesInCat
                    )
             )
 
 
 viewRecipe : Set String -> Dict String String -> Set String -> Set String -> String -> Recipe -> Html Msg
-viewRecipe toggled nameToCat inStock stockedNoCart recipeSearch recipe =
+viewRecipe toggled nameToTierRail inStock stockedNoCart recipeSearch recipe =
     let
         loc =
             RecipeIngredients recipe.id
@@ -486,7 +486,7 @@ viewRecipe toggled nameToCat inStock stockedNoCart recipeSearch recipe =
                             [ span (styles [ ( "font-size", "12px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "font-style", "italic" ) ]) [ text "Drag ingredients here." ] ]
 
                          else
-                            List.map (viewRecipeItem nameToCat inStock loc) recipe.ingredients
+                            List.map (viewRecipeItem nameToTierRail inStock loc) recipe.ingredients
                         )
                     , div (styles [ ( "margin-top", "10px" ), ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "font-weight", "600" ), ( "letter-spacing", "0.6px" ), ( "text-transform", "uppercase" ), ( "color", "oklch(0.5 0.04 250)" ) ]) [ text "Instructions" ]
                     , textarea
@@ -521,14 +521,14 @@ chips, but outlined in red when the ingredient is not stocked in any
 storage pane (a cue to add it to a shopping list).
 -}
 viewRecipeItem : Dict String String -> Set String -> Loc -> Item -> Html Msg
-viewRecipeItem nameToCat inStock loc item =
+viewRecipeItem nameToTierRail inStock loc item =
     let
         inPyramid =
-            Dict.member (String.toLower item.name) nameToCat
+            Dict.member (String.toLower item.name) nameToTierRail
 
         bg =
-            Dict.get (String.toLower item.name) nameToCat
-                |> Maybe.map categoryChipBg
+            Dict.get (String.toLower item.name) nameToTierRail
+                |> Maybe.map tierChipBg
                 |> Maybe.withDefault "oklch(1 0 0)"
 
         stocked =

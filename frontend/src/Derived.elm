@@ -3,6 +3,7 @@ module Derived exposing
     , inStockNames
     , itemRank
     , nameCategory
+    , nameTierRail
     , recipeMissing
     , stockedExcludingCart
     )
@@ -26,6 +27,18 @@ nameCategory data =
     data.tiers
         |> List.concatMap .groups
         |> List.concatMap (\g -> List.map (\f -> ( String.toLower f.name, g.label )) g.foods)
+        |> Dict.fromList
+
+
+{-| Map each pyramid food name (lowercased) to the rail colour of the tier
+it belongs to, so its badge can be tinted by tier — the same across every
+column — rather than by its sub-category.
+-}
+nameTierRail : Data -> Dict String String
+nameTierRail data =
+    data.tiers
+        |> List.concatMap
+            (\t -> List.map (\f -> ( String.toLower f.name, t.rail )) (List.concatMap .foods t.groups))
         |> Dict.fromList
 
 

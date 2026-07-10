@@ -38,7 +38,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
 import Msg exposing (Msg(..))
-import Style exposing (categoryChipBg, foodChipStyle, searchHighlightStyle, stapleMissingStyle, styles)
+import Style exposing (foodChipStyle, searchHighlightStyle, stapleMissingStyle, styles, tierChipBg)
 import Types exposing (AddTarget)
 
 
@@ -468,17 +468,18 @@ recipeDropZone gid =
     ]
 
 
-{-| A single storage-pane item chip, tinted by its pyramid category and
-highlighted when it matches the current search. Shared by the Kitchen
-panes and the Shopping List sections. A `missing` staple (tracked but not
-on hand) overrides the tint with the red missing style.
+{-| A single storage-pane item chip, tinted by the tier its pyramid food
+belongs to and highlighted when it matches the current search. Shared by
+the Kitchen panes and the Shopping List sections. A `missing` staple
+(tracked but not on hand) overrides the tint with the red missing style.
+The dictionary maps a food name to its tier's rail colour.
 -}
 viewItem : Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
-viewItem missing search nameToCat loc item =
+viewItem missing search nameToTierRail loc item =
     let
         bg =
-            Dict.get (String.toLower item.name) nameToCat
-                |> Maybe.map categoryChipBg
+            Dict.get (String.toLower item.name) nameToTierRail
+                |> Maybe.map tierChipBg
                 |> Maybe.withDefault "oklch(1 0 0)"
 
         chip =

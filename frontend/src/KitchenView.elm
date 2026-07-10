@@ -8,7 +8,6 @@ match.
 
 import Data exposing (Card, Data, Loc(..), shoppingCartName, staplesTrackerName)
 import Derived exposing (itemRank)
-import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -66,7 +65,7 @@ viewKitchenBody adding addValue editingPane rawSearch toggled derived staples =
         , div [ class "kitchen-body" ]
             (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
                 :: trackerView
-                :: List.map (\c -> viewPane toggled kitchenSearch derived.nameCategory derived.categoryRanks (paneEditFor editingPane c) c) kitchenPanes
+                :: List.map (\c -> viewPane toggled kitchenSearch derived (paneEditFor editingPane c) c) kitchenPanes
                 ++ [ viewAdder adding addValue AddPane "New pane name…" "+ Add pane" ]
             )
         ]
@@ -125,7 +124,7 @@ viewStaplesTracker toggled search derived card =
                         [ p [ class "staples-note" ] [ text "Add staple foods here. Click the 🛒 button to add missing staples (not in your Kitchen, colored red) to your shopping list." ]
                         , Keyed.node "div"
                             [ class "staples-items" ]
-                            (List.map (\item -> ( item.id, viewItem (missing item) search derived.nameCategory loc item )) sorted)
+                            (List.map (\item -> ( item.id, viewItem (missing item) search derived.nameTierRail loc item )) sorted)
                         ]
                     ]
                )
@@ -147,8 +146,8 @@ paneEditFor editingPane card =
             )
 
 
-viewPane : Set String -> String -> Dict String String -> Dict String Int -> Maybe PaneEdit -> Card -> Html Msg
-viewPane toggled search nameToCat ranks edit card =
+viewPane : Set String -> String -> Indices -> Maybe PaneEdit -> Card -> Html Msg
+viewPane toggled search derived edit card =
     let
         editing =
             edit /= Nothing
@@ -157,7 +156,7 @@ viewPane toggled search nameToCat ranks edit card =
             StoragePane card.id
 
         sortItems list =
-            List.sortBy (\item -> ( itemRank nameToCat ranks item, String.toLower item.name )) list
+            List.sortBy (\item -> ( itemRank derived.nameCategory derived.categoryRanks item, String.toLower item.name )) list
 
         paneHasMatch =
             search /= "" && List.any (\i -> String.contains search (String.toLower i.name)) card.items
@@ -258,7 +257,7 @@ viewPane toggled search nameToCat ranks edit card =
             else
                 [ Keyed.node "div"
                     (styles [ ( "padding", "14px 15px" ), ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ), ( "min-height", "44px" ), ( "flex", "1" ) ])
-                    (List.map (\item -> ( item.id, viewItem False search nameToCat stockLoc item )) (sortItems card.items))
+                    (List.map (\item -> ( item.id, viewItem False search derived.nameTierRail stockLoc item )) (sortItems card.items))
                 ]
     in
     div

@@ -126,6 +126,7 @@ change and cached on the model instead.
 -}
 type alias Indices =
     { nameCategory : Dict String String
+    , nameTierRail : Dict String String
     , categoryRanks : Dict String Int
     , inStock : Set String
     , stockedNoCart : Set String
@@ -135,6 +136,7 @@ type alias Indices =
 emptyDerived : Indices
 emptyDerived =
     { nameCategory = Dict.empty
+    , nameTierRail = Dict.empty
     , categoryRanks = Dict.empty
     , inStock = Set.empty
     , stockedNoCart = Set.empty
@@ -144,6 +146,7 @@ emptyDerived =
 derive : Data -> Indices
 derive data =
     { nameCategory = Derived.nameCategory data
+    , nameTierRail = Derived.nameTierRail data
     , categoryRanks = Derived.categoryRanks data
     , inStock = Derived.inStockNames data
     , stockedNoCart = Derived.stockedExcludingCart data
