@@ -6,7 +6,7 @@ collapses to its header; a live search force-expands panes that contain a
 match.
 -}
 
-import Data exposing (Card, Data, Loc(..), shoppingCartName, staplesTrackerName)
+import Data exposing (Card, Data, Loc(..), isShoppingCard, shoppingCartName, staplesTrackerName)
 import Derived exposing (itemRank)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -43,11 +43,11 @@ viewKitchenBody adding addValue editingPane rawSearch toggled derived staples =
         kitchenSearch =
             String.toLower (String.trim rawSearch)
 
-        -- The Shopping List is its own column and the Staples Tracker is
-        -- rendered separately below the search field, so neither is one of
-        -- the ordinary, editable kitchen panes.
+        -- The Shopping List and its categories are their own column, and the
+        -- Staples Tracker is rendered separately below the search field, so
+        -- none of them is one of the ordinary, editable kitchen panes.
         kitchenPanes =
-            List.filter (\c -> c.name /= shoppingCartName && c.name /= staplesTrackerName) staples
+            List.filter (\c -> not (isShoppingCard c) && c.name /= staplesTrackerName) staples
 
         anyMatch =
             kitchenSearch /= "" && List.any (\c -> List.any (\i -> String.contains kitchenSearch (String.toLower i.name)) c.items) kitchenPanes
