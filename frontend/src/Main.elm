@@ -377,14 +377,7 @@ update msg model =
                 )
 
         PersistNow ->
-            ( model
-            , case model.data of
-                Just data ->
-                    saveModel data
-
-                Nothing ->
-                    Cmd.none
-            )
+            ( model, model.data |> Maybe.map saveModel |> Maybe.withDefault Cmd.none )
 
         TogglePyramid ->
             ( { model | pyramidOpen = not model.pyramidOpen }, Cmd.none )
@@ -426,12 +419,9 @@ update msg model =
 
         ExportShoppingList ->
             ( model
-            , case model.data of
-                Just data ->
-                    Download.string "shopping-list.txt" "text/plain" (shoppingListText data)
-
-                Nothing ->
-                    Cmd.none
+            , model.data
+                |> Maybe.map (\data -> Download.string "shopping-list.txt" "text/plain" (shoppingListText data))
+                |> Maybe.withDefault Cmd.none
             )
 
         ClearCart ->

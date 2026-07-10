@@ -53,12 +53,11 @@ viewKitchenBody adding addValue editingPane rawSearch toggled derived staples =
             kitchenSearch /= "" && List.any (\c -> List.any (\i -> String.contains kitchenSearch (String.toLower i.name)) c.items) kitchenPanes
 
         trackerView =
-            case List.head (List.filter (\c -> c.name == staplesTrackerName) staples) of
-                Just card ->
-                    viewStaplesTracker toggled kitchenSearch derived card
-
-                Nothing ->
-                    text ""
+            staples
+                |> List.filter (\c -> c.name == staplesTrackerName)
+                |> List.head
+                |> Maybe.map (viewStaplesTracker toggled kitchenSearch derived)
+                |> Maybe.withDefault (text "")
     in
     div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
         [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen

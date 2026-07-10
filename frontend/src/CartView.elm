@@ -29,12 +29,11 @@ viewCartColumn model data =
         collapsedColumnBar "Shopping List"
             "oklch(0.52 0.1 42)"
             ToggleCart
-            (case List.head (List.filter (\c -> c.name == shoppingCartName) data.staples) of
-                Just cart ->
-                    dropZone (StoragePane cart.id)
-
-                Nothing ->
-                    []
+            (data.staples
+                |> List.filter (\c -> c.name == shoppingCartName)
+                |> List.head
+                |> Maybe.map (\cart -> dropZone (StoragePane cart.id))
+                |> Maybe.withDefault []
             )
 
     else
