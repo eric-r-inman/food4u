@@ -12,12 +12,12 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Keyed as Keyed
 import Html.Lazy as Lazy
-import Model exposing (Model, isOpen)
+import Model exposing (Model, Selection, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, foodChipStyle, searchHighlightStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..))
-import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, notepadButton, recipeDropZone, removeButton, viewAdder, viewSearchField)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, notepadButton, recipeDropZone, removeButton, selectAttrs, selectLead, selectToggle, viewAdder, viewSearchField)
 
 
 viewPyramidColumn : Model -> Data -> Html Msg
@@ -30,37 +30,41 @@ viewPyramidColumn model data =
         -- keystroke or drag in another column does not rebuild and re-diff
         -- the ~500-food tree.  Nothing here consults the drag state, so a
         -- drag never re-renders the pyramid at all.
-        Lazy.lazy7 viewPyramidBody
+        Lazy.lazy8 viewPyramidBody
             model.search
             model.toggled
             model.adding
             model.addValue
             model.confirmingDelete
+            model.selection
             model.derived.inStock
             data.tiers
 
 
-viewPyramidBody : String -> Set String -> Maybe AddTarget -> String -> Maybe String -> Set String -> List Tier -> Html Msg
-viewPyramidBody rawSearch toggled adding addValue confirmingDelete inStock tiers =
+viewPyramidBody : String -> Set String -> Maybe AddTarget -> String -> Maybe String -> Selection -> Set String -> List Tier -> Html Msg
+viewPyramidBody rawSearch toggled adding addValue confirmingDelete selection inStock tiers =
     let
         search =
             String.toLower (String.trim rawSearch)
+
+        selectMode =
+            Set.member "pyramid" selection.columns
 
         anyMatch =
             search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) (List.concatMap (\t -> List.concatMap .foods t.groups) tiers)
     in
     div (class "pyramid-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid
+        [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid [ selectToggle selectMode (ToggleSelectMode "pyramid") ]
         , div [ class "pyramid-body" ]
             [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput
             , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
-                (List.map (viewTier toggled adding addValue confirmingDelete inStock search) tiers)
+                (List.map (viewTier toggled adding addValue confirmingDelete selectMode selection.items inStock search) tiers)
             ]
         ]
 
 
-viewTier : Set String -> Maybe AddTarget -> String -> Maybe String -> Set String -> String -> Tier -> Html Msg
-viewTier toggled adding addValue confirmingDelete inStock search tier =
+viewTier : Set String -> Maybe AddTarget -> String -> Maybe String -> Bool -> Set String -> Set String -> String -> Tier -> Html Msg
+viewTier toggled adding addValue confirmingDelete selectMode selected inStock search tier =
     let
         foodCount =
             tier.groups |> List.concatMap .foods |> List.length
@@ -98,14 +102,14 @@ viewTier toggled adding addValue confirmingDelete inStock search tier =
                 , ( "gap", "12px" )
                 ]
             )
-            (List.map (viewCategory toggled adding addValue confirmingDelete inStock search tier) tier.groups
+            (List.map (viewCategory toggled adding addValue confirmingDelete selectMode selected inStock search tier) tier.groups
                 ++ [ viewAdder adding addValue (AddCategory tier.id) "New category…" "+ Add category" ]
             )
         ]
 
 
-viewCategory : Set String -> Maybe AddTarget -> String -> Maybe String -> Set String -> String -> Tier -> Group -> Html Msg
-viewCategory toggled adding addValue confirmingDelete inStock search tier group =
+viewCategory : Set String -> Maybe AddTarget -> String -> Maybe String -> Bool -> Set String -> Set String -> String -> Tier -> Group -> Html Msg
+viewCategory toggled adding addValue confirmingDelete selectMode selected inStock search tier group =
     let
         loc =
             PyramidGroup group.id
@@ -163,7 +167,7 @@ viewCategory toggled adding addValue confirmingDelete inStock search tier group 
                         (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "6px" ) ])
                         (group.foods
                             |> List.sortBy (\f -> String.toLower f.name)
-                            |> List.map (\f -> ( f.id, viewFood bg inStock search loc f ))
+                            |> List.map (\f -> ( f.id, viewFood selectMode selected bg inStock search loc f ))
                         )
                     , viewAdder adding addValue (AddFood loc) "Add food…" "+ Add"
                     ]
@@ -171,8 +175,8 @@ viewCategory toggled adding addValue confirmingDelete inStock search tier group 
         )
 
 
-viewFood : String -> Set String -> String -> Loc -> Food -> Html Msg
-viewFood bg inStock search loc food =
+viewFood : Bool -> Set String -> String -> Set String -> String -> Loc -> Food -> Html Msg
+viewFood selectMode selected bg inStock search loc food =
     let
         matches =
             search /= "" && String.contains search (String.toLower food.name)
@@ -184,8 +188,9 @@ viewFood bg inStock search loc food =
             else
                 foodChipStyle bg (Set.member (String.toLower food.name) inStock)
     in
-    span (class "chip" :: chip ++ Ui.draggable loc food.id)
-        ([ span [] [ text food.name ] ]
+    span (class "chip" :: chip ++ Ui.draggable loc food.id ++ selectAttrs selectMode loc food.id)
+        (selectLead selectMode selected loc food.id
+            ++ [ span [] [ text food.name ] ]
             ++ (if food.recipeId /= "" then
                     [ notepadButton (OpenRecipe food.recipeId) ]
 

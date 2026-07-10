@@ -56,6 +56,8 @@ type Msg
     | CancelPaste
     | ExportShoppingList
     | ClearCart
+    | ToggleSelectMode String
+    | ToggleItemSelected String
     | DragStart Loc String
     | DragEnd
     | DropOn Loc

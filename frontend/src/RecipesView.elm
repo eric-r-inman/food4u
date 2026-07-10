@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, viewAdder, viewSearchField)
+import Ui exposing (dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, selectAttrs, selectLead, selectToggle, viewAdder, viewSearchField)
 
 
 recipeCategories : List String
@@ -247,6 +247,7 @@ viewRecipes model data =
                 [ span (styles [ ( "font-size", "10px" ), ( "opacity", "0.85" ) ]) [ text "▼" ]
                 , span (styles [ ( "font-size", "18px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text "Recipes" ]
                 , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt (List.length data.recipes) ++ " RECIPES") ]
+                , div [ class "col-title-trailing" ] [ selectToggle (Set.member "recipes" model.selection.columns) (ToggleSelectMode "recipes") ]
                 ]
             , div [ class "recipes-body" ]
                 (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput
@@ -373,13 +374,13 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                          else
                             [ viewRecipeFooter model category ]
                         )
-                            ++ List.map (viewRecipe model.toggled nameToTierRail inStock stockedNoCart recipeSearch) recipesInCat
+                            ++ List.map (viewRecipe model.toggled (Set.member "recipes" model.selection.columns) model.selection.items nameToTierRail inStock stockedNoCart recipeSearch) recipesInCat
                    )
             )
 
 
-viewRecipe : Set String -> Dict String String -> Set String -> Set String -> String -> Recipe -> Html Msg
-viewRecipe toggled nameToTierRail inStock stockedNoCart recipeSearch recipe =
+viewRecipe : Set String -> Bool -> Set String -> Dict String String -> Set String -> Set String -> String -> Recipe -> Html Msg
+viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart recipeSearch recipe =
     let
         loc =
             RecipeIngredients recipe.id
@@ -486,7 +487,7 @@ viewRecipe toggled nameToTierRail inStock stockedNoCart recipeSearch recipe =
                             [ span (styles [ ( "font-size", "12px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "font-style", "italic" ) ]) [ text "Drag ingredients here." ] ]
 
                          else
-                            List.map (viewRecipeItem nameToTierRail inStock loc) recipe.ingredients
+                            List.map (viewRecipeItem selectMode selected nameToTierRail inStock loc) recipe.ingredients
                         )
                     , div (styles [ ( "margin-top", "10px" ), ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "font-weight", "600" ), ( "letter-spacing", "0.6px" ), ( "text-transform", "uppercase" ), ( "color", "oklch(0.5 0.04 250)" ) ]) [ text "Instructions" ]
                     , textarea
@@ -520,8 +521,8 @@ viewRecipe toggled nameToTierRail inStock stockedNoCart recipeSearch recipe =
 chips, but outlined in red when the ingredient is not stocked in any
 storage pane (a cue to add it to a shopping list).
 -}
-viewRecipeItem : Dict String String -> Set String -> Loc -> Item -> Html Msg
-viewRecipeItem nameToTierRail inStock loc item =
+viewRecipeItem : Bool -> Set String -> Dict String String -> Set String -> Loc -> Item -> Html Msg
+viewRecipeItem selectMode selected nameToTierRail inStock loc item =
     let
         inPyramid =
             Dict.member (String.toLower item.name) nameToTierRail
@@ -547,8 +548,9 @@ viewRecipeItem nameToTierRail inStock loc item =
                         , ( "color", "oklch(0.45 0.16 25)" )
                         ]
     in
-    span (class "chip" :: chip ++ Ui.draggable loc item.id)
-        ([ span [] [ text item.name ] ]
+    span (class "chip" :: chip ++ Ui.draggable loc item.id ++ selectAttrs selectMode loc item.id)
+        (selectLead selectMode selected loc item.id
+            ++ [ span [] [ text item.name ] ]
             ++ (if inPyramid then
                     []
 

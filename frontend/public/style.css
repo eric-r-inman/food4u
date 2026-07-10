@@ -30,6 +30,10 @@
   --pane-rail-line: rgba(255, 255, 255, 0.5);
   --pane-rail-fill: rgba(255, 255, 255, 0.14);
 
+  /* The dark label of the "Select: on" toggle once it is switched on and
+     reads as a solid white pill on the column's coloured title bar. */
+  --select-on-fg: oklch(0.32 0.02 70);
+
   /* The delete-confirmation button on a pane header. */
   --pane-confirm-delete-border: oklch(0.7 0.15 25);
   --pane-confirm-delete-bg: oklch(0.62 0.2 25);
@@ -606,6 +610,52 @@ button {
   font-size: 12px;
   font-style: italic;
   color: var(--cart-empty-hint-fg);
+}
+
+/* The "Select: off / on" toggle at the right of a column's title bar. It
+   sits on the coloured rail, so it reuses the pane header control's
+   translucent-white treatment; switched on, it fills to a solid pill. */
+.col-title-trailing {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.select-toggle {
+  font-family: var(--pane-btn-font);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid var(--pane-rail-line);
+  background: var(--pane-rail-fill);
+  color: var(--pane-fg);
+}
+
+.select-toggle-on {
+  background: var(--pane-fg);
+  border-color: var(--pane-fg);
+  color: var(--select-on-fg);
+}
+
+/* The tap-to-select circle at the left of an item badge while its column
+   is in select mode: an empty ring in the badge's own colour, filled once
+   the item is selected. */
+.sel-circle {
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.6px solid currentColor;
+  opacity: 0.5;
+}
+
+.sel-circle-on {
+  background: currentColor;
+  opacity: 1;
 }
 
 /* The Staples Tracker: a permanent card at the top of the Kitchen holding

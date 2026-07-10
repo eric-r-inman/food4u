@@ -13,12 +13,12 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Keyed as Keyed
 import Html.Lazy as Lazy
-import Model exposing (Indices, Model, PaneEdit, isOpen)
+import Model exposing (Indices, Model, PaneEdit, Selection, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, panePalette, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, editingPaneDomId, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
+import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, editingPaneDomId, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, selectToggle, stapleCartButton, viewAdder, viewItem, viewSearchField)
 
 
 viewKitchenColumn : Model -> Data -> Html Msg
@@ -27,21 +27,28 @@ viewKitchenColumn model data =
         collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen []
 
     else
-        Lazy.lazy7 viewKitchenBody
+        Lazy.lazy8 viewKitchenBody
             model.adding
             model.addValue
             model.editingPane
             model.kitchenSearch
             model.toggled
+            model.selection
             model.derived
             data.staples
 
 
-viewKitchenBody : Maybe AddTarget -> String -> Maybe PaneEdit -> String -> Set String -> Indices -> List Card -> Html Msg
-viewKitchenBody adding addValue editingPane rawSearch toggled derived staples =
+viewKitchenBody : Maybe AddTarget -> String -> Maybe PaneEdit -> String -> Set String -> Selection -> Indices -> List Card -> Html Msg
+viewKitchenBody adding addValue editingPane rawSearch toggled selection derived staples =
     let
         kitchenSearch =
             String.toLower (String.trim rawSearch)
+
+        selectMode =
+            Set.member "kitchen" selection.columns
+
+        selected =
+            selection.items
 
         -- The Shopping List and its categories are their own column, and the
         -- Staples Tracker is rendered separately below the search field, so
@@ -56,15 +63,15 @@ viewKitchenBody adding addValue editingPane rawSearch toggled derived staples =
             staples
                 |> List.filter (\c -> c.name == staplesTrackerName)
                 |> List.head
-                |> Maybe.map (viewStaplesTracker toggled kitchenSearch derived)
+                |> Maybe.map (viewStaplesTracker toggled kitchenSearch selectMode selected derived)
                 |> Maybe.withDefault (text "")
     in
     div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
+        [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen [ selectToggle selectMode (ToggleSelectMode "kitchen") ]
         , div [ class "kitchen-body" ]
             (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
                 :: trackerView
-                :: List.map (\c -> viewPane toggled kitchenSearch derived (paneEditFor editingPane c) c) kitchenPanes
+                :: List.map (\c -> viewPane toggled kitchenSearch selectMode selected derived (paneEditFor editingPane c) c) kitchenPanes
                 ++ [ viewAdder adding addValue AddPane "New pane name…" "+ Add pane" ]
             )
         ]
@@ -75,8 +82,8 @@ foods the user wants to keep on hand. A staple not on hand in any kitchen
 pane shows red, and the cart button sends every such missing staple to the
 Shopping List.
 -}
-viewStaplesTracker : Set String -> String -> Indices -> Card -> Html Msg
-viewStaplesTracker toggled search derived card =
+viewStaplesTracker : Set String -> String -> Bool -> Set String -> Indices -> Card -> Html Msg
+viewStaplesTracker toggled search selectMode selected derived card =
     let
         loc =
             StoragePane card.id
@@ -123,7 +130,7 @@ viewStaplesTracker toggled search derived card =
                         [ p [ class "staples-note" ] [ text "Add staple foods here. Click the 🛒 button to add missing staples (not in your Kitchen, colored red) to your shopping list." ]
                         , Keyed.node "div"
                             [ class "staples-items" ]
-                            (List.map (\item -> ( item.id, viewItem (missing item) search derived.nameTierRail loc item )) sorted)
+                            (List.map (\item -> ( item.id, viewItem selectMode selected (missing item) search derived.nameTierRail loc item )) sorted)
                         ]
                     ]
                )
@@ -145,8 +152,8 @@ paneEditFor editingPane card =
             )
 
 
-viewPane : Set String -> String -> Indices -> Maybe PaneEdit -> Card -> Html Msg
-viewPane toggled search derived edit card =
+viewPane : Set String -> String -> Bool -> Set String -> Indices -> Maybe PaneEdit -> Card -> Html Msg
+viewPane toggled search selectMode selected derived edit card =
     let
         editing =
             edit /= Nothing
@@ -256,7 +263,7 @@ viewPane toggled search derived edit card =
             else
                 [ Keyed.node "div"
                     (styles [ ( "padding", "14px 15px" ), ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ), ( "min-height", "44px" ), ( "flex", "1" ) ])
-                    (List.map (\item -> ( item.id, viewItem False search derived.nameTierRail stockLoc item )) (sortItems card.items))
+                    (List.map (\item -> ( item.id, viewItem selectMode selected False search derived.nameTierRail stockLoc item )) (sortItems card.items))
                 ]
     in
     div

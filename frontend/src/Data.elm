@@ -18,12 +18,14 @@ module Data exposing
     , mapGroup
     , mapRecipe
     , mapStorage
+    , parseSelKey
     , pushFood
     , pushGroup
     , pushItemTo
     , pyramidHasName
     , removeFood
     , removeGroup
+    , selKey
     , shoppingCartName
     , staplesTrackerId
     , staplesTrackerName
@@ -165,6 +167,45 @@ type Loc
     = PyramidGroup String
     | StoragePane String
     | RecipeIngredients String
+
+
+{-| A stable key identifying one draggable item at one location, for the
+selection set. A food can appear in several locations under different ids,
+so the key pairs the location with the item id. The `|` separator is safe:
+ids are alphanumeric with hyphens, never that character.
+-}
+selKey : Loc -> String -> String
+selKey loc itemId =
+    (case loc of
+        PyramidGroup gid ->
+            "P|" ++ gid
+
+        StoragePane cid ->
+            "S|" ++ cid
+
+        RecipeIngredients rid ->
+            "R|" ++ rid
+    )
+        ++ "|"
+        ++ itemId
+
+
+{-| Recover the location and item id a selection key was built from.
+-}
+parseSelKey : String -> Maybe ( Loc, String )
+parseSelKey key =
+    case String.split "|" key of
+        [ "P", locId, itemId ] ->
+            Just ( PyramidGroup locId, itemId )
+
+        [ "S", locId, itemId ] ->
+            Just ( StoragePane locId, itemId )
+
+        [ "R", locId, itemId ] ->
+            Just ( RecipeIngredients locId, itemId )
+
+        _ ->
+            Nothing
 
 
 dataDecoder : Decoder Data

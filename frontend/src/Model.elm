@@ -1,4 +1,4 @@
-module Model exposing (AiState, Drag, Indices, Model, PaneEdit, derive, emptyDerived, initialAi, isOpen)
+module Model exposing (AiState, Drag, Indices, Model, PaneEdit, Selection, derive, emptyDerived, initialAi, isOpen, noSelection)
 
 {-| The application model, the in-progress drag, and the indices cached on
 the model. The indices are recomputed once whenever the data changes (see
@@ -18,6 +18,24 @@ type alias Drag =
     { from : Loc
     , foodId : String
     }
+
+
+{-| Tap-to-select state, a drag alternative. `columns` holds the keys of
+the columns currently in select mode ("pyramid", "recipes", "kitchen",
+"cart"), so their item badges show a selection circle; `items` holds the
+selection keys (see `Data.selKey`) of the tapped badges. Kept as one record
+so a whole column view takes it as a single lazy input. Dragging a selected
+badge moves every selected item at once.
+-}
+type alias Selection =
+    { columns : Set String
+    , items : Set String
+    }
+
+
+noSelection : Selection
+noSelection =
+    { columns = Set.empty, items = Set.empty }
 
 
 {-| The AI recipe assistant's state. `settings` and `prefs` persist across
@@ -109,6 +127,11 @@ type alias Model =
     -- delete is awaiting confirmation, if any.  The header shows a
     -- confirm/cancel prompt in place of its delete control while set.
     , confirmingDelete : Maybe String
+
+    -- Tap-to-select state: which columns are in select mode and which item
+    -- badges are selected.  A touch-friendly alternative to dragging one
+    -- item at a time.
+    , selection : Selection
 
     -- The signed-in identity from `/me`, once fetched.  Drives the
     -- sign-in / sign-out control in the toolbar.

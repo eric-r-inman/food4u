@@ -25,7 +25,7 @@ import Browser
 import Browser.Dom as Dom
 import Browser.Events
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, shoppingCartName, staplesTrackerId, staplesTrackerName)
+import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -36,7 +36,7 @@ import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 import KitchenView exposing (viewKitchenColumn)
-import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen)
+import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen, noSelection)
 import Msg exposing (Msg(..))
 import PyramidView exposing (viewPyramidColumn)
 import RecipeParser exposing (parsePastedRecipe)
@@ -94,6 +94,7 @@ init flags =
       , me = Nothing
       , editingPane = Nothing
       , confirmingDelete = Nothing
+      , selection = noSelection
       , ai = initialAi settings prefs
       , derived = emptyDerived
       }
@@ -456,6 +457,28 @@ update msg model =
             , Cmd.none
             )
 
+        ToggleSelectMode column ->
+            -- Toggling a column's select mode starts a fresh selection, so
+            -- no stale picks linger from a previous round.
+            ( { model
+                | selection =
+                    { columns = toggleMember column model.selection.columns
+                    , items = Set.empty
+                    }
+              }
+            , Cmd.none
+            )
+
+        ToggleItemSelected key ->
+            ( { model
+                | selection =
+                    { columns = model.selection.columns
+                    , items = toggleMember key model.selection.items
+                    }
+              }
+            , Cmd.none
+            )
+
         DragStart loc foodId ->
             ( { model | drag = Just (Drag loc foodId) }, Cmd.none )
 
@@ -465,7 +488,25 @@ update msg model =
         DropOn target ->
             case ( model.drag, model.data ) of
                 ( Just drag, Just data ) ->
-                    if drag.from == target then
+                    -- Dragging a badge that is one of several selected moves
+                    -- the whole selection; otherwise it is an ordinary
+                    -- single drop.
+                    if Set.size model.selection.items > 1 && Set.member (selKey drag.from drag.foodId) model.selection.items then
+                        let
+                            ( newData, newSeq ) =
+                                performMultiDrop (Set.toList model.selection.items) target model.seq data
+                        in
+                        ( { model
+                            | data = Just newData
+                            , derived = derive newData
+                            , seq = newSeq
+                            , drag = Nothing
+                            , selection = { columns = model.selection.columns, items = Set.empty }
+                          }
+                        , saveModel newData
+                        )
+
+                    else if drag.from == target then
                         ( { model | drag = Nothing }, Cmd.none )
 
                     else
@@ -1157,6 +1198,38 @@ performDrop drag target seq data =
 
                     Nothing ->
                         ( data, seq )
+
+
+{-| Drop every selected item onto one target, each with its own copy/move
+semantics, skipping any already at the target, threading the id sequence
+through the sequence of drops.
+-}
+performMultiDrop : List String -> Loc -> Int -> Data -> ( Data, Int )
+performMultiDrop keys target seq data =
+    List.foldl
+        (\key ( d, s ) ->
+            case parseSelKey key of
+                Just ( from, foodId ) ->
+                    if from == target then
+                        ( d, s )
+
+                    else
+                        performDrop (Drag from foodId) target s d
+
+                Nothing ->
+                    ( d, s )
+        )
+        ( data, seq )
+        keys
+
+
+toggleMember : comparable -> Set comparable -> Set comparable
+toggleMember member set =
+    if Set.member member set then
+        Set.remove member set
+
+    else
+        Set.insert member set
 
 
 

@@ -19,6 +19,9 @@ module Ui exposing
     , recipeDeleteButton
     , recipeDropZone
     , removeButton
+    , selectAttrs
+    , selectLead
+    , selectToggle
     , stapleCartButton
     , viewAdder
     , viewItem
@@ -32,13 +35,14 @@ per-chip buttons, and the drag/drop attribute helpers. These produce
 per-column views can import without cycling through Main.
 -}
 
-import Data exposing (Item, Loc)
+import Data exposing (Item, Loc, selKey)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
 import Msg exposing (Msg(..))
+import Set exposing (Set)
 import Style exposing (foodChipStyle, searchHighlightStyle, stapleMissingStyle, styles, tierChipBg)
 import Types exposing (AddTarget)
 
@@ -69,10 +73,11 @@ editingPaneDomId =
 
 {-| A big title row that toggles a whole column open/closed, in the
 "Longevity Foods" style. With `Just color` it is a filled rail bar with
-white text; with `Nothing` it is dark text on the card background.
+white text; with `Nothing` it is dark text on the card background. Any
+`trailing` controls are pushed to the right edge of the row.
 -}
-columnTitleBar : Maybe String -> String -> Msg -> Html Msg
-columnTitleBar maybeBg titleText toggleMsg =
+columnTitleBar : Maybe String -> String -> Msg -> List (Html Msg) -> Html Msg
+columnTitleBar maybeBg titleText toggleMsg trailing =
     let
         ( bg, fg, bottomBorder ) =
             case maybeBg of
@@ -97,9 +102,48 @@ columnTitleBar maybeBg titleText toggleMsg =
                 , ( "flex", "0 0 auto" )
                 ]
         )
-        [ span (styles [ ( "font-size", "13px" ), ( "opacity", "0.55" ) ]) [ text "▼" ]
-        , span (styles [ ( "font-size", "28px" ), ( "font-weight", "800" ), ( "letter-spacing", "-0.8px" ) ]) [ text titleText ]
+        (span (styles [ ( "font-size", "13px" ), ( "opacity", "0.55" ) ]) [ text "▼" ]
+            :: span (styles [ ( "font-size", "28px" ), ( "font-weight", "800" ), ( "letter-spacing", "-0.8px" ) ]) [ text titleText ]
+            :: (if List.isEmpty trailing then
+                    []
+
+                else
+                    [ div [ class "col-title-trailing" ] trailing ]
+               )
+        )
+
+
+{-| The "Select: off / on" toggle shown at the right of a column's title
+bar. Turning it on marks the column's item badges with a tap-to-select
+circle, a drag alternative for touch. Its click must not toggle the whole
+column open/closed.
+-}
+selectToggle : Bool -> Msg -> Html Msg
+selectToggle on msg =
+    button
+        [ type_ "button"
+        , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
+        , title "Tap items to select several, then drag one to move them all"
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
+        [ text
+            ("Select: "
+                ++ (if on then
+                        "on"
+
+                    else
+                        "off"
+                   )
+            )
+        ]
+
+
+{-| The tap-to-select circle shown at the left of an item badge while its
+column is in select mode: an empty ring, filled when the item is selected.
+-}
+selectionCircle : Bool -> Html Msg
+selectionCircle selected =
+    span [ classList [ ( "sel-circle", True ), ( "sel-circle-on", selected ) ] ] []
 
 
 {-| The slim vertical bar a Pyramid/Kitchen column collapses to, in the
@@ -206,7 +250,7 @@ notepadButton : Msg -> Html Msg
 notepadButton msg =
     button
         (type_ "button"
-            :: onClick msg
+            :: stopPropagationOn "click" (Decode.succeed ( msg, True ))
             :: title "Open linked recipe"
             :: styles
                 [ ( "border", "none" )
@@ -417,7 +461,7 @@ removeButton msg =
     button
         (class "chip-x"
             :: type_ "button"
-            :: onClick msg
+            :: stopPropagationOn "click" (Decode.succeed ( msg, True ))
             :: styles
                 [ ( "font-family", "'IBM Plex Mono',monospace" )
                 , ( "font-size", "10px" )
@@ -509,8 +553,8 @@ the Kitchen panes and the Shopping List sections. A `missing` staple
 (tracked but not on hand) overrides the tint with the red missing style.
 The dictionary maps a food name to its tier's rail colour.
 -}
-viewItem : Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
-viewItem missing search nameToTierRail loc item =
+viewItem : Bool -> Set String -> Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
+viewItem selectMode selected missing search nameToTierRail loc item =
     let
         bg =
             Dict.get (String.toLower item.name) nameToTierRail
@@ -527,10 +571,38 @@ viewItem missing search nameToTierRail loc item =
             else
                 foodChipStyle bg False
     in
-    span (class "chip" :: chip ++ draggable loc item.id)
-        [ span [] [ text item.name ]
-        , removeButton (RemoveFoodMsg loc item.id)
-        ]
+    span (class "chip" :: chip ++ draggable loc item.id ++ selectAttrs selectMode loc item.id)
+        (selectLead selectMode selected loc item.id
+            ++ [ span [] [ text item.name ]
+               , removeButton (RemoveFoodMsg loc item.id)
+               ]
+        )
+
+
+{-| The click-to-select attribute an item badge carries while its column is
+in select mode, and nothing otherwise. Dragging still works — a drag
+suppresses the click — so the same badge both selects on tap and moves on
+drag.
+-}
+selectAttrs : Bool -> Loc -> String -> List (Attribute Msg)
+selectAttrs selectMode loc itemId =
+    if selectMode then
+        [ onClick (ToggleItemSelected (selKey loc itemId)) ]
+
+    else
+        []
+
+
+{-| The leading selection circle for an item badge, present only in select
+mode.
+-}
+selectLead : Bool -> Set String -> Loc -> String -> List (Html Msg)
+selectLead selectMode selected loc itemId =
+    if selectMode then
+        [ selectionCircle (Set.member (selKey loc itemId) selected) ]
+
+    else
+        []
 
 
 {-| The Staples Tracker's cart button: sends every missing (red) staple
