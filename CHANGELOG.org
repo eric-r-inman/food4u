@@ -4,11 +4,12 @@
 * Upcoming
 ** Added
 - Organize the Shopping List into your own categories: it starts with a default
-  set (Produce, Dry Goods, Canned, and so on), and you can add your own, drag
-  to-buy items into any of them, and delete a category — with a confirmation —
-  from the ✕ on its title row.  Recipe and staple additions still land in the
-  main list, ready to sort.  (The automatic grocery-department grouping is
-  replaced by these categories.)
+  set (Produce, Canned & Dry Goods, Dairy, and so on), and you can add your own,
+  drag to-buy items into any of them, and delete a category — with a
+  confirmation — from the ✕ on its title row.  Each category collapses to a
+  labelled row with a count, matching the Recipes column.  Recipe and staple
+  additions still land in the main list, ready to sort.  (The automatic
+  grocery-department grouping is replaced by these categories.)
 - Delete a Longevity Foods category with the ✕ on its title row, with a
   confirmation.
 - Add your own food category to any tier of the Longevity Foods pyramid, then

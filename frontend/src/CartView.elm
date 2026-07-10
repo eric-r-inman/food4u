@@ -14,8 +14,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Lazy
-import Model exposing (Indices, Model)
+import Model exposing (Indices, Model, isOpen)
 import Msg exposing (Msg(..))
+import Set exposing (Set)
 import Style exposing (cardStyle, styles)
 import Types exposing (AddTarget(..))
 import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, dropZone, viewAdder, viewItem)
@@ -38,13 +39,13 @@ viewCartColumn model data =
 
     else
         -- The cart reads only the derived tints and the storage list, plus
-        -- the add/confirm UI state, so it re-renders only when those change
-        -- — not on a keystroke in another column.
-        Lazy.lazy5 viewCartBody model.derived data.staples model.adding model.addValue model.confirmingDelete
+        -- the collapse and add/confirm UI state, so it re-renders only when
+        -- those change — not on a keystroke in another column.
+        Lazy.lazy6 viewCartBody model.derived data.staples model.toggled model.adding model.addValue model.confirmingDelete
 
 
-viewCartBody : Indices -> List Card -> Maybe AddTarget -> String -> Maybe String -> Html Msg
-viewCartBody derived staples adding addValue confirmingDelete =
+viewCartBody : Indices -> List Card -> Set String -> Maybe AddTarget -> String -> Maybe String -> Html Msg
+viewCartBody derived staples toggled adding addValue confirmingDelete =
     let
         shoppingCards =
             List.filter isShoppingCard staples
@@ -66,52 +67,68 @@ viewCartBody derived staples adding addValue confirmingDelete =
                 [ text "🗑  Clear all" ]
             ]
         , div [ class "cart-body" ]
-            (List.map (viewCartCard derived.nameTierRail confirmingDelete) ordered
+            (List.map (viewCartCard derived.nameTierRail toggled confirmingDelete) ordered
                 ++ [ viewAdder adding addValue AddCartCategory "New category…" "+ Add category" ]
             )
         ]
 
 
-{-| One Shopping List card: its coloured title row (with a delete control
-for user categories, but not the reserved bucket) and a drop area holding
-its item chips.
+{-| One Shopping List card, styled like a Recipes-column category: a
+collapsible underlined title row (with a delete control for user
+categories, but not the reserved bucket) over its item chips. The reserved
+bucket defaults open, since recipe and staple additions land there; the
+user categories default collapsed, showing just their counts until opened.
 -}
-viewCartCard : Dict String String -> Maybe String -> Card -> Html Msg
-viewCartCard nameToTierRail confirmingDelete card =
+viewCartCard : Dict String String -> Set String -> Maybe String -> Card -> Html Msg
+viewCartCard nameToTierRail toggled confirmingDelete card =
     let
         loc =
             StoragePane card.id
 
-        railBg =
-            if card.rail == "" then
-                "oklch(0.52 0.1 42)"
+        reserved =
+            card.name == shoppingCartName
 
-            else
-                card.rail
+        collapsed =
+            not (isOpen reserved ("cart:" ++ card.id) toggled)
 
         -- The reserved bucket is permanent; only user categories can be
         -- deleted.
         controls =
-            if card.name == shoppingCartName then
+            if reserved then
                 []
 
             else
                 [ categoryDeleteControl (confirmingDelete == Just card.id) (RequestDelete card.id) (RemovePane card.id) CancelDelete ]
 
         body =
-            if List.isEmpty card.items then
-                [ span [ class "cart-empty-hint" ] [ text "Drag foods here." ] ]
+            if collapsed then
+                []
+
+            else if List.isEmpty card.items then
+                [ div [ class "cart-cat-body" ] [ span [ class "cart-empty-hint" ] [ text "Drag foods here." ] ] ]
 
             else
-                card.items
-                    |> List.sortBy (\i -> String.toLower i.name)
-                    |> List.map (viewItem False "" nameToTierRail loc)
+                [ div [ class "cart-cat-body" ]
+                    (card.items
+                        |> List.sortBy (\i -> String.toLower i.name)
+                        |> List.map (viewItem False "" nameToTierRail loc)
+                    )
+                ]
     in
     div (class "cart-cat" :: dropZone loc)
-        [ div (class "cart-cat-head" :: [ style "background" railBg ])
-            (span [ class "cart-cat-title" ] [ text card.name ]
+        (div [ class "cart-cat-head", onClick (ToggleCategory ("cart:" ++ card.id)) ]
+            (span [ class "cart-cat-caret" ]
+                [ text
+                    (if collapsed then
+                        "▶"
+
+                     else
+                        "▼"
+                    )
+                ]
+                :: span [] [ text card.name ]
                 :: span [ class "cart-cat-count" ] [ text (String.fromInt (List.length card.items)) ]
                 :: controls
             )
-        , div [ class "cart-cat-body" ] body
-        ]
+            :: body
+        )

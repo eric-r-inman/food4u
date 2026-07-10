@@ -993,18 +993,15 @@ so a new or never-organised list already has somewhere to sort foods into.
 defaultCartCategories : List String
 defaultCartCategories =
     [ "Produce"
-    , "Dry Goods"
-    , "Canned"
+    , "Canned & Dry Goods"
     , "Dairy"
     , "Frozen"
     , "Bulk"
     , "Bakery"
     , "Meat & Seafood"
-    , "Baking"
+    , "Baking & Spices"
     , "Condiments & Sauces"
     , "Coffee & Tea"
-    , "Cereals"
-    , "Snacks"
     , "Health & Wellness"
     ]
 

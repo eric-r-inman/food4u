@@ -44,8 +44,11 @@
   --cat-confirm-cancel-bg: oklch(0.97 0.005 86);
   --cat-confirm-cancel-fg: oklch(0.4 0.02 70);
 
-  /* The empty-category hint and the card frame of a Shopping List category. */
-  --cart-cat-surface: oklch(0.99 0.006 86);
+  /* The Shopping List category headers, styled like the Recipes column's:
+     an underlined uppercase label in the column's accent colour, with an
+     empty-hint colour for a category that holds nothing yet. */
+  --cart-cat-accent: oklch(0.52 0.1 42);
+  --cart-cat-border: oklch(0.86 0.04 42);
   --cart-empty-hint-fg: oklch(0.6 0.012 70);
 
   /* The near-solid white pill of the Staples Tracker cart button, and the
@@ -555,34 +558,40 @@ button {
   color: var(--cat-confirm-cancel-fg);
 }
 
-/* One Shopping List category card: a coloured title row and a drop area of
-   item chips, framed like the app's other cards. */
+/* A Shopping List category, styled like a Recipes-column category: an
+   underlined uppercase title row that toggles its chips open, rather than a
+   filled card. */
 .cart-cat {
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--cart-cat-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .cart-cat-head {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 14px;
-  color: var(--pane-fg);
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--cart-btn-font);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--cart-cat-accent);
+  border-bottom: 1px solid var(--cart-cat-border);
+  padding-bottom: 5px;
+  cursor: pointer;
+  user-select: none;
 }
 
-.cart-cat-title {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
+.cart-cat-caret {
+  font-size: 9px;
+  opacity: 0.7;
 }
 
 .cart-cat-count {
-  font-family: var(--cart-btn-font);
-  font-size: 10.5px;
-  opacity: 0.85;
   margin-left: auto;
+  opacity: 0.55;
+  font-weight: 500;
 }
 
 .cart-cat-body {
@@ -590,8 +599,7 @@ button {
   flex-wrap: wrap;
   gap: 7px;
   align-content: flex-start;
-  padding: 12px 14px;
-  min-height: 40px;
+  min-height: 34px;
 }
 
 .cart-empty-hint {
