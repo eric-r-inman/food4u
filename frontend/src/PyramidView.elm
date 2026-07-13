@@ -66,8 +66,16 @@ viewPyramidBody rawSearch toggled adding addValue confirmingDelete selection inS
 viewTier : Set String -> Maybe AddTarget -> String -> Maybe String -> Bool -> Set String -> Set String -> String -> Tier -> Html Msg
 viewTier toggled adding addValue confirmingDelete selectMode selected inStock search tier =
     let
+        foods =
+            List.concatMap .foods tier.groups
+
         foodCount =
-            tier.groups |> List.concatMap .foods |> List.length
+            List.length foods
+
+        stockedCount =
+            foods
+                |> List.filter (\f -> Set.member (String.toLower f.name) inStock)
+                |> List.length
     in
     div
         (styles
@@ -92,7 +100,7 @@ viewTier toggled adding addValue confirmingDelete selectMode selected inStock se
             [ span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "font-weight", "500" ), ( "opacity", "0.7" ), ( "letter-spacing", "1px" ) ]) [ text tier.no ]
             , span (styles [ ( "font-size", "18px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text tier.name ]
             , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10.5px" ), ( "font-weight", "500" ), ( "opacity", "0.9" ), ( "letter-spacing", "0.5px" ) ]) [ text tier.freq ]
-            , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "opacity", "0.6" ), ( "letter-spacing", "0.5px" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt foodCount ++ " FOODS") ]
+            , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "opacity", "0.6" ), ( "letter-spacing", "0.5px" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt foodCount ++ " FOODS / " ++ String.fromInt stockedCount ++ " STOCKED") ]
             ]
         , div
             (styles
