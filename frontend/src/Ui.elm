@@ -112,8 +112,8 @@ columnTitleBar maybeBg titleText toggleMsg =
 page title. Turning it on marks every column's item badges with a
 tap-to-select circle, a drag alternative for touch.
 -}
-selectToggle : Bool -> Msg -> Html Msg
-selectToggle on msg =
+selectToggle : Bool -> Int -> Msg -> Html Msg
+selectToggle on selectedCount msg =
     button
         [ type_ "button"
         , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
@@ -127,6 +127,12 @@ selectToggle on msg =
 
                     else
                         "off"
+                   )
+                ++ (if on && selectedCount >= 1 then
+                        " (" ++ String.fromInt selectedCount ++ ")"
+
+                    else
+                        ""
                    )
             )
         ]
@@ -291,7 +297,9 @@ recipeCartButton active msg =
 
 
 {-| The recipe header's bookmark toggle: a user marker to remember a
-recipe. Full-colour when bookmarked, greyed and desaturated when not.
+recipe. A light-blue pill when bookmarked, greyed and desaturated when not.
+The glyph is wrapped so its own filter can tint the red ribbon emoji blue —
+an emoji ignores `color`, so a filter is the only way to recolour it.
 -}
 bookmarkButton : Bool -> Msg -> Html Msg
 bookmarkButton on msg =
@@ -307,7 +315,7 @@ bookmarkButton on msg =
             )
         , onClick msg
         ]
-        [ text "🔖" ]
+        [ span [ classList [ ( "recipe-bookmark-glyph", True ), ( "recipe-bookmark-glyph-on", on ) ] ] [ text "🔖" ] ]
 
 
 {-| A small but always-visible delete control for a recipe (unlike the

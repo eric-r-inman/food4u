@@ -1573,14 +1573,13 @@ can be moved at once — by dragging one, or with the ⬇ on a destination. A
 viewSelectBar : Bool -> Int -> Html Msg
 viewSelectBar active selectedCount =
     div [ class "noprint", class "select-bar" ]
-        (selectToggle active ToggleSelectMode
+        (selectToggle active selectedCount ToggleSelectMode
             :: (if selectedCount > 1 then
                     [ button [ type_ "button", class "deselect-all-btn", onClick DeselectAll ] [ text "Deselect all" ] ]
 
                 else
                     []
                )
-            ++ [ span [ class "select-bar-hint" ] [ text "Tap item badges to select, then drag one — or press the ⬇ on a destination — to move them all." ] ]
         )
 
 
