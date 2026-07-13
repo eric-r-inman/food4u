@@ -12,7 +12,7 @@ import Derived exposing (recipeMissing)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn)
+import Html.Events exposing (custom, on, onBlur, onClick, onInput, preventDefaultOn, stopPropagationOn)
 import Json.Decode as Decode
 import Model exposing (Model, isOpen)
 import Msg exposing (Msg(..))
@@ -381,16 +381,35 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                          else
                             [ viewRecipeFooter model category ]
                         )
-                            ++ List.map (viewRecipe model.toggled model.selection.active model.selection.items nameToTierRail inStock stockedNoCart recipeSearch) recipesInCat
+                            ++ List.map (viewRecipe model.toggled model.selection.active model.selection.items nameToTierRail inStock stockedNoCart recipeSearch model.recipeDrag model.recipeDropBefore) recipesInCat
                    )
             )
 
 
-viewRecipe : Set String -> Bool -> Set String -> Dict String String -> Set String -> Set String -> String -> Recipe -> Html Msg
-viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart recipeSearch recipe =
+viewRecipe : Set String -> Bool -> Set String -> Dict String String -> Set String -> Set String -> String -> Maybe String -> Maybe String -> Recipe -> Html Msg
+viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart recipeSearch recipeDrag dropBefore recipe =
     let
         loc =
             RecipeIngredients recipe.id
+
+        -- While any recipe is being dragged, every card is a reorder drop
+        -- target; a drop lands the dragged card just before this one. The
+        -- handlers stop propagation so the drop does not also bubble to the
+        -- category (which would re-home to the category's end instead).
+        reorderAttrs =
+            if recipeDrag == Nothing then
+                []
+
+            else
+                [ preventDefaultOn "dragover" (Decode.succeed ( NoOp, True ))
+                , stopPropagationOn "dragenter" (Decode.succeed ( RecipeDragEnterRecipe recipe.id, True ))
+                , custom "drop" (Decode.succeed { message = DropRecipeOnRecipe recipe.id, stopPropagation = True, preventDefault = True })
+                ]
+
+        -- The insertion line shows above the hovered target, but never above
+        -- the dragged card itself (dropping onto itself is a no-op).
+        showDropLine =
+            dropBefore == Just recipe.id && recipeDrag /= Just recipe.id
 
         matchesSearch =
             recipeSearch /= "" && String.contains recipeSearch (String.toLower recipe.name)
@@ -414,24 +433,26 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
             List.any (\i -> not (Set.member (String.toLower i.name) inStock)) recipe.ingredients
     in
     div
-        (styles
-            [ ( "background"
-              , if matchesSearch then
-                    "oklch(0.97 0.06 95)"
+        (classList [ ( "recipe-reorder-before", showDropLine ) ]
+            :: reorderAttrs
+            ++ styles
+                [ ( "background"
+                  , if matchesSearch then
+                        "oklch(0.97 0.06 95)"
 
-                else
-                    "#fff"
-              )
-            , ( "border"
-              , if matchesSearch then
-                    "1.5px solid oklch(0.7 0.16 90)"
+                    else
+                        "#fff"
+                  )
+                , ( "border"
+                  , if matchesSearch then
+                        "1.5px solid oklch(0.7 0.16 90)"
 
-                else
-                    "1px solid oklch(0.9 0.012 86)"
-              )
-            , ( "border-radius", "9px" )
-            , ( "padding", "10px 12px" )
-            ]
+                    else
+                        "1px solid oklch(0.9 0.012 86)"
+                  )
+                , ( "border-radius", "9px" )
+                , ( "padding", "10px 12px" )
+                ]
         )
         (div (styles [ ( "display", "flex" ), ( "align-items", "center" ), ( "gap", "6px" ) ])
             [ button
@@ -481,7 +502,7 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                 (attribute "draggable" "true"
                     :: on "dragstart" (Decode.succeed (RecipeDragStart recipe.id))
                     :: on "dragend" (Decode.succeed RecipeDragEnd)
-                    :: title "Drag onto another recipe category to move this recipe, or a pyramid category to link it"
+                    :: title "Drag onto another card to reorder, onto a category to re-home, or onto a pyramid category to link"
                     :: styles [ ( "cursor", "grab" ), ( "font-size", "13px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "padding", "0 2px" ), ( "user-select", "none" ) ]
                 )
                 [ text "⠿" ]

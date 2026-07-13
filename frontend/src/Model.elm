@@ -99,6 +99,11 @@ type alias Model =
     -- While a recipe is being dragged, the recipe category the pointer is
     -- currently over, so it can be highlighted as the move target.
     , recipeDropCategory : Maybe String
+
+    -- While a recipe is being dragged, the recipe card the pointer is over,
+    -- before which the dragged card would be inserted on drop. Mutually
+    -- exclusive with `recipeDropCategory` (over a card vs. the open area).
+    , recipeDropBefore : Maybe String
     , seq : Int
 
     -- Keys whose collapse is *toggled away from their default*. Food and

@@ -18,6 +18,8 @@ module Data exposing
     , mapGroup
     , mapRecipe
     , mapStorage
+    , moveRecipeBefore
+    , moveRecipeToCategoryEnd
     , parseSelKey
     , pushFood
     , pushGroup
@@ -485,6 +487,59 @@ mapRecipe rid fn data =
                 )
                 data.recipes
     }
+
+
+recipeById : String -> Data -> Maybe Recipe
+recipeById rid data =
+    data.recipes |> List.filter (\r -> r.id == rid) |> List.head
+
+
+{-| Move the dragged recipe so it renders immediately before the target
+recipe, adopting the target's category. A category shows its recipes in
+`recipes` order, so re-sequencing the list is what repositions the card.
+-}
+moveRecipeBefore : String -> String -> Data -> Data
+moveRecipeBefore draggedId targetId data =
+    if draggedId == targetId then
+        data
+
+    else
+        case ( recipeById draggedId data, recipeById targetId data ) of
+            ( Just dragged, Just target ) ->
+                { data
+                    | recipes =
+                        data.recipes
+                            |> List.filter (\r -> r.id /= draggedId)
+                            |> List.concatMap
+                                (\r ->
+                                    if r.id == targetId then
+                                        [ { dragged | category = target.category }, r ]
+
+                                    else
+                                        [ r ]
+                                )
+                }
+
+            _ ->
+                data
+
+
+{-| Move the dragged recipe to the end of a category's order, adopting
+that category. Appending to `recipes` places it after every recipe
+already in the category, so it renders last there.
+-}
+moveRecipeToCategoryEnd : String -> String -> Data -> Data
+moveRecipeToCategoryEnd draggedId category data =
+    case recipeById draggedId data of
+        Just dragged ->
+            { data
+                | recipes =
+                    List.filter (\r -> r.id /= draggedId) data.recipes
+                        ++ [ { dragged | category = category } ]
+            }
+
+        Nothing ->
+            data
 
 
 {-| Apply a transform to the item list of a drop-target location (a

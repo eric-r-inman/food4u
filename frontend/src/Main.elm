@@ -25,7 +25,7 @@ import Browser
 import Browser.Dom as Dom
 import Browser.Events
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
+import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, moveRecipeBefore, moveRecipeToCategoryEnd, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -79,6 +79,7 @@ init flags =
       , drag = Nothing
       , recipeDrag = Nothing
       , recipeDropCategory = Nothing
+      , recipeDropBefore = Nothing
       , seq = 0
       , toggled = Set.empty
       , pyramidOpen = True
@@ -544,30 +545,36 @@ update msg model =
                     ( { model | drag = Nothing }, Cmd.none )
 
         RecipeDragStart rid ->
-            -- Collapse the recipe's own category as the drag begins, so the
-            -- other categories are in view to drop it onto.
-            ( { model
-                | recipeDrag = Just rid
-                , toggled = collapseRecipeCategory rid model
-              }
+            -- The category stays open during the drag; the card can be dropped
+            -- onto another card to reorder it, or onto a category to re-home it.
+            ( { model | recipeDrag = Just rid, recipeDropCategory = Nothing, recipeDropBefore = Nothing }
             , Cmd.none
             )
 
         RecipeDragEnd ->
-            ( { model | recipeDrag = Nothing, recipeDropCategory = Nothing }, Cmd.none )
+            ( clearRecipeDrag model, Cmd.none )
 
         RecipeDragEnterCategory category ->
-            ( { model | recipeDropCategory = Just category }, Cmd.none )
+            ( { model | recipeDropCategory = Just category, recipeDropBefore = Nothing }, Cmd.none )
 
         DropRecipeOnCategory category ->
             case ( model.recipeDrag, model.data ) of
                 ( Just rid, Just data ) ->
-                    persistData
-                        { model | recipeDrag = Nothing, recipeDropCategory = Nothing }
-                        (mapRecipe rid (\r -> { r | category = category }) data)
+                    persistData (clearRecipeDrag model) (moveRecipeToCategoryEnd rid category data)
 
                 _ ->
-                    ( { model | recipeDrag = Nothing, recipeDropCategory = Nothing }, Cmd.none )
+                    ( clearRecipeDrag model, Cmd.none )
+
+        RecipeDragEnterRecipe targetRid ->
+            ( { model | recipeDropBefore = Just targetRid, recipeDropCategory = Nothing }, Cmd.none )
+
+        DropRecipeOnRecipe targetRid ->
+            case ( model.recipeDrag, model.data ) of
+                ( Just rid, Just data ) ->
+                    persistData (clearRecipeDrag model) (moveRecipeBefore rid targetRid data)
+
+                _ ->
+                    ( clearRecipeDrag model, Cmd.none )
 
         DropRecipeOnGroup gid ->
             case ( model.recipeDrag, model.data ) of
@@ -583,6 +590,7 @@ update msg model =
                         , seq = newSeq
                         , recipeDrag = Nothing
                         , recipeDropCategory = Nothing
+                        , recipeDropBefore = Nothing
 
                         -- Expand the target category so the new linked badge is visible.
                         , toggled = Set.insert gid model.toggled
@@ -1111,15 +1119,12 @@ ensureStaplesTracker data =
         }
 
 
-{-| Collapse the category the given recipe lives in, by removing its toggle
-key so it returns to the default-collapsed state.
+{-| Clear every trace of an in-flight recipe drag: the dragged card and
+both drop-target highlights (the category and the ins-before card).
 -}
-collapseRecipeCategory : String -> Model -> Set String
-collapseRecipeCategory rid model =
-    model.data
-        |> Maybe.andThen (\data -> List.head (List.filter (\r -> r.id == rid) data.recipes))
-        |> Maybe.map (\r -> Set.remove ("recipe:" ++ r.category) model.toggled)
-        |> Maybe.withDefault model.toggled
+clearRecipeDrag : Model -> Model
+clearRecipeDrag model =
+    { model | recipeDrag = Nothing, recipeDropCategory = Nothing, recipeDropBefore = Nothing }
 
 
 {-| Whether the storage card with this id is a Shopping List card (the

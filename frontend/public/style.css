@@ -99,6 +99,9 @@
   --recipe-drop-bg: oklch(0.96 0.03 250);
   --recipe-drop-outline: oklch(0.62 0.1 250);
 
+  /* The insertion line shown above a recipe card while reordering. */
+  --recipe-reorder-line: oklch(0.55 0.16 250);
+
   /* The AI recipe assistant's accent, and its muted accent text. */
   --ai-accent: oklch(0.52 0.14 285);
   --ai-accent-border: oklch(0.42 0.13 285);
@@ -1091,6 +1094,25 @@ button {
   outline: 2px dashed var(--recipe-drop-outline);
   outline-offset: 3px;
   border-radius: 8px;
+}
+
+/* A recipe card the dragged card is hovering over: a crisp insertion line
+   sits in the gap just above it, marking where the card will land.  The
+   line is an absolutely-positioned pseudo-element, so it adds no height and
+   does not shift the card. */
+.recipe-reorder-before {
+  position: relative;
+}
+
+.recipe-reorder-before::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--recipe-reorder-line);
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a

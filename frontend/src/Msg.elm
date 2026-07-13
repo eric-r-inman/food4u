@@ -69,6 +69,8 @@ type Msg
     | DropRecipeOnGroup String
     | RecipeDragEnterCategory String
     | DropRecipeOnCategory String
+    | RecipeDragEnterRecipe String
+    | DropRecipeOnRecipe String
     | OpenAi String
     | CloseAi
     | AiToggleConfigure
