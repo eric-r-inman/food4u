@@ -127,6 +127,26 @@ as pre-existing and systemic.  Migrate these to class-based rules in
 properties.  A large, mechanical, codebase- wide pass; deferred so it does not
 tangle with the structural refactors.
 
+* TODO retire the remaining JSON vestiges from the server
+:PROPERTIES:
+:PLAN: llms.org "Persistence and storage"
+:END:
+
+The relational database is the store of record, but two JSON remnants of the old
+file-backed model survive.  The one-time legacy-import path — the store's file
+loader and the import step that reads =food4u-model.json= (or the embedded
+default) into an empty database — should be removed once no environment still
+depends on it to populate a fresh database.
+
+Separately, the bundled defaults must also move off JSON.  They live today as a
+JSON fixture embedded via ~include_str!~ and used to seed a new database; the
+target is a relational form — an embedded SQLite file or a generated SQL fixture
+— that a fresh database is populated from directly, replacing the JSON-based
+import as the seeding path.  The =just seed-edit= / =just seed-save= workflow
+edits the JSON fixture today and would be reshaped to match.  Because the import
+path is also the current seeding mechanism, design the relational seed before
+removing it.
+
 * TODO opaque id newtypes, only with a drag-channel redesign
 :PROPERTIES:
 :PLAN: docs/optimization-plan.org — Phase 1 (opaque id newtypes)
