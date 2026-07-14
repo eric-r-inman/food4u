@@ -31,6 +31,12 @@ frontend/public/elm.js
 /login-demo.db-wal
 /login-demo.db-shm
 
+# The throwaway store `just seed-edit` fills from the checked-in seed while
+# you edit the bundled default foods and recipes, plus its sidecar files.
+/.seed-edit.db
+/.seed-edit.db-wal
+/.seed-edit.db-shm
+
 # Claude Code project config (Stop hook, compliance subagent, shared settings)
 # is part of the project and must be checked in.  A user-global or system-wide
 # ignore (e.g. /etc/gitignore) often excludes .claude/ wholesale; re-include

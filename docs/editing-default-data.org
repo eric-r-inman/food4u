@@ -1,0 +1,73 @@
+#+title:    Editing the bundled default foods and recipes
+#+language: en
+
+* What this is
+
+The foods and recipes a brand-new kitchen starts with are the /bundled
+defaults/.  They live as one JSON document that the server embeds into its
+binary and seeds into every fresh database.  Rather than hand-edit that JSON,
+you edit the defaults in the running app — the same drag-and-drop UI you use for
+your own kitchen — and then bake your changes back into the seed with a single
+command.
+
+The app itself is the visual editor; no extra software is needed beyond the
+toolchain the project already uses.
+
+* The two commands
+
+Both run inside the project's Nix dev shell, exactly like ~just dev~.
+
+~just seed-edit~ loads the current committed defaults into a /throwaway/
+database and opens the app in your browser.  Your own ~just dev~ kitchen is left
+completely alone: seed-editing uses its own port and its own database file.
+
+~just seed-save~ takes whatever the seed-editing app currently shows and writes
+it back into the committed seed document, formatted to match.  It writes only on
+success, so running it while nothing is up leaves the seed untouched.
+
+* Editing workflow
+
+Start a seed-editing session and leave it running:
+
+#+begin_src sh :results none :exports code
+just seed-edit
+#+end_src
+
+A browser tab opens on the seed-editing port showing the current default
+kitchen.  Add, edit, and delete with the ordinary controls.  Foods live in the
+*Longevity Foods* column: expand a tier, add a category or a food, rename by
+typing, remove with a food's or category's delete control, and drag a food
+between categories to re-file it.  Recipes live in the *Recipes* column: add a
+recipe to a category, edit its name, ingredients, tags, and instructions inline,
+reorder or re-home a card by dragging its grip, and remove it with its delete
+control.  Every change is saved into the throwaway database as you make it.
+
+When the defaults look right, bake the session's current state back into the
+seed from a second terminal:
+
+#+begin_src sh :results none :exports code
+just seed-save
+#+end_src
+
+Then stop the seed-editing server with ~Ctrl-C~.  The new defaults are now in
+the seed document.  They take effect for any kitchen created from an empty
+database; rebuilding the server embeds them into the binary, and committing the
+seed document ships them.
+
+* Things worth knowing
+
+- *Save before you stop.* Restarting ~just seed-edit~ reloads the committed seed
+  from scratch, so any edits you have not yet saved with ~just seed-save~ are
+  discarded — the same as closing an unsaved file.
+
+- *Your own kitchen is safe.* Seed-editing never reads or writes the database
+  ~just dev~ uses, so you can even run both at once.
+
+- *The first save reformats.* The committed seed omits some optional fields that
+  carry obvious defaults; the first ~just seed-save~ writes them out explicitly.
+  The data is identical — only those fields become visible — and every save
+  after that is a clean, minimal change.
+
+- *Existing kitchens do not change.* The defaults seed a database only when it
+  is empty.  An account that already has a kitchen keeps it; the new defaults
+  reach only kitchens created afterwards.
