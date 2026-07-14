@@ -58,6 +58,7 @@ type Msg
     | CommitPaste String
     | CancelPaste
     | ExportShoppingList
+    | ExportRecipe String
     | ClearCart
     | ToggleSelectMode
     | ToggleItemSelected String

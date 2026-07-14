@@ -57,6 +57,13 @@
   --recipe-cart-border: oklch(0.86 0.008 86);
   --recipe-cart-bg: oklch(0.96 0.004 86);
   --recipe-cart-fg: oklch(0.6 0.008 86);
+
+  /* Shared geometry for the recipe header's paired pill buttons — the cart
+     and the export control — so the two stay identical in size. */
+  --recipe-pill-font-size: 12px;
+  --recipe-pill-padding: 2px 7px;
+  --recipe-pill-radius: 5px;
+  --recipe-pill-line-height: 1.2;
   --recipe-cart-active-border: oklch(0.8 0.06 150);
   --recipe-cart-active-bg: oklch(0.95 0.04 150);
   --recipe-cart-active-fg: oklch(0.4 0.1 150);
@@ -113,6 +120,9 @@
 
   /* The small uppercase section headings inside an expanded recipe card. */
   --recipe-section-label-fg: oklch(0.5 0.04 250);
+
+  /* The recipe header's export-to-.txt control. */
+  --recipe-export-fg: oklch(0.5 0.02 250);
 
   /* The AI recipe assistant's accent, and its muted accent text. */
   --ai-accent: oklch(0.52 0.14 285);
@@ -703,11 +713,11 @@ button {
    the recipe has an ingredient that is neither stocked nor on the list, when
    it goes full-colour green. */
 .recipe-cart-btn {
-  font-size: 12px;
-  padding: 2px 7px;
-  border-radius: 5px;
+  font-size: var(--recipe-pill-font-size);
+  padding: var(--recipe-pill-padding);
+  border-radius: var(--recipe-pill-radius);
   cursor: pointer;
-  line-height: 1.2;
+  line-height: var(--recipe-pill-line-height);
   border: 1px solid var(--recipe-cart-border);
   background: var(--recipe-cart-bg);
   color: var(--recipe-cart-fg);
@@ -1154,6 +1164,19 @@ button {
   letter-spacing: 0.6px;
   text-transform: uppercase;
   color: var(--recipe-section-label-fg);
+}
+
+/* The recipe header's export control: downloads the recipe as a .txt. It
+   shares the cart button's muted pill background so the two sit as a pair. */
+.recipe-export-btn {
+  font-size: var(--recipe-pill-font-size);
+  padding: var(--recipe-pill-padding);
+  border-radius: var(--recipe-pill-radius);
+  cursor: pointer;
+  line-height: var(--recipe-pill-line-height);
+  border: 1px solid var(--recipe-cart-border);
+  background: var(--recipe-cart-bg);
+  color: var(--recipe-export-fg);
 }
 
 /* A recipe's tag editor: the chips of its current tags followed by the

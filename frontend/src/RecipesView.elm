@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (bookmarkButton, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (bookmarkButton, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 recipeCategories : List String
@@ -556,6 +556,7 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                 [ text "⠿" ]
             , bookmarkButton recipe.bookmarked (ToggleBookmark recipe.id)
             , recipeCartButton cartActive (AddRecipeToCart recipe.id)
+            , recipeExportButton (ExportRecipe recipe.id)
             , recipeDeleteButton (RemoveRecipe recipe.id)
             ]
             :: (if collapsed then

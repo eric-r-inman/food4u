@@ -39,6 +39,7 @@ import KitchenView exposing (viewKitchenColumn)
 import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen, noSelection)
 import Msg exposing (Msg(..))
 import PyramidView exposing (viewPyramidColumn)
+import RecipeExport exposing (recipeFileName, recipeText)
 import RecipeParser exposing (parsePastedRecipe)
 import RecipesView exposing (viewRecipes)
 import Set exposing (Set)
@@ -445,6 +446,14 @@ update msg model =
             ( model
             , model.data
                 |> Maybe.map (\data -> Download.string "shopping-list.txt" "text/plain" (shoppingListText data))
+                |> Maybe.withDefault Cmd.none
+            )
+
+        ExportRecipe rid ->
+            ( model
+            , model.data
+                |> Maybe.andThen (\data -> List.head (List.filter (\r -> r.id == rid) data.recipes))
+                |> Maybe.map (\recipe -> Download.string (recipeFileName recipe) "text/plain" (recipeText recipe))
                 |> Maybe.withDefault Cmd.none
             )
 

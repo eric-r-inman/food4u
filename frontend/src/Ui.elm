@@ -20,6 +20,7 @@ module Ui exposing
     , recipeCartButton
     , recipeDeleteButton
     , recipeDropZone
+    , recipeExportButton
     , removeButton
     , selectAttrs
     , selectLead
@@ -322,6 +323,19 @@ bookmarkButton on msg =
         , onClick msg
         ]
         [ span [ classList [ ( "recipe-bookmark-glyph", True ), ( "recipe-bookmark-glyph-on", on ) ] ] [ text "🔖" ] ]
+
+
+{-| Downloads the recipe as a plain-text `.txt` file.
+-}
+recipeExportButton : Msg -> Html Msg
+recipeExportButton msg =
+    button
+        [ type_ "button"
+        , class "recipe-export-btn"
+        , title "Export recipe to .txt"
+        , onClick msg
+        ]
+        [ text "⬇" ]
 
 
 {-| A small but always-visible delete control for a recipe (unlike the
