@@ -1,4 +1,4 @@
-module RecipesView exposing (viewRecipes)
+module RecipesView exposing (recipeCardDomId, recipeCategories, recipeNameLimit, recipesBodyId, viewRecipes)
 
 {-| The Recipes column: recipes grouped by meal category, each an
 editable card with draggable ingredient chips and a stocked-now check. A
@@ -22,12 +22,37 @@ import Types exposing (AddTarget(..), RecipeFilter(..))
 import Ui exposing (bookmarkButton, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
+{-| The longest a recipe name may be: what fits on one line of the expanded
+card's full-name row at the column's width.
+-}
+recipeNameLimit : Int
+recipeNameLimit =
+    48
+
+
+{-| The dom id of the Recipes column's scrolling body, so opening a recipe
+from elsewhere can scroll it into view.
+-}
+recipesBodyId : String
+recipesBodyId =
+    "recipes-body"
+
+
+{-| The dom id a recipe's card carries, the scroll target when the recipe
+is opened from elsewhere.
+-}
+recipeCardDomId : String -> String
+recipeCardDomId rid =
+    "recipe-card-" ++ rid
+
+
+{-| The recipe categories are dish types; when a dish belongs to a meal,
+that lives on its tags (Breakfast, Lunch, Dinner) so the tag filter slices
+by meal instead.
+-}
 recipeCategories : List String
 recipeCategories =
-    [ "Breakfast"
-    , "Lunch"
-    , "Dinner"
-    , "Appetizers"
+    [ "Appetizers"
     , "Side Dishes"
     , "Soups & Stews"
     , "Salads"
@@ -295,7 +320,7 @@ viewRecipes model data =
                 , span (styles [ ( "font-size", "18px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text "Recipes" ]
                 , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt (List.length data.recipes) ++ " RECIPES") ]
                 ]
-            , div [ class "recipes-body" ]
+            , div [ class "recipes-body", id recipesBodyId ]
                 (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput [ viewTagFilter model.recipeTagFilter data ]
                     :: viewRecipeFilterBar model.recipeFilter
                     :: List.map (viewRecipeCategory model model.derived.nameTierRail model.derived.inStock model.derived.stockedNoCart recipeSearch data) recipeCategories
@@ -481,7 +506,8 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
             List.any (\i -> not (Set.member (String.toLower i.name) inStock)) recipe.ingredients
     in
     div
-        (classList [ ( "recipe-card", True ), ( "recipe-reorder-before", showDropLine ) ]
+        (id (recipeCardDomId recipe.id)
+            :: classList [ ( "recipe-card", True ), ( "recipe-reorder-before", showDropLine ) ]
             :: reorderAttrs
             ++ styles
                 [ ( "background"
@@ -522,6 +548,9 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                     :: onBlur PersistNow
                     :: placeholder "Recipe name"
                     :: type_ "text"
+                    -- Capped so the full name always fits the expanded
+                    -- card's full-name row on one line.
+                    :: maxlength recipeNameLimit
                     :: size (Basics.max 6 (String.length recipe.name + 1))
                     :: styles
                         [ ( "flex", "0 1 auto" )
@@ -564,7 +593,8 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                     []
 
                 else
-                    [ div
+                    [ div [ class "recipe-full-name" ] [ text recipe.name ]
+                    , div
                         (styles [ ( "margin-top", "8px" ), ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "6px" ), ( "min-height", "30px" ), ( "align-content", "flex-start" ) ]
                             ++ dropZone loc
                         )

@@ -20,6 +20,15 @@ pub struct Model {
   pub recipes: Vec<Recipe>,
   #[serde(default)]
   pub planner: Vec<PlannerEntry>,
+  /// How many days the Meal Planner shows.  Defaults to a week for
+  /// documents written before the planner could grow and shrink.
+  #[serde(default = "default_planner_days", rename = "plannerDays")]
+  pub planner_days: i64,
+}
+
+/// The Meal Planner's original fixed length: seven days.
+fn default_planner_days() -> i64 {
+  7
 }
 
 /// One band of the pyramid (Foundation, Daily, and so on) and its

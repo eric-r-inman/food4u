@@ -78,6 +78,8 @@ type Msg
     | RecipeDragEnterPlanner Int String
     | DropRecipeOnPlanner Int String
     | RemovePlannerEntry String
+    | AddPlannerDay
+    | RemovePlannerDay
     | OpenAi String
     | CloseAi
     | AiToggleConfigure

@@ -104,6 +104,16 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .await
   .map_err(read)?;
 
+  // A user who has never saved has no row yet; they get the default week.
+  let planner_days = sqlx::query_scalar::<_, i64>(
+    "select planner_days from users where id = $1",
+  )
+  .bind(user_id)
+  .fetch_optional(pool)
+  .await
+  .map_err(read)?
+  .unwrap_or(7);
+
   Ok(repo::assemble(
     tiers,
     groups,
@@ -114,6 +124,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
     ingredients,
     tags,
     planner,
+    planner_days,
   ))
 }
 
@@ -135,6 +146,12 @@ pub async fn save(
   .execute(&mut *tx)
   .await
   .map_err(write)?;
+  sqlx::query("update users set planner_days = $1 where id = $2")
+    .bind(model.planner_days)
+    .bind(user_id)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
 
   sqlx::query("delete from tiers")
     .execute(&mut *tx)

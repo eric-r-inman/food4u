@@ -129,6 +129,8 @@ async fn per_user_overlay_and_ordering_are_preserved() {
         recipe_id: "r1".into(),
       },
     ],
+    // A non-default length, so the round-trip proves it persists.
+    planner_days: 9,
   };
 
   repo::save(&pool, "local", &model).await.unwrap();

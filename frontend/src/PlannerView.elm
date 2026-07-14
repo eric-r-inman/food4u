@@ -1,15 +1,16 @@
 module PlannerView exposing (viewPlannerColumn)
 
-{-| The Meal Planner column: a week of day panes, Sunday first, each with a
-Breakfast/Lunch/Dinner/Snacks slot that recipes are dragged into. A drop
-copies the recipe by reference — the recipe stays in the Recipes column —
-so the same recipe can be planned any number of times. Entries open their
-recipe on click and carry their own remove control.
+{-| The Meal Planner column: a run of day panes ("Day 1".."Day N", grown
+and shrunk one day at a time), each with a Breakfast/Lunch/Dinner/Snacks
+slot that recipes are dragged into. A drop copies the recipe by reference —
+the recipe stays in the Recipes column — so the same recipe can be planned
+any number of times. Entries jump to their recipe via an arrow and carry
+their own remove control.
 -}
 
 import Data exposing (Data, PlannerEntry, Recipe)
 import Html exposing (Attribute, Html, button, div, span, text)
-import Html.Attributes exposing (class, classList, title, type_)
+import Html.Attributes exposing (class, classList, disabled, type_)
 import Html.Events exposing (on, onClick, preventDefaultOn)
 import Json.Decode as Decode
 import Model exposing (Model, isOpen)
@@ -26,14 +27,21 @@ plannerColor =
     "var(--planner-rail)"
 
 
-days : List String
-days =
-    [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
-
-
 meals : List String
 meals =
     [ "Breakfast", "Lunch", "Dinner", "Snacks" ]
+
+
+{-| How many days the planner can grow to, and shrink to.
+-}
+maxDays : Int
+maxDays =
+    10
+
+
+minDays : Int
+minDays =
+    1
 
 
 viewPlannerColumn : Model -> Data -> Html Msg
@@ -45,11 +53,35 @@ viewPlannerColumn model data =
         div [ class "planner-col-open" ]
             [ columnTitleBar (Just plannerColor) "Meal Planner" TogglePlanner
             , div [ class "planner-body" ]
-                (List.indexedMap
+                (List.map
                     (viewDay data.planner data.recipes model.toggled model.recipeDrag model.plannerDropTarget)
-                    days
+                    (List.range 0 (data.plannerDays - 1))
+                    ++ [ viewDayControls data.plannerDays ]
                 )
             ]
+
+
+{-| The "Add Day" / "Remove Day" pair under the last day pane, growing the
+plan one day at a time up to the ceiling, or dropping the last day.
+-}
+viewDayControls : Int -> Html Msg
+viewDayControls plannerDays =
+    div [ class "planner-day-controls" ]
+        [ button
+            [ type_ "button"
+            , class "planner-day-btn"
+            , disabled (plannerDays >= maxDays)
+            , onClick AddPlannerDay
+            ]
+            [ text "+ Add Day" ]
+        , button
+            [ type_ "button"
+            , class "planner-day-btn"
+            , disabled (plannerDays <= minDays)
+            , onClick RemovePlannerDay
+            ]
+            [ text "− Remove Day" ]
+        ]
 
 
 collapsedBar : Html Msg
@@ -57,20 +89,26 @@ collapsedBar =
     collapsedColumnBar "Meal Planner" plannerColor TogglePlanner []
 
 
-{-| One day of the week: a plum rail header carrying the day's name, its
-planned-entry count, and a collapse toggle, over the four meal slots.
+{-| One day pane, "Day 1".."Day N": a plum rail header carrying the day's
+name, its planned-entry count, and a collapse toggle, over the meal slots.
 -}
-viewDay : List PlannerEntry -> List Recipe -> Set String -> Maybe String -> Maybe ( Int, String ) -> Int -> String -> Html Msg
-viewDay planner recipes toggled recipeDrag dropTarget day dayName =
+viewDay : List PlannerEntry -> List Recipe -> Set String -> Maybe String -> Maybe ( Int, String ) -> Int -> Html Msg
+viewDay planner recipes toggled recipeDrag dropTarget day =
     let
+        dayName =
+            "Day " ++ String.fromInt (day + 1)
+
+        collapseKey =
+            "planner:day-" ++ String.fromInt day
+
         collapsed =
-            not (isOpen True ("planner:" ++ dayName) toggled)
+            not (isOpen True collapseKey toggled)
 
         planned =
             List.length (List.filter (\e -> e.day == day) planner)
     in
     div [ class "planner-day" ]
-        (div [ class "planner-day-header", onClick (ToggleCategory ("planner:" ++ dayName)) ]
+        (div [ class "planner-day-header", onClick (ToggleCategory collapseKey) ]
             [ span [ class "planner-day-arrow" ]
                 [ text
                     (if collapsed then
@@ -145,8 +183,10 @@ plannerDropAttrs recipeDrag day meal =
         ]
 
 
-{-| One planned recipe: a chip that opens the recipe on click, with its own
-remove control. An entry whose recipe no longer exists renders nothing.
+{-| One planned recipe: a full-width card — the remove control at the far
+left, then the indigo arrow that jumps to the recipe in the Recipes column,
+then the recipe's full name. An entry whose recipe no longer exists renders
+nothing.
 -}
 viewEntry : List Recipe -> PlannerEntry -> Maybe (Html Msg)
 viewEntry recipes entry =
@@ -155,19 +195,19 @@ viewEntry recipes entry =
         |> List.head
         |> Maybe.map
             (\recipe ->
-                span [ class "planner-entry" ]
-                    [ span
-                        [ class "planner-entry-name"
-                        , title "Open recipe"
-                        , onClick (OpenRecipe recipe.id)
-                        ]
-                        [ text recipe.name ]
-                    , button
+                div [ class "planner-entry" ]
+                    [ button
                         [ type_ "button"
                         , class "planner-entry-x"
-                        , title "Remove from plan"
                         , onClick (RemovePlannerEntry entry.id)
                         ]
                         [ text "✕" ]
+                    , button
+                        [ type_ "button"
+                        , class "planner-entry-open"
+                        , onClick (OpenRecipe recipe.id)
+                        ]
+                        [ text "➔" ]
+                    , span [ class "planner-entry-name" ] [ text recipe.name ]
                     ]
             )

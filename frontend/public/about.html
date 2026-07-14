@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About — Longevity Pantry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      /* This page is a standalone document; it draws every shared value
+         (fonts, ink, the column rails) from style.css's palette variables
+         and keeps only its own layout rules here. */
+      .about-page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+        font-family: var(--body-font);
+        color: var(--body-fg);
+        line-height: 1.6;
+      }
+      .about-title {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+        margin: 0 0 4px;
+      }
+      .about-kicker {
+        font-family: var(--mono-font);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--pyramid-rail);
+        margin-bottom: 28px;
+      }
+      .about-heading {
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        margin: 36px 0 10px;
+      }
+      .about-text {
+        margin: 0 0 14px;
+      }
+      .about-item {
+        margin: 0 0 8px;
+      }
+      .about-rail {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        margin-right: 7px;
+      }
+      .about-rail-pyramid {
+        background: var(--pyramid-rail);
+      }
+      .about-rail-recipes {
+        background: var(--recipes-rail);
+      }
+      .about-rail-planner {
+        background: var(--planner-rail);
+      }
+      .about-rail-kitchen {
+        background: var(--kitchen-rail);
+      }
+      .about-rail-cart {
+        background: var(--cart-cat-accent);
+      }
+      .about-back {
+        display: inline-block;
+        margin-bottom: 36px;
+        font-family: var(--mono-font);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--auth-link-fg);
+        text-decoration: none;
+        border: 1px solid var(--auth-link-border);
+        background: var(--auth-link-bg);
+        border-radius: var(--auth-radius);
+        padding: 5px 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="about-page">
+      <a class="about-back" href="/">← Back to the app</a>
+
+      <h1 class="about-title">Longevity Pantry</h1>
+      <div class="about-kicker">Eat for the long run</div>
+
+      <p class="about-text">
+        Longevity Pantry is a kitchen companion built around one idea: the
+        foods that show up daily in the world's longest-lived communities
+        should show up daily in yours. It turns the eating patterns behind
+        the Mediterranean, Blue Zone, MIND, anti-inflammatory, and DASH
+        approaches into something you can actually run a kitchen with —
+        a living pantry, a recipe box, a weekly plan, and a shopping list
+        that all talk to each other.
+      </p>
+
+      <h2 class="about-heading">How it works</h2>
+      <p class="about-text">
+        The app is a row of columns, each collapsible to a slim bar, each
+        one step in the same loop: know your foods, keep them stocked, cook
+        from them, and plan the days ahead.
+      </p>
+      <ul>
+        <li class="about-item">
+          <span class="about-rail about-rail-pyramid"></span>
+          <strong>Longevity Foods</strong> — a pyramid of five hundred–plus
+          foods arranged by how often to eat them, from every-meal
+          foundations (greens, olive oil, whole grains) to
+          once-in-a-while extras. Add your own foods and categories, and
+          mark what is in stock as your kitchen changes.
+        </li>
+        <li class="about-item">
+          <span class="about-rail about-rail-recipes"></span>
+          <strong>Recipes</strong> — a recipe box stocked with dishes from
+          the longevity canons, organized by dish type and filterable by
+          tag: diet plan, meal, convenience (quick, one-pot, no-cook,
+          Instant Pot, slow cooker), or featured protein. Each recipe knows
+          its ingredients, shows what you can cook right now from what is
+          on hand, and sends whatever is missing to the shopping list in
+          one press. Add your own recipes by typing, pasting, or asking
+          the built-in AI assistant.
+        </li>
+        <li class="about-item">
+          <span class="about-rail about-rail-planner"></span>
+          <strong>Meal Planner</strong> — lay the days ahead out by
+          dragging recipe cards into breakfast, lunch, dinner, and snack
+          slots across as many days as you plan for. The same recipe can
+          be planned as often as you like, and every planned card jumps
+          back to its recipe.
+        </li>
+        <li class="about-item">
+          <span class="about-rail about-rail-kitchen"></span>
+          <strong>Kitchen</strong> — your real storage, pane by pane:
+          pantry, refrigerator, freezer, spice cupboard, and any pane you
+          add. A staples tracker watches the foods you always want on hand
+          and flags the ones you have run out of.
+        </li>
+        <li class="about-item">
+          <span class="about-rail about-rail-cart"></span>
+          <strong>Shopping List</strong> — everything the other columns
+          decided you need, sorted into your own categories, exportable as
+          plain text for the trip to the store.
+        </li>
+      </ul>
+
+      <h2 class="about-heading">The philosophy</h2>
+      <p class="about-text">
+        No calorie counting, no streaks, no guilt. The premise is gentler
+        and older: surround yourself with good ingredients, keep them where
+        you can see them, and let the default choice be the healthy one.
+        The pyramid says what to keep close; the planner and shopping list
+        just shorten the distance between intention and dinner.
+      </p>
+
+      <h2 class="about-heading">Your data</h2>
+      <p class="about-text">
+        Your kitchen is yours. Everything you add — foods, recipes, plans,
+        lists — lives in your own account's kitchen. If you use the AI
+        recipe assistant, you bring your own key, and requests go straight
+        from your browser to your chosen provider; the key never touches
+        this server.
+      </p>
+    </main>
+  </body>
+</html>

@@ -97,6 +97,10 @@ type alias Data =
 
     -- The Meal Planner's slots. Absent in older saved data.
     , planner : List PlannerEntry
+
+    -- How many days the Meal Planner shows, named "Day 1".."Day N".
+    -- Absent in older saved data.
+    , plannerDays : Int
     }
 
 
@@ -237,7 +241,7 @@ parseSelKey key =
 
 dataDecoder : Decoder Data
 dataDecoder =
-    Decode.map4 Data
+    Decode.map5 Data
         (Decode.field "tiers" (Decode.list tierDecoder))
         (Decode.field "staples" (Decode.list cardDecoder))
         -- "recipes" is absent in older saved data; default to empty.
@@ -250,6 +254,12 @@ dataDecoder =
         (Decode.oneOf
             [ Decode.field "planner" (Decode.list plannerEntryDecoder)
             , Decode.succeed []
+            ]
+        )
+        -- "plannerDays" is absent in older saved data; default to a week.
+        (Decode.oneOf
+            [ Decode.field "plannerDays" Decode.int
+            , Decode.succeed 7
             ]
         )
 
@@ -363,6 +373,7 @@ encodeData data =
         , ( "staples", Encode.list encodeCard data.staples )
         , ( "recipes", Encode.list encodeRecipe data.recipes )
         , ( "planner", Encode.list encodePlannerEntry data.planner )
+        , ( "plannerDays", Encode.int data.plannerDays )
         ]
 
 

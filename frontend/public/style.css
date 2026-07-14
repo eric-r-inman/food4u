@@ -18,6 +18,9 @@
   --cart-clear-bg: oklch(0.96 0.04 42);
   --cart-clear-fg: oklch(0.45 0.13 42);
 
+  /* The toolbar's About link, styled as a quiet mono link. */
+  --about-link-fg: oklch(0.45 0.02 70);
+
   /* Shared values for the toolbar sign-in / sign-out control. */
   --auth-font: "IBM Plex Mono", monospace;
   --auth-radius: 7px;
@@ -116,6 +119,21 @@
   --card-bg: oklch(0.99 0.006 86);
   --card-shadow: 0 18px 50px -28px rgba(60, 45, 20, 0.35);
 
+  /* The app's body font stack, shared with standalone pages. */
+  --body-font: "Archivo", system-ui, sans-serif;
+
+  /* The body text ink shared with standalone pages. */
+  --body-fg: oklch(0.3 0.015 70);
+
+  /* The column rail colours, named so standalone pages (the About page's
+     column swatches) stay in step with the app's palette. */
+  --pyramid-rail: oklch(0.5 0.07 128);
+  --kitchen-rail: oklch(0.55 0.08 74);
+
+  /* The Recipes column's indigo rail, shared with the controls elsewhere
+     that point at a recipe (the planner's open-recipe arrow). */
+  --recipes-rail: oklch(0.43 0.06 250);
+
   /* The Meal Planner column: a plum rail distinct from its neighbours
      (Recipes indigo, Kitchen amber), with tinted day panes and entry
      chips drawn from the same hue. */
@@ -164,14 +182,14 @@
 body {
   margin: 0;
   background: oklch(0.955 0.012 86);
-  font-family: "Archivo", system-ui, sans-serif;
+  font-family: var(--body-font);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 input,
 button {
-  font-family: "Archivo", system-ui, sans-serif;
+  font-family: var(--body-font);
 }
 
 /* The app fills the viewport: a fixed top toolbar, then a two-pane body
@@ -262,6 +280,11 @@ button {
   border: 1px solid var(--planner-day-border);
   border-radius: 10px;
   overflow: hidden;
+
+  /* Day panes are flex children of the scrolling column; without this
+     they shrink to fit the viewport (overflow: hidden zeroes the implicit
+     min-height), squashing their headers and hiding the lower meals. */
+  flex: 0 0 auto;
 }
 
 .planner-day-header {
@@ -331,14 +354,41 @@ button {
   color: var(--planner-hint-fg);
 }
 
-/* One planned recipe: its name opens the recipe, the ✕ removes the plan. */
+/* The "Add Day" / "Remove Day" pair under the last day pane. */
+.planner-day-controls {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.planner-day-btn {
+  flex: 1 1 0;
+  font-family: var(--mono-font);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid var(--planner-entry-border);
+  background: var(--planner-entry-bg);
+  color: var(--planner-entry-fg);
+}
+
+.planner-day-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* One planned recipe: a full-width card with the remove control at the far
+   left, then the open-recipe arrow, then the recipe's full name. */
 .planner-entry {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 2px 4px 2px 9px;
-  border-radius: 12px;
-  font-size: 12px;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px 6px 6px;
+  border-radius: 8px;
+  font-size: 12.5px;
   font-weight: 500;
   background: var(--planner-entry-bg);
   border: 1px solid var(--planner-entry-border);
@@ -346,7 +396,21 @@ button {
 }
 
 .planner-entry-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The thick indigo arrow that jumps to the recipe in the Recipes column. */
+.planner-entry-open {
+  border: none;
+  background: transparent;
   cursor: pointer;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 1px 2px;
+  color: var(--recipes-rail);
+  flex: 0 0 auto;
 }
 
 .planner-entry-x {
@@ -355,9 +419,10 @@ button {
   cursor: pointer;
   font-size: 10px;
   line-height: 1;
-  padding: 2px 3px;
+  padding: 3px 4px;
   border-radius: 8px;
   color: var(--planner-entry-fg);
+  flex: 0 0 auto;
 }
 
 .pyramid-body,
@@ -507,6 +572,16 @@ button {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* The quiet About link beside the app title. */
+.about-link {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--about-link-fg);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--about-link-fg);
 }
 
 .auth-name {
@@ -1300,6 +1375,21 @@ button {
   position: relative;
   flex: 1 1 auto;
   min-width: 0;
+}
+
+/* The expanded card's full-name row, styled like a category title: the
+   header row's name input truncates against the icons, so this line shows
+   the whole name (whose length is capped to fit it). */
+.recipe-full-name {
+  margin-top: 8px;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--recipes-rail);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /* A small uppercase heading inside an expanded recipe card, shared by the

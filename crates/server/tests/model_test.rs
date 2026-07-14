@@ -66,6 +66,7 @@ fn the_typed_model_round_trips_through_json() {
       meal: "Breakfast".into(),
       recipe_id: "r1".into(),
     }],
+    planner_days: 10,
   };
 
   let reserialized = serde_json::to_string(&model).unwrap();

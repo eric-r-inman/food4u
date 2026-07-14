@@ -39,10 +39,11 @@ import KitchenView exposing (viewKitchenColumn)
 import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen, noSelection)
 import Msg exposing (Msg(..))
 import PlannerView exposing (viewPlannerColumn)
+import Process
 import PyramidView exposing (viewPyramidColumn)
 import RecipeExport exposing (recipeFileName, recipeText)
 import RecipeParser exposing (parsePastedRecipe)
-import RecipesView exposing (viewRecipes)
+import RecipesView exposing (recipeCardDomId, recipeCategories, recipeNameLimit, recipesBodyId, viewRecipes)
 import Set exposing (Set)
 import Shopping exposing (cartCardId, shoppingListText)
 import Style exposing (styles)
@@ -190,7 +191,7 @@ update msg model =
         GotModel (Ok data) ->
             let
                 withTracker =
-                    ensureStaplesTracker data
+                    ensureStaplesTracker (ensureRecipeCategories data)
 
                 -- Start the id sequence past every id already in the model, so
                 -- freshly minted ids never collide with persisted ones (which
@@ -369,7 +370,7 @@ update msg model =
                                 |> Set.insert ("recipe:" ++ recipe.category)
                                 |> Set.insert ("reciperow:" ++ rid)
                       }
-                    , Cmd.none
+                    , scrollRecipeIntoView rid
                     )
 
                 Nothing ->
@@ -379,7 +380,7 @@ update msg model =
             -- Live-edit locally; persisted on blur via PersistNow.
             withData model
                 (\data ->
-                    ( { model | data = Just (mapRecipe rid (\r -> { r | name = value }) data) }
+                    ( { model | data = Just (mapRecipe rid (\r -> { r | name = String.left recipeNameLimit value }) data) }
                     , Cmd.none
                     )
                 )
@@ -633,6 +634,25 @@ update msg model =
             withData model
                 (\data -> persistData model { data | planner = List.filter (\e -> e.id /= entryId) data.planner })
 
+        AddPlannerDay ->
+            withData model
+                (\data -> persistData model { data | plannerDays = Basics.min 10 (data.plannerDays + 1) })
+
+        RemovePlannerDay ->
+            -- Dropping the last day also drops whatever was planned on it.
+            withData model
+                (\data ->
+                    let
+                        remaining =
+                            Basics.max 1 (data.plannerDays - 1)
+                    in
+                    persistData model
+                        { data
+                            | plannerDays = remaining
+                            , planner = List.filter (\e -> e.day < remaining) data.planner
+                        }
+                )
+
         DropRecipeOnGroup gid ->
             case ( model.recipeDrag, model.data ) of
                 ( Just rid, Just data ) ->
@@ -808,7 +828,7 @@ commitAdd target model =
                                 pushItemTo loc (Item newId value False) data
 
                             AddRecipe category ->
-                                { data | recipes = data.recipes ++ [ Recipe newId value category [] "" False [] ] }
+                                { data | recipes = data.recipes ++ [ Recipe newId (String.left recipeNameLimit value) category [] "" False [] ] }
 
                             AddPane ->
                                 { data | staples = data.staples ++ [ newPane newId value ] }
@@ -944,7 +964,7 @@ commitPaste category model =
                             parsed.ingredients
 
                     recipe =
-                        Recipe (nextId seqAfter) parsed.name category ingredients parsed.instructions False []
+                        Recipe (nextId seqAfter) (String.left recipeNameLimit parsed.name) category ingredients parsed.instructions False []
 
                     newData =
                         { data | recipes = data.recipes ++ [ recipe ] }
@@ -1169,6 +1189,35 @@ ensureCartCategories seq data =
         ( { data | staples = data.staples ++ cards }, seqAfter )
 
 
+{-| Re-home every recipe filed under a category that no longer exists.
+-}
+ensureRecipeCategories : Data -> Data
+ensureRecipeCategories data =
+    { data | recipes = List.map rehomeRecipe data.recipes }
+
+
+{-| Re-home a recipe whose category no longer exists, so it never drops out
+of view — the meal categories became tags, and an older kitchen may still
+file recipes under them. The vanished category rides along as a tag when it
+was one of the meals.
+-}
+rehomeRecipe : Recipe -> Recipe
+rehomeRecipe recipe =
+    if List.member recipe.category recipeCategories then
+        recipe
+
+    else
+        { recipe
+            | category = "Main Courses"
+            , tags =
+                if List.member recipe.category [ "Breakfast", "Lunch", "Dinner" ] && not (List.member recipe.category recipe.tags) then
+                    recipe.tags ++ [ recipe.category ]
+
+                else
+                    recipe.tags
+        }
+
+
 {-| Guarantee the permanent Staples Tracker pane exists, creating it empty
 when a loaded model has none yet. It is a storage card treated specially by
 name, so once present it drags, persists, and renders like any pane.
@@ -1187,6 +1236,31 @@ ensureStaplesTracker data =
                 data.staples
                     ++ [ Card staplesTrackerId staplesTrackerName "" "" "" "" "kitchen" [] ]
         }
+
+
+{-| Scroll the Recipes column so the given recipe's card sits near the top
+of its visible area. The short sleep lets the column and the card render
+first — opening a recipe may have only just mounted them.
+-}
+scrollRecipeIntoView : String -> Cmd Msg
+scrollRecipeIntoView rid =
+    Process.sleep 80
+        |> Task.andThen (\_ -> Dom.getElement (recipeCardDomId rid))
+        |> Task.andThen
+            (\card ->
+                Dom.getElement recipesBodyId
+                    |> Task.andThen
+                        (\body ->
+                            Dom.getViewportOf recipesBodyId
+                                |> Task.andThen
+                                    (\viewport ->
+                                        Dom.setViewportOf recipesBodyId
+                                            0
+                                            (viewport.viewport.y + card.element.y - body.element.y - 16)
+                                    )
+                        )
+            )
+        |> Task.attempt (\_ -> NoOp)
 
 
 {-| Clear every trace of an in-flight recipe drag: the dragged card and
@@ -1446,7 +1520,7 @@ acceptAiRecipe model =
                         generated.ingredients
 
                 recipe =
-                    Recipe (nextId seqAfter) generated.name category ingredients (aiInstructions generated) False []
+                    Recipe (nextId seqAfter) (String.left recipeNameLimit generated.name) category ingredients (aiInstructions generated) False []
 
                 withRecipe =
                     { data | recipes = data.recipes ++ [ recipe ] }
@@ -1637,6 +1711,7 @@ viewToolbar me =
                     ]
                 )
                 [ text "Longevity Pantry" ]
+            , a [ class "about-link noprint", href "/about.html" ] [ text "About" ]
             , div [ class "toolbar-auth" ] (viewAuth me)
             ]
         ]

@@ -25,7 +25,7 @@ cat <<'HEADER'
 -- `just seed-edit` and `just seed-save`, not by hand.
 HEADER
 
-emit "select 'insert into users (id, email, display_name, created_at) values ('||quote(id)||', '||quote(email)||', '||quote(display_name)||', '||quote(created_at)||');' from users order by id;"
+emit "select 'insert into users (id, email, display_name, created_at, planner_days) values ('||quote(id)||', '||quote(email)||', '||quote(display_name)||', '||quote(created_at)||', '||planner_days||');' from users order by id;"
 emit "select 'insert into tiers (id, no, name, freq, width, rail, tint, line, position) values ('||quote(id)||', '||quote(no)||', '||quote(name)||', '||quote(freq)||', '||quote(width)||', '||quote(rail)||', '||quote(tint)||', '||quote(line)||', '||position||');' from tiers order by position;"
 emit "select 'insert into food_groups (id, tier_id, label, position) values ('||quote(id)||', '||quote(tier_id)||', '||quote(label)||', '||position||');' from food_groups order by tier_id, position;"
 emit "select 'insert into foods (id, group_id, name, prep, hero, position) values ('||quote(id)||', '||quote(group_id)||', '||quote(name)||', '||quote(prep)||', '||(case when hero then 'true' else 'false' end)||', '||position||');' from foods order by group_id, position;"
@@ -35,3 +35,4 @@ emit "select 'insert into storage_items (id, location_id, name, needs, position)
 emit "select 'insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('||quote(id)||', '||quote(user_id)||', '||quote(name)||', '||quote(category)||', '||quote(instructions)||', '||(case when bookmarked then 'true' else 'false' end)||', '||position||');' from recipes order by user_id, position;"
 emit "select 'insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('||quote(id)||', '||quote(recipe_id)||', '||quote(name)||', '||(case when needs then 'true' else 'false' end)||', '||position||');' from recipe_ingredients order by recipe_id, position;"
 emit "select 'insert into recipe_tags (recipe_id, tag, position) values ('||quote(recipe_id)||', '||quote(tag)||', '||position||');' from recipe_tags order by recipe_id, position;"
+emit "select 'insert into meal_plan_entries (id, user_id, day, meal, recipe_id, position) values ('||quote(id)||', '||quote(user_id)||', '||day||', '||quote(meal)||', '||quote(recipe_id)||', '||position||');' from meal_plan_entries order by user_id, day, meal, position;"

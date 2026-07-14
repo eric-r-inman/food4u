@@ -210,6 +210,15 @@ pub async fn load(
   .await
   .map_err(read)?;
 
+  // A user who has never saved has no row yet; they get the default week.
+  let planner_days =
+    sqlx::query_scalar::<_, i64>("select planner_days from users where id = ?")
+      .bind(user_id)
+      .fetch_optional(pool)
+      .await
+      .map_err(read)?
+      .unwrap_or(7);
+
   Ok(assemble(
     tiers,
     groups,
@@ -220,6 +229,7 @@ pub async fn load(
     ingredients,
     tags,
     planner,
+    planner_days,
   ))
 }
 
@@ -236,6 +246,7 @@ pub(crate) fn assemble(
   ingredients: Vec<IngredientRow>,
   tags: Vec<TagRow>,
   planner: Vec<PlannerRow>,
+  planner_days: i64,
 ) -> Model {
   let mut foods_by_group: HashMap<String, Vec<Food>> = HashMap::new();
   for row in foods {
@@ -340,6 +351,7 @@ pub(crate) fn assemble(
         recipe_id: row.recipe_id,
       })
       .collect(),
+    planner_days,
   }
 }
 
@@ -362,6 +374,12 @@ pub async fn save(
   .execute(&mut *tx)
   .await
   .map_err(write)?;
+  sqlx::query("update users set planner_days = ? where id = ?")
+    .bind(model.planner_days)
+    .bind(user_id)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
 
   // Clear the prior model.  Deleting the tiers cascades to groups, foods,
   // and the food-state overlay; the user's storage and recipes go by user.
