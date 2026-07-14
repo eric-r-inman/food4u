@@ -481,7 +481,7 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
             List.any (\i -> not (Set.member (String.toLower i.name) inStock)) recipe.ingredients
     in
     div
-        (classList [ ( "recipe-reorder-before", showDropLine ) ]
+        (classList [ ( "recipe-card", True ), ( "recipe-reorder-before", showDropLine ) ]
             :: reorderAttrs
             ++ styles
                 [ ( "background"
@@ -547,7 +547,8 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                 text ""
             , div (styles [ ( "flex", "1" ) ]) []
             , span
-                (attribute "draggable" "true"
+                (class "recipe-grip"
+                    :: attribute "draggable" "true"
                     :: on "dragstart" (Decode.succeed (RecipeDragStart recipe.id))
                     :: on "dragend" (Decode.succeed RecipeDragEnd)
                     :: title "Drag onto another card to reorder, onto a category to re-home, or onto a pyramid category to link"

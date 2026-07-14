@@ -20,12 +20,29 @@
       // Safari require dataTransfer data to be set during dragstart).  A
       // capture-phase listener sets it for every draggable chip before
       // Elm's own handler runs.
+      //
+      // A recipe card is dragged by its small grip so its inline editors
+      // keep normal text selection, but the ghost that should float with
+      // the pointer is the whole card — the same feel as dragging a food
+      // chip, whose ghost is the chip itself.  When a drag starts on the
+      // grip, promote the drag image to the enclosing card, anchored where
+      // the pointer sits over it.
       document.addEventListener(
         "dragstart",
         function (event) {
           try {
             event.dataTransfer.setData("text/plain", "food4u");
             event.dataTransfer.effectAllowed = "move";
+            var grip = event.target.closest && event.target.closest(".recipe-grip");
+            var card = grip && grip.closest(".recipe-card");
+            if (card) {
+              var rect = card.getBoundingClientRect();
+              event.dataTransfer.setDragImage(
+                card,
+                event.clientX - rect.left,
+                event.clientY - rect.top,
+              );
+            }
           } catch (_) {}
         },
         true,

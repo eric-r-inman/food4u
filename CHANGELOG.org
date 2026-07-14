@@ -19,8 +19,9 @@
   match.
 - Reorder recipes by dragging: drop a card onto another to slot it in just
   above, or onto a category to send it to that category's end — across
-  categories too. A blue line marks where the card will land, and the card's own
-  category now stays open while it drags.
+  categories too. The whole card floats with the pointer as you drag it by its
+  grip — the same feel as dragging a food badge — a blue line marks where it
+  will land, and the card's own category stays open while it drags.
 - Each Longevity Foods tier header shows how many of its foods are in stock
   beside its food count.
 - Bookmark a recipe from its header, between the drag grip and the cart button —
