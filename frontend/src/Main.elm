@@ -90,6 +90,7 @@ init flags =
       , recipeSearch = ""
       , kitchenSearch = ""
       , recipeFilter = AllRecipes
+      , recipeTagFilter = Nothing
       , pasting = Nothing
       , pasteValue = ""
       , me = Nothing
@@ -408,6 +409,23 @@ update msg model =
 
         SetRecipeFilter filter ->
             ( { model | recipeFilter = filter }, Cmd.none )
+
+        SetRecipeTagFilter tag ->
+            -- The dropdown's "All tags" option carries an empty value.
+            ( { model
+                | recipeTagFilter =
+                    if tag == "" then
+                        Nothing
+
+                    else
+                        Just tag
+              }
+            , Cmd.none
+            )
+
+        RemoveRecipeTag rid tag ->
+            withData model
+                (\data -> persistData model (mapRecipe rid (\r -> { r | tags = List.filter (\t -> t /= tag) r.tags }) data))
 
         StartPaste category ->
             ( { model | pasting = Just category, pasteValue = "" }
@@ -751,7 +769,7 @@ commitAdd target model =
                                 pushItemTo loc (Item newId value False) data
 
                             AddRecipe category ->
-                                { data | recipes = data.recipes ++ [ Recipe newId value category [] "" False ] }
+                                { data | recipes = data.recipes ++ [ Recipe newId value category [] "" False [] ] }
 
                             AddPane ->
                                 { data | staples = data.staples ++ [ newPane newId value ] }
@@ -761,6 +779,19 @@ commitAdd target model =
 
                             AddCartCategory ->
                                 { data | staples = data.staples ++ [ newCartCategory newId value ] }
+
+                            AddRecipeTag rid ->
+                                -- A tag needs no minted id; append it unless the
+                                -- recipe already carries it.
+                                mapRecipe rid
+                                    (\r ->
+                                        if List.member value r.tags then
+                                            r
+
+                                        else
+                                            { r | tags = r.tags ++ [ value ] }
+                                    )
+                                    data
                 in
                 ( { model | data = Just newData, derived = derive newData, seq = model.seq + 1, adding = Nothing, addValue = "" }
                 , saveModel newData
@@ -874,7 +905,7 @@ commitPaste category model =
                             parsed.ingredients
 
                     recipe =
-                        Recipe (nextId seqAfter) parsed.name category ingredients parsed.instructions False
+                        Recipe (nextId seqAfter) parsed.name category ingredients parsed.instructions False []
 
                     newData =
                         { data | recipes = data.recipes ++ [ recipe ] }
@@ -1375,7 +1406,7 @@ acceptAiRecipe model =
                         generated.ingredients
 
                 recipe =
-                    Recipe (nextId seqAfter) generated.name category ingredients (aiInstructions generated) False
+                    Recipe (nextId seqAfter) generated.name category ingredients (aiInstructions generated) False []
 
                 withRecipe =
                     { data | recipes = data.recipes ++ [ recipe ] }

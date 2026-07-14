@@ -99,4 +99,6 @@ pub struct Recipe {
   pub instructions: String,
   #[serde(default)]
   pub bookmarked: bool,
+  #[serde(default)]
+  pub tags: Vec<String>,
 }

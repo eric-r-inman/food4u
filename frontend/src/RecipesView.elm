@@ -59,6 +59,53 @@ matchesRecipeFilter filter stockedNoCart recipe =
             n >= 1 && n <= 2
 
 
+{-| Whether a recipe carries the tag the list is filtered to. No tag
+filter (Nothing) matches every recipe.
+-}
+matchesTag : Maybe String -> Recipe -> Bool
+matchesTag tagFilter recipe =
+    case tagFilter of
+        Nothing ->
+            True
+
+        Just tag ->
+            List.member tag recipe.tags
+
+
+{-| The tag filter dropdown shown to the right of the search field: one
+option per distinct tag across all recipes, plus "All tags" to clear it.
+Selecting a tag hides every recipe without it; only one tag filters at a
+time. Kept narrow so it fits beside the search field without widening the
+column.
+-}
+viewTagFilter : Maybe String -> Data -> Html Msg
+viewTagFilter selectedTag data =
+    select
+        [ class "recipe-tag-select noprint"
+        , title "Show only recipes with the selected tag"
+        , value (Maybe.withDefault "" selectedTag)
+        , onInput SetRecipeTagFilter
+        ]
+        (option [ value "" ] [ text "All tags" ]
+            :: List.map
+                (\tag -> option [ value tag ] [ text tag ])
+                (data.recipes |> List.concatMap .tags |> Set.fromList |> Set.toList)
+        )
+
+
+{-| A single tag chip in a recipe's tag editor: the tag text and an ✕ that
+removes the tag from that recipe.
+-}
+viewTagChip : String -> String -> Html Msg
+viewTagChip rid tag =
+    span [ class "recipe-tag" ]
+        [ text tag
+        , button
+            [ type_ "button", class "recipe-tag-x", title "Remove tag", onClick (RemoveRecipeTag rid tag) ]
+            [ text "✕" ]
+        ]
+
+
 {-| The "All / Can make now / Almost there" segmented filter for recipes.
 -}
 viewRecipeFilterBar : RecipeFilter -> Html Msg
@@ -249,7 +296,7 @@ viewRecipes model data =
                 , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt (List.length data.recipes) ++ " RECIPES") ]
                 ]
             , div [ class "recipes-body" ]
-                (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput
+                (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput [ viewTagFilter model.recipeTagFilter data ]
                     :: viewRecipeFilterBar model.recipeFilter
                     :: List.map (viewRecipeCategory model model.derived.nameTierRail model.derived.inStock model.derived.stockedNoCart recipeSearch data) recipeCategories
                 )
@@ -292,12 +339,13 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
             "recipe:" ++ category
 
         filtering =
-            model.recipeFilter /= AllRecipes
+            model.recipeFilter /= AllRecipes || model.recipeTagFilter /= Nothing
 
         recipesInCat =
             data.recipes
                 |> List.filter (\r -> r.category == category)
                 |> List.filter (matchesRecipeFilter model.recipeFilter stockedNoCart)
+                |> List.filter (matchesTag model.recipeTagFilter)
 
         bookmarkedCount =
             List.length (List.filter .bookmarked recipesInCat)
@@ -381,13 +429,13 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                          else
                             [ viewRecipeFooter model category ]
                         )
-                            ++ List.map (viewRecipe model.toggled model.selection.active model.selection.items nameToTierRail inStock stockedNoCart recipeSearch model.recipeDrag model.recipeDropBefore) recipesInCat
+                            ++ List.map (viewRecipe model.toggled model.selection.active model.selection.items nameToTierRail inStock stockedNoCart recipeSearch model.recipeDrag model.recipeDropBefore model.adding model.addValue) recipesInCat
                    )
             )
 
 
-viewRecipe : Set String -> Bool -> Set String -> Dict String String -> Set String -> Set String -> String -> Maybe String -> Maybe String -> Recipe -> Html Msg
-viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart recipeSearch recipeDrag dropBefore recipe =
+viewRecipe : Set String -> Bool -> Set String -> Dict String String -> Set String -> Set String -> String -> Maybe String -> Maybe String -> Maybe AddTarget -> String -> Recipe -> Html Msg
+viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart recipeSearch recipeDrag dropBefore adding addValue recipe =
     let
         loc =
             RecipeIngredients recipe.id
@@ -524,7 +572,12 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                          else
                             List.map (viewRecipeItem selectMode selected nameToTierRail inStock loc) recipe.ingredients
                         )
-                    , div (styles [ ( "margin-top", "10px" ), ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "10px" ), ( "font-weight", "600" ), ( "letter-spacing", "0.6px" ), ( "text-transform", "uppercase" ), ( "color", "oklch(0.5 0.04 250)" ) ]) [ text "Instructions" ]
+                    , div [ class "recipe-section-label" ] [ text "Tags" ]
+                    , div [ class "recipe-tags" ]
+                        (List.map (viewTagChip recipe.id) recipe.tags
+                            ++ [ viewAdder adding addValue (AddRecipeTag recipe.id) "New tag…" "+ Tag" ]
+                        )
+                    , div [ class "recipe-section-label" ] [ text "Instructions" ]
                     , textarea
                         (value recipe.instructions
                             :: onInput (EditRecipeInstructions recipe.id)

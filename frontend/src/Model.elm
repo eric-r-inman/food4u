@@ -119,6 +119,11 @@ type alias Model =
     , recipeSearch : String
     , kitchenSearch : String
     , recipeFilter : RecipeFilter
+
+    -- The single recipe tag the list is filtered to, or Nothing for all
+    -- recipes. Tag filtering hides recipes without the tag and re-counts
+    -- each category to the tagged recipes it still shows.
+    , recipeTagFilter : Maybe String
     , pasting : Maybe String
     , pasteValue : String
 

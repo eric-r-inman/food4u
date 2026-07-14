@@ -104,6 +104,12 @@ pub(crate) struct IngredientRow {
   na: bool,
 }
 
+#[derive(sqlx::FromRow)]
+pub(crate) struct TagRow {
+  recipe_id: String,
+  tag: String,
+}
+
 /// Assemble the whole model for one user.
 pub async fn load(
   pool: &SqlitePool,
@@ -175,7 +181,26 @@ pub async fn load(
   .await
   .map_err(read)?;
 
-  Ok(assemble(tiers, groups, foods, locations, items, recipes, ingredients))
+  let tags = sqlx::query_as::<_, TagRow>(
+    "select t.recipe_id, t.tag from recipe_tags t \
+     join recipes r on r.id = t.recipe_id \
+     where r.user_id = ? order by t.recipe_id, t.position",
+  )
+  .bind(user_id)
+  .fetch_all(pool)
+  .await
+  .map_err(read)?;
+
+  Ok(assemble(
+    tiers,
+    groups,
+    foods,
+    locations,
+    items,
+    recipes,
+    ingredients,
+    tags,
+  ))
 }
 
 /// Build the model from the ordered row sets: bucket each child by its
@@ -189,6 +214,7 @@ pub(crate) fn assemble(
   items: Vec<StorageItemRow>,
   recipes: Vec<RecipeRow>,
   ingredients: Vec<IngredientRow>,
+  tags: Vec<TagRow>,
 ) -> Model {
   let mut foods_by_group: HashMap<String, Vec<Food>> = HashMap::new();
   for row in foods {
@@ -236,6 +262,14 @@ pub(crate) fn assemble(
       });
   }
 
+  let mut tags_by_recipe: HashMap<String, Vec<String>> = HashMap::new();
+  for row in tags {
+    tags_by_recipe
+      .entry(row.recipe_id)
+      .or_default()
+      .push(row.tag);
+  }
+
   Model {
     tiers: tiers
       .into_iter()
@@ -268,6 +302,7 @@ pub(crate) fn assemble(
       .into_iter()
       .map(|row| Recipe {
         ingredients: ingredients_by_recipe.remove(&row.id).unwrap_or_default(),
+        tags: tags_by_recipe.remove(&row.id).unwrap_or_default(),
         id: row.id,
         name: row.name,
         category: row.category,
@@ -444,6 +479,18 @@ pub async fn save(
       .bind(&ingredient.name)
       .bind(ingredient.na)
       .bind(ing_pos as i64)
+      .execute(&mut *tx)
+      .await
+      .map_err(write)?;
+    }
+
+    for (tag_pos, tag) in recipe.tags.iter().enumerate() {
+      sqlx::query(
+        "insert into recipe_tags (recipe_id, tag, position) values (?, ?, ?)",
+      )
+      .bind(&recipe.id)
+      .bind(tag)
+      .bind(tag_pos as i64)
       .execute(&mut *tx)
       .await
       .map_err(write)?;

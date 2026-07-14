@@ -13,7 +13,7 @@
 use crate::model::Model;
 use crate::repo::{
   self, CardRow, FoodRow, GroupRow, IngredientRow, RecipeRow, RepoError,
-  StorageItemRow, TierRow,
+  StorageItemRow, TagRow, TierRow,
 };
 use sqlx::PgPool;
 
@@ -85,6 +85,16 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .await
   .map_err(read)?;
 
+  let tags = sqlx::query_as::<_, TagRow>(
+    "select t.recipe_id, t.tag from recipe_tags t \
+     join recipes r on r.id = t.recipe_id \
+     where r.user_id = $1 order by t.recipe_id, t.position",
+  )
+  .bind(user_id)
+  .fetch_all(pool)
+  .await
+  .map_err(read)?;
+
   Ok(repo::assemble(
     tiers,
     groups,
@@ -93,6 +103,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
     items,
     recipes,
     ingredients,
+    tags,
   ))
 }
 
@@ -259,6 +270,19 @@ pub async fn save(
       .bind(&ingredient.name)
       .bind(ingredient.na)
       .bind(ing_pos as i64)
+      .execute(&mut *tx)
+      .await
+      .map_err(write)?;
+    }
+
+    for (tag_pos, tag) in recipe.tags.iter().enumerate() {
+      sqlx::query(
+        "insert into recipe_tags (recipe_id, tag, position) \
+         values ($1, $2, $3)",
+      )
+      .bind(&recipe.id)
+      .bind(tag)
+      .bind(tag_pos as i64)
       .execute(&mut *tx)
       .await
       .map_err(write)?;

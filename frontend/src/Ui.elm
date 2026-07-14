@@ -199,64 +199,70 @@ collapsedColumnBar titleText bgColor toggleMsg extraAttrs =
 
 
 {-| A search input with a clear button, reddened when the current term
-matches nothing. Shared by the Pyramid, Recipes, and Kitchen columns.
+matches nothing. Shared by the Pyramid, Recipes, and Kitchen columns. Any
+`trailing` elements sit on the same row to the right of the field, which
+shrinks to make room without the row growing wider (the Recipes column
+uses this for its tag filter).
 -}
-viewSearchField : String -> String -> Bool -> (String -> Msg) -> Html Msg
-viewSearchField placeholderText currentValue noMatch onInputMsg =
-    div (styles [ ( "position", "relative" ), ( "margin", "0 0 16px" ) ])
-        [ input
-            (value currentValue
-                :: onInput onInputMsg
-                :: placeholder placeholderText
-                :: type_ "text"
-                :: styles
-                    [ ( "width", "100%" )
-                    , ( "padding", "8px 34px 8px 12px" )
-                    , ( "border-radius", "8px" )
-                    , ( "font-size", "14px" )
-                    , ( "outline", "none" )
-                    , ( "color", "oklch(0.3 0.012 70)" )
-                    , ( "border"
-                      , if noMatch then
-                            "1px solid oklch(0.6 0.2 25)"
-
-                        else
-                            "1px solid oklch(0.86 0.012 86)"
-                      )
-                    , ( "background"
-                      , if noMatch then
-                            "oklch(0.96 0.04 25)"
-
-                        else
-                            "#fff"
-                      )
-                    ]
-            )
-            []
-        , if currentValue /= "" then
-            button
-                (type_ "button"
-                    :: onClick (onInputMsg "")
+viewSearchField : String -> String -> Bool -> (String -> Msg) -> List (Html Msg) -> Html Msg
+viewSearchField placeholderText currentValue noMatch onInputMsg trailing =
+    div [ class "search-field-row" ]
+        (div [ class "search-field-wrap" ]
+            [ input
+                (value currentValue
+                    :: onInput onInputMsg
+                    :: placeholder placeholderText
+                    :: type_ "text"
                     :: styles
-                        [ ( "position", "absolute" )
-                        , ( "right", "8px" )
-                        , ( "top", "50%" )
-                        , ( "transform", "translateY(-50%)" )
-                        , ( "border", "none" )
-                        , ( "background", "transparent" )
-                        , ( "cursor", "pointer" )
+                        [ ( "width", "100%" )
+                        , ( "padding", "8px 34px 8px 12px" )
+                        , ( "border-radius", "8px" )
                         , ( "font-size", "14px" )
-                        , ( "font-weight", "700" )
-                        , ( "color", "oklch(0.55 0.012 70)" )
-                        , ( "padding", "2px 4px" )
-                        , ( "line-height", "1" )
+                        , ( "outline", "none" )
+                        , ( "color", "oklch(0.3 0.012 70)" )
+                        , ( "border"
+                          , if noMatch then
+                                "1px solid oklch(0.6 0.2 25)"
+
+                            else
+                                "1px solid oklch(0.86 0.012 86)"
+                          )
+                        , ( "background"
+                          , if noMatch then
+                                "oklch(0.96 0.04 25)"
+
+                            else
+                                "#fff"
+                          )
                         ]
                 )
-                [ text "✕" ]
+                []
+            , if currentValue /= "" then
+                button
+                    (type_ "button"
+                        :: onClick (onInputMsg "")
+                        :: styles
+                            [ ( "position", "absolute" )
+                            , ( "right", "8px" )
+                            , ( "top", "50%" )
+                            , ( "transform", "translateY(-50%)" )
+                            , ( "border", "none" )
+                            , ( "background", "transparent" )
+                            , ( "cursor", "pointer" )
+                            , ( "font-size", "14px" )
+                            , ( "font-weight", "700" )
+                            , ( "color", "oklch(0.55 0.012 70)" )
+                            , ( "padding", "2px 4px" )
+                            , ( "line-height", "1" )
+                            ]
+                    )
+                    [ text "✕" ]
 
-          else
-            text ""
-        ]
+              else
+                text ""
+            ]
+            :: trailing
+        )
 
 
 {-| A small always-visible notepad button shown on a pyramid food that is

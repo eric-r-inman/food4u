@@ -20,8 +20,8 @@ type alias Me =
 
 {-| What an inline add-input is currently creating: a food in a list, a
 new recipe in a category, a new Kitchen storage pane, a new food category
-in a pyramid tier (identified by its tier id), or a new Shopping List
-category.
+in a pyramid tier (identified by its tier id), a new Shopping List
+category, or a tag on a recipe (identified by its recipe id).
 -}
 type AddTarget
     = AddFood Loc
@@ -29,6 +29,7 @@ type AddTarget
     | AddPane
     | AddCategory String
     | AddCartCategory
+    | AddRecipeTag String
 
 
 {-| Filter for the Recipes column by how stocked each recipe is.

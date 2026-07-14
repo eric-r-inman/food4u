@@ -4,6 +4,9 @@
    hover-reveal remove control. */
 
 :root {
+  /* The monospace stack used for the app's compact labels and controls. */
+  --mono-font: "IBM Plex Mono", monospace;
+
   /* Shared values for the Shopping List toolbar buttons. */
   --cart-btn-font: "IBM Plex Mono", monospace;
   --cart-btn-radius: 7px;
@@ -101,6 +104,15 @@
 
   /* The insertion line shown above a recipe card while reordering. */
   --recipe-reorder-line: oklch(0.55 0.16 250);
+
+  /* Recipe tag chips and the tag filter dropdown beside the search field. */
+  --recipe-tag-bg: oklch(0.95 0.02 250);
+  --recipe-tag-border: oklch(0.86 0.03 250);
+  --recipe-tag-fg: oklch(0.4 0.05 250);
+  --recipe-tag-select-bg: #fff;
+
+  /* The small uppercase section headings inside an expanded recipe card. */
+  --recipe-section-label-fg: oklch(0.5 0.04 250);
 
   /* The AI recipe assistant's accent, and its muted accent text. */
   --ai-accent: oklch(0.52 0.14 285);
@@ -1113,6 +1125,83 @@ button {
   height: 3px;
   border-radius: 2px;
   background: var(--recipe-reorder-line);
+}
+
+/* The search field row shared by the Pyramid, Recipes, and Kitchen
+   columns: the field flexes to fill, any trailing control (the Recipes
+   column's tag filter) sits to its right, and the row never grows wider
+   than its column. */
+.search-field-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin: 0 0 16px;
+}
+
+.search-field-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A small uppercase heading inside an expanded recipe card, shared by the
+   Tags and Instructions sections. */
+.recipe-section-label {
+  margin-top: 10px;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--recipe-section-label-fg);
+}
+
+/* A recipe's tag editor: the chips of its current tags followed by the
+   inline add-tag control, wrapping as needed. */
+.recipe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.recipe-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 4px 2px 9px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--recipe-tag-bg);
+  border: 1px solid var(--recipe-tag-border);
+  color: var(--recipe-tag-fg);
+}
+
+.recipe-tag-x {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1;
+  padding: 2px 3px;
+  border-radius: 8px;
+  color: var(--recipe-tag-fg);
+}
+
+/* The tag filter dropdown: fixed and narrow so it fits beside the search
+   field, which shrinks to make room rather than the row growing wider. */
+.recipe-tag-select {
+  flex: 0 0 auto;
+  max-width: 130px;
+  padding: 8px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--recipe-tag-border);
+  background: var(--recipe-tag-select-bg);
+  color: var(--recipe-tag-fg);
+  font-size: 13px;
+  cursor: pointer;
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a

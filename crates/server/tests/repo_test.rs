@@ -93,6 +93,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
       }],
       instructions: "Toss it.".into(),
       bookmarked: false,
+      tags: vec!["quick".into(), "vegetarian".into()],
     }],
   };
 

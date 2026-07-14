@@ -126,6 +126,7 @@ async fn recipes_add_and_delete() {
       }],
       instructions: "Toss.".into(),
       bookmarked: false,
+      tags: vec![],
     },
   )
   .await

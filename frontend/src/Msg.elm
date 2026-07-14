@@ -51,6 +51,8 @@ type Msg
     | RecipeSearchInput String
     | KitchenSearchInput String
     | SetRecipeFilter RecipeFilter
+    | SetRecipeTagFilter String
+    | RemoveRecipeTag String String
     | StartPaste String
     | PasteInput String
     | CommitPaste String

@@ -69,7 +69,7 @@ viewKitchenBody adding addValue editingPane rawSearch toggled selection derived 
     div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
         [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
         , div [ class "kitchen-body" ]
-            (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput
+            (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput []
                 :: trackerView
                 :: List.map (\c -> viewPane toggled kitchenSearch selectMode selected derived (paneEditFor editingPane c) c) kitchenPanes
                 ++ [ viewAdder adding addValue AddPane "New pane name…" "+ Add pane" ]
