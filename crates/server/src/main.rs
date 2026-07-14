@@ -7,17 +7,14 @@
 
 use food4u_server::config::Config;
 use food4u_server::db::Db;
-use food4u_server::import::import_legacy_if_empty;
 use food4u_server::routes;
+use food4u_server::seed::seed_if_empty;
 use food4u_server::web_base::AppState;
+use food4u_server::LOCAL_USER;
 use rust_template_foundation::main as foundation_main;
 use rust_template_foundation::Server;
 use std::process::ExitCode;
 use tracing::error;
-
-/// The single account an unauthenticated local deployment runs as.  The
-/// hosted path resolves the user from the session instead.
-const LOCAL_USER: &str = "local";
 
 #[foundation_main]
 pub async fn main(
@@ -32,8 +29,8 @@ pub async fn main(
     }
   };
 
-  if let Err(source) = import_legacy_if_empty(&db, &config, LOCAL_USER).await {
-    error!(error = %source, "could not import the existing model");
+  if let Err(source) = seed_if_empty(&db, LOCAL_USER).await {
+    error!(error = %source, "could not seed the database with the default model");
     return Ok(ExitCode::FAILURE);
   }
 

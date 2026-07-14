@@ -14,7 +14,7 @@ dev_url := "http://127.0.0.1:3000"
 seed_listen := "127.0.0.1:3001"
 seed_url := "http://" + seed_listen
 seed_db := ".seed-edit.db"
-seed_file := "crates/server/src/seed/default_model.json"
+seed_file := "crates/server/src/seed/seed.sql"
 
 # Build the frontend, start the server, and open the app in a browser.
 #
@@ -31,22 +31,24 @@ dev: build-elm
 login-demo: build-elm
     dev/oidc/login-demo.sh
 
-# Visually edit the bundled default foods and recipes.  Loads the checked-in
-# seed fresh into a throwaway database, then opens the app so you can add,
-# edit, and delete foods and recipes with the normal UI — drag-and-drop and
-# all.  Your own `just dev` kitchen (food4u.db) is left untouched.  Edit in
-# the browser, then, in a second terminal, run `just seed-save` to bake the
-# changes back into the seed.  Restarting reloads the checked-in seed, so
-# save before you stop the server or unsaved edits are discarded.
+# Visually edit the bundled default foods and recipes.  Starts on a fresh
+# throwaway database, which the server seeds from the checked-in defaults,
+# then opens the app so you can add, edit, and delete foods and recipes with
+# the normal UI — drag-and-drop and all.  Your own `just dev` kitchen
+# (food4u.db) is left untouched.  Edit in the browser, then, in a second
+# terminal, run `just seed-save` to bake the changes back into the seed.
+# Restarting reloads the checked-in seed, so save before you stop the server
+# or unsaved edits are discarded.
 seed-edit: build-elm
     rm -f {{seed_db}} {{seed_db}}-wal {{seed_db}}-shm
-    ( sleep 1.5 && open "{{seed_url}}" ) & cargo run --package food4u-server -- --base-url "{{seed_url}}" --listen "{{seed_listen}}" --database-url "sqlite:{{seed_db}}" --data-file "{{seed_file}}"
+    ( sleep 1.5 && open "{{seed_url}}" ) & cargo run --package food4u-server -- --base-url "{{seed_url}}" --listen "{{seed_listen}}" --database-url "sqlite:{{seed_db}}"
 
-# Bake the model of a running `just seed-edit` session back into the bundled
-# seed file, pretty-printed to match.  Writes only on success, so a failed
-# fetch (server not up) leaves the seed untouched.
+# Bake the current state of a running `just seed-edit` session back into the
+# bundled seed by dumping its database to portable SQL.  The dump refuses to
+# write an empty database, so a run with no seed-editing session leaves the
+# seed untouched.
 seed-save:
-    tmp=$(mktemp) && curl -sf "{{seed_url}}/api/model" | jq --indent 2 . > "$tmp" && test -s "$tmp" && mv "$tmp" "{{seed_file}}" && echo "Saved the current model to {{seed_file}}" || { rm -f "$tmp"; echo "seed-save failed — is 'just seed-edit' running on {{seed_url}} ?" >&2; exit 1; }
+    tmp=$(mktemp) && dev/dump-seed.sh "{{seed_db}}" > "$tmp" && mv "$tmp" "{{seed_file}}" && echo "Saved the current defaults to {{seed_file}}" || { rm -f "$tmp"; echo "seed-save failed — run 'just seed-edit', make an edit, then try again" >&2; exit 1; }
 
 # Build both Rust and Elm.
 build: build-elm build-rust

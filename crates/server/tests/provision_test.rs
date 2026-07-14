@@ -3,17 +3,23 @@
 #![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::Db;
+use food4u_server::seed::seed_if_empty;
+use food4u_server::LOCAL_USER;
 
-async fn empty_db() -> Db {
+/// A fresh database seeded with the defaults, as the server is at startup:
+/// the local user then holds the template panes new accounts provision from.
+async fn seeded_db() -> Db {
   let file = tempfile::NamedTempFile::new().unwrap();
   let url = format!("sqlite://{}", file.path().display());
   std::mem::forget(file);
-  Db::connect(&url).await.unwrap()
+  let db = Db::connect(&url).await.unwrap();
+  seed_if_empty(&db, LOCAL_USER).await.unwrap();
+  db
 }
 
 #[tokio::test]
 async fn a_new_user_is_provisioned_with_empty_default_panes() {
-  let db = empty_db().await;
+  let db = seeded_db().await;
 
   db.ensure_provisioned("alice@example.com").await.unwrap();
   let model = db.load("alice@example.com").await.unwrap();
@@ -41,7 +47,7 @@ async fn a_new_user_is_provisioned_with_empty_default_panes() {
 
 #[tokio::test]
 async fn provisioning_is_idempotent_and_leaves_an_established_user_alone() {
-  let db = empty_db().await;
+  let db = seeded_db().await;
 
   db.ensure_provisioned("bob@example.com").await.unwrap();
   db.ensure_provisioned("bob@example.com").await.unwrap();
@@ -52,7 +58,7 @@ async fn provisioning_is_idempotent_and_leaves_an_established_user_alone() {
 
 #[tokio::test]
 async fn provisioning_keeps_two_users_separate() {
-  let db = empty_db().await;
+  let db = seeded_db().await;
 
   db.ensure_provisioned("alice@example.com").await.unwrap();
   db.ensure_provisioned("bob@example.com").await.unwrap();

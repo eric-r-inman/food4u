@@ -6,7 +6,7 @@ use food4u_server::db::connect_and_migrate;
 use food4u_server::model::{Card, Food, Group, Item, Model, Recipe, Tier};
 use food4u_server::repo;
 
-const SEED: &str = include_str!("../src/seed/default_model.json");
+const SEED_SQL: &str = include_str!("../src/seed/seed.sql");
 
 async fn fresh_pool() -> sqlx::SqlitePool {
   let file = tempfile::NamedTempFile::new().unwrap();
@@ -18,14 +18,31 @@ async fn fresh_pool() -> sqlx::SqlitePool {
 }
 
 #[tokio::test]
-async fn the_seed_model_round_trips_through_the_store() {
+async fn the_seed_loads_into_a_complete_model_and_round_trips() {
   let pool = fresh_pool().await;
-  let model: Model = serde_json::from_str(SEED).unwrap();
 
+  // The bundled seed loads into an empty database (foreign keys are on, so a
+  // wrong insert order would fail here) and assembles into the full model.
+  sqlx::raw_sql(SEED_SQL).execute(&pool).await.unwrap();
+  let model = repo::load(&pool, "local").await.unwrap();
+
+  let food_count: usize = model
+    .tiers
+    .iter()
+    .flat_map(|tier| &tier.groups)
+    .map(|group| group.foods.len())
+    .sum();
+  assert!(
+    food_count > 400,
+    "expected the full seeded catalog, got {food_count} foods"
+  );
+  assert!(!model.staples.is_empty(), "expected the storage panes");
+  assert!(!model.recipes.is_empty(), "expected the seeded recipes");
+
+  // The seeded model round-trips through the repository unchanged.
   repo::save(&pool, "local", &model).await.unwrap();
-  let loaded = repo::load(&pool, "local").await.unwrap();
-
-  assert_eq!(model, loaded, "the loaded model should equal the saved one");
+  let again = repo::load(&pool, "local").await.unwrap();
+  assert_eq!(model, again, "the reloaded model should equal the seeded one");
 }
 
 #[tokio::test]

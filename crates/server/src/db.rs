@@ -25,6 +25,8 @@ pub enum DbError {
   DatabaseConnect { url: String, source: sqlx::Error },
   #[error("could not apply the database migrations: {source}")]
   MigrationFailed { source: sqlx::migrate::MigrateError },
+  #[error("could not execute the SQL script: {source}")]
+  ScriptExecute { source: sqlx::Error },
 }
 
 /// Open a pooled connection to the SQLite database and bring its schema up
@@ -120,6 +122,22 @@ impl Db {
     }
   }
 
+  /// Execute a multi-statement SQL script against the backend.  Used to load
+  /// the bundled seed into a fresh database; the script is portable across
+  /// both engines.
+  pub async fn execute_script(&self, sql: &str) -> Result<(), DbError> {
+    let fail = |source| DbError::ScriptExecute { source };
+    match self {
+      Db::Sqlite(pool) => {
+        sqlx::raw_sql(sql).execute(pool).await.map_err(fail)?;
+      }
+      Db::Postgres(pool) => {
+        sqlx::raw_sql(sql).execute(pool).await.map_err(fail)?;
+      }
+    }
+    Ok(())
+  }
+
   /// Seed a user's default storage panes when they have none yet, so a
   /// fresh account opens onto a usable Kitchen rather than a blank one.
   /// The seed is parsed only when provisioning is actually needed, keeping
@@ -136,7 +154,7 @@ impl Db {
       return Ok(());
     }
 
-    let defaults = provision::default_panes()?;
+    let defaults = provision::default_panes(self).await?;
     match self {
       Db::Sqlite(pool) => {
         repo::provision_default_panes(pool, user_id, &defaults).await?

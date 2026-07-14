@@ -35,15 +35,14 @@ scheme.  All reads and writes go through the repository (=repo.rs= for SQLite,
 There is no JSON-file persistence, and none is to be added.  Do not read or
 write the model — or any new server-side state, such as settings or sessions —
 as a JSON file on disk; new persisted data gets a relational schema and a
-migration.  The JSON model file the server once wrote is retired, and its
-one-time legacy-import path is a vestige to remove, not a foundation to build on
-(tracked in =tasks.org=).
+migration.  The JSON model file the server once wrote, and the one-time import
+step that read it, are gone.
 
-Only the HTTP API's request and response bodies stay JSON — that is the
-transport between the Elm frontend and the server, not storage.  Everything else
-moves off JSON, including the bundled default fixture (=default_model.json=)
-that seeds a fresh database; migrating it to a relational form, and replacing
-the JSON-based seeding it feeds, is tracked in =tasks.org=.
+Only the HTTP API's request and response bodies are JSON — that is the transport
+between the Elm frontend and the server, not storage.  Nothing on disk is: even
+the bundled defaults are a portable SQL fixture (=seed.sql=) the server runs
+into an empty database on first start, edited through the app (see
+=docs/editing-default-data.org=), not a JSON document.
 
 * General code guidelines
 

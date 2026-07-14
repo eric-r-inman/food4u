@@ -8,9 +8,8 @@
 #![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::Db;
-use food4u_server::model::Model;
 
-const SEED: &str = include_str!("../src/seed/default_model.json");
+const SEED_SQL: &str = include_str!("../src/seed/seed.sql");
 
 #[tokio::test]
 async fn seed_round_trips_through_postgres() {
@@ -20,13 +19,33 @@ async fn seed_round_trips_through_postgres() {
   };
 
   let db = Db::connect(&url).await.unwrap();
-  let model: Model = serde_json::from_str(SEED).unwrap();
 
-  db.save("test-user", &model).await.unwrap();
-  let loaded = db.load("test-user").await.unwrap();
+  // Start from an empty catalog so a re-run against the same database is
+  // clean; the deletes cascade to every seeded child table.
+  db.execute_script("delete from tiers; delete from users;")
+    .await
+    .unwrap();
 
+  // The same portable seed the server runs on first start loads on Postgres.
+  db.execute_script(SEED_SQL).await.unwrap();
+  let model = db.load("local").await.unwrap();
+
+  let food_count: usize = model
+    .tiers
+    .iter()
+    .flat_map(|tier| &tier.groups)
+    .map(|group| group.foods.len())
+    .sum();
+  assert!(
+    food_count > 400,
+    "expected the full seeded catalog, got {food_count} foods"
+  );
+
+  // The seeded model round-trips through the PostgreSQL repository unchanged.
+  db.save("local", &model).await.unwrap();
+  let again = db.load("local").await.unwrap();
   assert_eq!(
-    model, loaded,
-    "the model loaded from PostgreSQL should equal the saved one"
+    model, again,
+    "the model reloaded from PostgreSQL should equal the seeded one"
   );
 }
