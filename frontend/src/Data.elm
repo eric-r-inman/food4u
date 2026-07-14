@@ -5,6 +5,7 @@ module Data exposing
     , Group
     , Item
     , Loc(..)
+    , PlannerEntry
     , Recipe
     , Tier
     , cartZone
@@ -93,6 +94,22 @@ type alias Data =
     { tiers : List Tier
     , staples : List Card
     , recipes : List Recipe
+
+    -- The Meal Planner's slots. Absent in older saved data.
+    , planner : List PlannerEntry
+    }
+
+
+{-| One recipe planned into a Meal Planner slot: a copy-by-reference of the
+recipe (the recipe itself stays in the Recipes column) placed under one
+meal of one day. `day` counts from Sunday as zero. The entry has its own
+id so the same recipe can be planned many times.
+-}
+type alias PlannerEntry =
+    { id : String
+    , day : Int
+    , meal : String
+    , recipeId : String
     }
 
 
@@ -220,7 +237,7 @@ parseSelKey key =
 
 dataDecoder : Decoder Data
 dataDecoder =
-    Decode.map3 Data
+    Decode.map4 Data
         (Decode.field "tiers" (Decode.list tierDecoder))
         (Decode.field "staples" (Decode.list cardDecoder))
         -- "recipes" is absent in older saved data; default to empty.
@@ -229,6 +246,21 @@ dataDecoder =
             , Decode.succeed []
             ]
         )
+        -- "planner" is absent in older saved data; default to empty.
+        (Decode.oneOf
+            [ Decode.field "planner" (Decode.list plannerEntryDecoder)
+            , Decode.succeed []
+            ]
+        )
+
+
+plannerEntryDecoder : Decoder PlannerEntry
+plannerEntryDecoder =
+    Decode.map4 PlannerEntry
+        (Decode.field "id" Decode.string)
+        (Decode.field "day" Decode.int)
+        (Decode.field "meal" Decode.string)
+        (Decode.field "recipeId" Decode.string)
 
 
 recipeDecoder : Decoder Recipe
@@ -330,6 +362,17 @@ encodeData data =
         [ ( "tiers", Encode.list encodeTier data.tiers )
         , ( "staples", Encode.list encodeCard data.staples )
         , ( "recipes", Encode.list encodeRecipe data.recipes )
+        , ( "planner", Encode.list encodePlannerEntry data.planner )
+        ]
+
+
+encodePlannerEntry : PlannerEntry -> Encode.Value
+encodePlannerEntry entry =
+    Encode.object
+        [ ( "id", Encode.string entry.id )
+        , ( "day", Encode.int entry.day )
+        , ( "meal", Encode.string entry.meal )
+        , ( "recipeId", Encode.string entry.recipeId )
         ]
 
 

@@ -2,7 +2,9 @@
 //! wire format the API still uses between the frontend and the server.
 #![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
-use food4u_server::model::{Card, Food, Group, Item, Model, Recipe, Tier};
+use food4u_server::model::{
+  Card, Food, Group, Item, Model, PlannerEntry, Recipe, Tier,
+};
 
 #[test]
 fn the_typed_model_round_trips_through_json() {
@@ -57,6 +59,12 @@ fn the_typed_model_round_trips_through_json() {
       instructions: "Toss it.\nServe cold.".into(),
       bookmarked: true,
       tags: vec!["quick".into(), "vegetarian".into()],
+    }],
+    planner: vec![PlannerEntry {
+      id: "p1".into(),
+      day: 0,
+      meal: "Breakfast".into(),
+      recipe_id: "r1".into(),
     }],
   };
 

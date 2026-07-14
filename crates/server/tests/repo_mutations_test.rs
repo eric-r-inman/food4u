@@ -55,6 +55,7 @@ fn sample() -> Model {
       }],
     }],
     recipes: vec![],
+    planner: vec![],
   }
 }
 

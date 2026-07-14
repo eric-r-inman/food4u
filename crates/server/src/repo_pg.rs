@@ -12,8 +12,8 @@
 
 use crate::model::Model;
 use crate::repo::{
-  self, CardRow, FoodRow, GroupRow, IngredientRow, RecipeRow, RepoError,
-  StorageItemRow, TagRow, TierRow,
+  self, CardRow, FoodRow, GroupRow, IngredientRow, PlannerRow, RecipeRow,
+  RepoError, StorageItemRow, TagRow, TierRow,
 };
 use sqlx::PgPool;
 
@@ -95,6 +95,15 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .await
   .map_err(read)?;
 
+  let planner = sqlx::query_as::<_, PlannerRow>(
+    "select id, day, meal, recipe_id from meal_plan_entries \
+     where user_id = $1 order by day, meal, position",
+  )
+  .bind(user_id)
+  .fetch_all(pool)
+  .await
+  .map_err(read)?;
+
   Ok(repo::assemble(
     tiers,
     groups,
@@ -104,6 +113,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
     recipes,
     ingredients,
     tags,
+    planner,
   ))
 }
 
@@ -131,6 +141,11 @@ pub async fn save(
     .await
     .map_err(write)?;
   sqlx::query("delete from storage_locations where user_id = $1")
+    .bind(user_id)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
+  sqlx::query("delete from meal_plan_entries where user_id = $1")
     .bind(user_id)
     .execute(&mut *tx)
     .await
@@ -287,6 +302,24 @@ pub async fn save(
       .await
       .map_err(write)?;
     }
+  }
+
+  // Planner entries reference recipes, so they insert after them.  The
+  // list order carries each entry's position within its (day, meal) slot.
+  for (entry_pos, entry) in model.planner.iter().enumerate() {
+    sqlx::query(
+      "insert into meal_plan_entries (id, user_id, day, meal, recipe_id, position) \
+       values ($1, $2, $3, $4, $5, $6)",
+    )
+    .bind(&entry.id)
+    .bind(user_id)
+    .bind(entry.day)
+    .bind(&entry.meal)
+    .bind(&entry.recipe_id)
+    .bind(entry_pos as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
   }
 
   tx.commit().await.map_err(write)?;

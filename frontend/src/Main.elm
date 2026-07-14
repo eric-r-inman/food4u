@@ -25,7 +25,7 @@ import Browser
 import Browser.Dom as Dom
 import Browser.Events
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Group, Item, Loc(..), Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, moveRecipeBefore, moveRecipeToCategoryEnd, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
+import Data exposing (Card, Data, Food, Group, Item, Loc(..), PlannerEntry, Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, moveRecipeBefore, moveRecipeToCategoryEnd, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -38,6 +38,7 @@ import Json.Encode as Encode
 import KitchenView exposing (viewKitchenColumn)
 import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen, noSelection)
 import Msg exposing (Msg(..))
+import PlannerView exposing (viewPlannerColumn)
 import PyramidView exposing (viewPyramidColumn)
 import RecipeExport exposing (recipeFileName, recipeText)
 import RecipeParser exposing (parsePastedRecipe)
@@ -81,12 +82,14 @@ init flags =
       , recipeDrag = Nothing
       , recipeDropCategory = Nothing
       , recipeDropBefore = Nothing
+      , plannerDropTarget = Nothing
       , seq = 0
       , toggled = Set.empty
       , pyramidOpen = True
       , recipesOpen = False
       , kitchenOpen = False
       , cartOpen = False
+      , plannerOpen = False
       , search = ""
       , recipeSearch = ""
       , kitchenSearch = ""
@@ -247,11 +250,16 @@ update msg model =
             withData model (\data -> persistData model (removeFood loc foodId data))
 
         RemoveRecipe rid ->
+            -- Deleting a recipe also unlinks its pyramid badges and clears
+            -- its Meal Planner entries, so nothing dangles.
             withData model
                 (\data ->
                     persistData model
                         (unlinkRecipe rid
-                            { data | recipes = List.filter (\r -> r.id /= rid) data.recipes }
+                            { data
+                                | recipes = List.filter (\r -> r.id /= rid) data.recipes
+                                , planner = List.filter (\e -> e.recipeId /= rid) data.planner
+                            }
                         )
                 )
 
@@ -398,6 +406,9 @@ update msg model =
 
         ToggleCart ->
             ( { model | cartOpen = not model.cartOpen }, Cmd.none )
+
+        TogglePlanner ->
+            ( { model | plannerOpen = not model.plannerOpen }, Cmd.none )
 
         SearchInput value ->
             ( { model | search = value }, Cmd.none )
@@ -582,7 +593,7 @@ update msg model =
             ( clearRecipeDrag model, Cmd.none )
 
         RecipeDragEnterCategory category ->
-            ( { model | recipeDropCategory = Just category, recipeDropBefore = Nothing }, Cmd.none )
+            ( { model | recipeDropCategory = Just category, recipeDropBefore = Nothing, plannerDropTarget = Nothing }, Cmd.none )
 
         DropRecipeOnCategory category ->
             case ( model.recipeDrag, model.data ) of
@@ -593,7 +604,7 @@ update msg model =
                     ( clearRecipeDrag model, Cmd.none )
 
         RecipeDragEnterRecipe targetRid ->
-            ( { model | recipeDropBefore = Just targetRid, recipeDropCategory = Nothing }, Cmd.none )
+            ( { model | recipeDropBefore = Just targetRid, recipeDropCategory = Nothing, plannerDropTarget = Nothing }, Cmd.none )
 
         DropRecipeOnRecipe targetRid ->
             case ( model.recipeDrag, model.data ) of
@@ -602,6 +613,25 @@ update msg model =
 
                 _ ->
                     ( clearRecipeDrag model, Cmd.none )
+
+        RecipeDragEnterPlanner day meal ->
+            ( { model | plannerDropTarget = Just ( day, meal ), recipeDropCategory = Nothing, recipeDropBefore = Nothing }, Cmd.none )
+
+        DropRecipeOnPlanner day meal ->
+            -- The drop copies the recipe into the slot by reference: the
+            -- recipe stays in the Recipes column, and the same recipe may be
+            -- planned any number of times.
+            case ( model.recipeDrag, model.data ) of
+                ( Just rid, Just data ) ->
+                    persistData (clearRecipeDrag { model | seq = model.seq + 1 })
+                        { data | planner = data.planner ++ [ PlannerEntry (nextId model.seq) day meal rid ] }
+
+                _ ->
+                    ( clearRecipeDrag model, Cmd.none )
+
+        RemovePlannerEntry entryId ->
+            withData model
+                (\data -> persistData model { data | planner = List.filter (\e -> e.id /= entryId) data.planner })
 
         DropRecipeOnGroup gid ->
             case ( model.recipeDrag, model.data ) of
@@ -1160,11 +1190,12 @@ ensureStaplesTracker data =
 
 
 {-| Clear every trace of an in-flight recipe drag: the dragged card and
-both drop-target highlights (the category and the ins-before card).
+every drop-target highlight (the category, the ins-before card, and the
+Meal Planner slot).
 -}
 clearRecipeDrag : Model -> Model
 clearRecipeDrag model =
-    { model | recipeDrag = Nothing, recipeDropCategory = Nothing, recipeDropBefore = Nothing }
+    { model | recipeDrag = Nothing, recipeDropCategory = Nothing, recipeDropBefore = Nothing, plannerDropTarget = Nothing }
 
 
 {-| Whether the storage card with this id is a Shopping List card (the
@@ -1535,6 +1566,7 @@ view model =
                     [ div [ class "layout" ]
                         [ viewPyramidColumn model data
                         , viewRecipes model data
+                        , viewPlannerColumn model data
                         , viewKitchenColumn model data
                         , viewCartColumn model data
                         ]

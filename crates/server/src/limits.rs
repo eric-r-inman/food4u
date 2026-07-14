@@ -13,6 +13,7 @@ const MAX_STORAGE_PANES: usize = 50;
 const MAX_STORAGE_ITEMS: usize = 10_000;
 const MAX_RECIPES: usize = 1_000;
 const MAX_INGREDIENTS: usize = 20_000;
+const MAX_PLANNER_ENTRIES: usize = 2_000;
 
 /// A model that exceeds one of the size limits.  Carries a human-readable
 /// description of which limit and by how much.
@@ -52,6 +53,7 @@ pub fn check(model: &Model) -> Result<(), QuotaExceeded> {
       .sum::<usize>(),
     MAX_INGREDIENTS,
   )?;
+  ceiling("planner entries", model.planner.len(), MAX_PLANNER_ENTRIES)?;
   Ok(())
 }
 

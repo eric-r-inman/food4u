@@ -8,7 +8,9 @@
 //! reconstructs the model with a handful of ordered queries, joining each
 //! catalog food to the user's stock and recipe-link overlay.
 
-use crate::model::{Card, Food, Group, Item, Model, Recipe, Tier};
+use crate::model::{
+  Card, Food, Group, Item, Model, PlannerEntry, Recipe, Tier,
+};
 use sqlx::SqlitePool;
 use std::collections::HashMap;
 use thiserror::Error;
@@ -110,6 +112,14 @@ pub(crate) struct TagRow {
   tag: String,
 }
 
+#[derive(sqlx::FromRow)]
+pub(crate) struct PlannerRow {
+  id: String,
+  day: i64,
+  meal: String,
+  recipe_id: String,
+}
+
 /// Assemble the whole model for one user.
 pub async fn load(
   pool: &SqlitePool,
@@ -191,6 +201,15 @@ pub async fn load(
   .await
   .map_err(read)?;
 
+  let planner = sqlx::query_as::<_, PlannerRow>(
+    "select id, day, meal, recipe_id from meal_plan_entries \
+     where user_id = ? order by day, meal, position",
+  )
+  .bind(user_id)
+  .fetch_all(pool)
+  .await
+  .map_err(read)?;
+
   Ok(assemble(
     tiers,
     groups,
@@ -200,6 +219,7 @@ pub async fn load(
     recipes,
     ingredients,
     tags,
+    planner,
   ))
 }
 
@@ -215,6 +235,7 @@ pub(crate) fn assemble(
   recipes: Vec<RecipeRow>,
   ingredients: Vec<IngredientRow>,
   tags: Vec<TagRow>,
+  planner: Vec<PlannerRow>,
 ) -> Model {
   let mut foods_by_group: HashMap<String, Vec<Food>> = HashMap::new();
   for row in foods {
@@ -310,6 +331,15 @@ pub(crate) fn assemble(
         bookmarked: row.bookmarked,
       })
       .collect(),
+    planner: planner
+      .into_iter()
+      .map(|row| PlannerEntry {
+        id: row.id,
+        day: row.day,
+        meal: row.meal,
+        recipe_id: row.recipe_id,
+      })
+      .collect(),
   }
 }
 
@@ -340,6 +370,11 @@ pub async fn save(
     .await
     .map_err(write)?;
   sqlx::query("delete from storage_locations where user_id = ?")
+    .bind(user_id)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
+  sqlx::query("delete from meal_plan_entries where user_id = ?")
     .bind(user_id)
     .execute(&mut *tx)
     .await
@@ -495,6 +530,24 @@ pub async fn save(
       .await
       .map_err(write)?;
     }
+  }
+
+  // Planner entries reference recipes, so they insert after them.  The
+  // list order carries each entry's position within its (day, meal) slot.
+  for (entry_pos, entry) in model.planner.iter().enumerate() {
+    sqlx::query(
+      "insert into meal_plan_entries (id, user_id, day, meal, recipe_id, position) \
+       values (?, ?, ?, ?, ?, ?)",
+    )
+    .bind(&entry.id)
+    .bind(user_id)
+    .bind(entry.day)
+    .bind(&entry.meal)
+    .bind(&entry.recipe_id)
+    .bind(entry_pos as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
   }
 
   tx.commit().await.map_err(write)?;

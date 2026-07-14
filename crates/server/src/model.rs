@@ -18,6 +18,8 @@ pub struct Model {
   pub staples: Vec<Card>,
   #[serde(default)]
   pub recipes: Vec<Recipe>,
+  #[serde(default)]
+  pub planner: Vec<PlannerEntry>,
 }
 
 /// One band of the pyramid (Foundation, Daily, and so on) and its
@@ -101,4 +103,16 @@ pub struct Recipe {
   pub bookmarked: bool,
   #[serde(default)]
   pub tags: Vec<String>,
+}
+
+/// One recipe planned into a Meal Planner slot: a reference to the recipe
+/// placed under one meal of one day, where `day` counts from Sunday as
+/// zero.  The entry has its own id so a recipe can be planned many times.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PlannerEntry {
+  pub id: String,
+  pub day: i64,
+  pub meal: String,
+  #[serde(rename = "recipeId")]
+  pub recipe_id: String,
 }

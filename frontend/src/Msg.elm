@@ -47,6 +47,7 @@ type Msg
     | ToggleRecipes
     | ToggleKitchen
     | ToggleCart
+    | TogglePlanner
     | SearchInput String
     | RecipeSearchInput String
     | KitchenSearchInput String
@@ -74,6 +75,9 @@ type Msg
     | DropRecipeOnCategory String
     | RecipeDragEnterRecipe String
     | DropRecipeOnRecipe String
+    | RecipeDragEnterPlanner Int String
+    | DropRecipeOnPlanner Int String
+    | RemovePlannerEntry String
     | OpenAi String
     | CloseAi
     | AiToggleConfigure

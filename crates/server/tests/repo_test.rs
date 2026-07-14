@@ -3,7 +3,9 @@
 #![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use food4u_server::db::connect_and_migrate;
-use food4u_server::model::{Card, Food, Group, Item, Model, Recipe, Tier};
+use food4u_server::model::{
+  Card, Food, Group, Item, Model, PlannerEntry, Recipe, Tier,
+};
 use food4u_server::repo;
 
 const SEED_SQL: &str = include_str!("../src/seed/seed.sql");
@@ -112,6 +114,21 @@ async fn per_user_overlay_and_ordering_are_preserved() {
       bookmarked: false,
       tags: vec!["quick".into(), "vegetarian".into()],
     }],
+    // The same recipe planned twice — the planner allows copies.
+    planner: vec![
+      PlannerEntry {
+        id: "p1".into(),
+        day: 0,
+        meal: "Lunch".into(),
+        recipe_id: "r1".into(),
+      },
+      PlannerEntry {
+        id: "p2".into(),
+        day: 3,
+        meal: "Dinner".into(),
+        recipe_id: "r1".into(),
+      },
+    ],
   };
 
   repo::save(&pool, "local", &model).await.unwrap();

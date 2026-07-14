@@ -104,6 +104,10 @@ type alias Model =
     -- before which the dragged card would be inserted on drop. Mutually
     -- exclusive with `recipeDropCategory` (over a card vs. the open area).
     , recipeDropBefore : Maybe String
+
+    -- While a recipe is being dragged, the Meal Planner (day, meal) slot the
+    -- pointer is over, so it can be highlighted as the copy target.
+    , plannerDropTarget : Maybe ( Int, String )
     , seq : Int
 
     -- Keys whose collapse is *toggled away from their default*. Food and
@@ -115,6 +119,7 @@ type alias Model =
     , recipesOpen : Bool
     , kitchenOpen : Bool
     , cartOpen : Bool
+    , plannerOpen : Bool
     , search : String
     , recipeSearch : String
     , kitchenSearch : String
