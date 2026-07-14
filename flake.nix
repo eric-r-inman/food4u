@@ -127,6 +127,9 @@
             # JSON parsing for the shellHook's cargo-package listing and ad-hoc
             # scripting in the dev shell.
             pkgs.jq
+            # The sqlite3 CLI, which `just seed-save` uses to dump the
+            # seed-editing database back to the checked-in SQL seed.
+            pkgs.sqlite
             # Elm toolchain for the frontend/ app: compiler, formatter, and the
             # elm2nix bridge that pins Elm deps for reproducible builds.
             pkgs.elmPackages.elm
