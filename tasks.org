@@ -143,6 +143,19 @@ provision their default panes from the seeded local user rather than a second
 source.  The =just seed-edit= / =just seed-save= workflow dumps that database
 back to the SQL fixture with =dev/dump-seed.sh=.
 
+* DONE test the recipe parser against real-world formats
+:PROPERTIES:
+:PLAN: docs/recipe-parser-test-plan.org
+:END:
+
+/Done./ The paste-a-recipe parser is covered by three Elm unit suites — fidelity
+against recipes captured from live cooking sites, catalog canonicalization, and
+robustness against hostile pastes — run by the Elm test runner as part of the
+ordinary test recipe.  The canonicalization behaviour (parsed names resolving to
+catalog foods, case- and plural-insensitively, with near-misses kept apart) was
+built test-first as part of this work.  The plan document records the corpus,
+the matching rules, and the accepted limitations.
+
 * TODO opaque id newtypes, only with a drag-channel redesign
 :PROPERTIES:
 :PLAN: docs/optimization-plan.org — Phase 1 (opaque id newtypes)

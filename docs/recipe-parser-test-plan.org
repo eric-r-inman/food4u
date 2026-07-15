@@ -1,0 +1,186 @@
+#+title:    Recipe parser test plan
+#+language: en
+
+* Purpose
+
+The paste-a-recipe flow feeds a heuristic parser: the first non-empty line
+becomes the name, ingredient lines are reduced to bare food names for the
+recipe's chips, and the paste is kept verbatim as the instructions.  This plan
+tests that flow against the shapes recipes actually take in the wild, and
+against the catalog-matching behaviour the chips depend on — a chip only
+inherits its tier tint, stock tracking, and shopping-list identity when its name
+matches a Longevity Foods entry, so a parse that emits "Tomato" where the
+catalog says "Tomatoes" quietly disconnects the ingredient from the rest of the
+app and, once sent to the Shopping List, duplicates a food the kitchen already
+tracks under another name.
+
+The plan has two halves: a fidelity suite (does the parse mirror the recipe?)
+and a canonicalization suite (do parsed names resolve to catalog names?).  The
+canonicalization behaviour does not exist yet; its tests are written first and
+drive a small parser extension.
+
+* How the tests run
+
+A new Elm unit-test suite exercises the parser directly — the parser is a pure
+function, so the whole matrix runs as fast unit tests with no browser or server
+involved.
+
+- ~elm-explorations/test~ joins the frontend's test dependencies, and the
+  ~elm-test~ runner joins the Nix dev shell.
+- The suite lives beside the frontend sources in a ~tests~ directory, one module
+  for parsing fidelity and one for canonicalization.
+- ~just test~ grows an ~elm-test~ step so the suite gates every change the same
+  way the Rust suites do.
+- Each real-world recipe is captured as a fixture string in the test module,
+  pasted-text-shaped, with a comment naming where it came from.
+
+A closing manual pass drives the real app once (paste, inspect chips, export) to
+confirm the unit-level behaviour survives the UI plumbing.
+
+* The corpus: real recipes, varied formats
+
+During execution I will fetch recipes from the live web and reduce each to the
+text a user would realistically select and paste.  The corpus is chosen for
+format diversity, not cuisine:
+
+1. A big recipe-site format (AllRecipes-style): "Ingredients" and "Directions"
+   headers, decimal and fraction quantities, servings and nutrition lines mixed
+   in.
+2. A newspaper format (NYT Cooking-style): yield/time preamble, unicode
+   fractions (½, ¼), "Step 1 / Step 2" instruction labels.
+3. A long-preamble food blog (Smitten Kitchen / Budget Bytes-style): paragraphs
+   of story before the recipe card, section headers inside the ingredient list
+   ("For the sauce:"), notes after the steps.
+4. A British format (BBC Good Food-style): metric units (g, ml), "Method"
+   instead of "Instructions", terse step paragraphs.
+5. A baking format (King Arthur-style): weights alongside volumes ("120g (1
+   cup)"), "divided" ingredients, temperature-heavy steps.
+6. A minimal hand-typed format: no headers at all, just a title, dashed
+   ingredient bullets, and free-text steps — the shape a user types from memory.
+7. An email/markdown format: asterisk bullets, numbered steps as "1)" and "1.",
+   hard-wrapped lines mid-sentence.
+8. The app's own export format: a recipe exported to text and pasted back
+   (round-trip: the re-parse should reproduce the same name, the same chips, and
+   instructions containing the same lines).
+
+* Fidelity suite
+
+For every corpus fixture, assertions cover the three parse products:
+
+** Name
+
+- The recipe's actual title is chosen, not a yield line, a rating, or a URL that
+  happens to precede it in the selection.
+- Titles longer than the app's name cap are truncated by the caller; the
+  parser's output is asserted pre-cap.
+
+** Ingredients
+
+- Every real ingredient in the fixture yields exactly one chip; no chip appears
+  for section headers, servings lines, or nutrition rows.
+- Quantity forms are stripped wherever they lead a line: integers, decimals,
+  ranges ("2-3", "2 to 3"), unicode and ascii fractions ("½", "1/2"),
+  multipliers ("2 x 400g"), and measure words from cups through cloves to
+  fillets.
+- Prep words are stripped when leading ("finely chopped onion") and cut when
+  trailing after a comma ("onion, finely chopped").
+- Parentheticals are cut ("(15 oz)", "(optional)"), as is everything after the
+  first comma.
+- "To taste", "for serving", "divided", and "or"-alternatives ("cilantro or
+  parsley") are exercised and their current behaviour pinned down; where current
+  behaviour is unsatisfying, the case is marked as driving a parser fix rather
+  than silently accepted.
+- Duplicates within one recipe collapse case-insensitively, keeping first
+  occurrence and its casing.
+
+** Instructions
+
+- The verbatim-keep contract holds: every step line of the fixture appears in
+  the instructions, amounts intact, in order.
+- Numbered ("1.", "1)", "Step 1") and unnumbered step styles survive.
+- Windows line endings and hard-wrapped paragraphs do not corrupt the text.
+
+* Canonicalization suite
+
+The new behaviour under test: parsed ingredient names resolve against the food
+catalog so chips connect to the pyramid instead of duplicating it.
+
+** Matching rules
+
+Resolution tries, in order, and otherwise leaves the parsed name as is:
+
+1. Exact match, case-insensitive: "tomatoes" adopts the catalog casing
+   "Tomatoes".
+2. Whole-name plural fold, both directions: "tomato" resolves to "Tomatoes";
+   "chickpea" to "Chickpeas"; "berry" to "Berries" (s / es / ies-y endings
+   only).
+
+Substring and fuzzy matching are deliberately excluded: "coconut milk" must
+never collapse into "Coconut", nor "olive oil" into "Olives".  Multi-word names
+fold only on their last word ("sweet potato" resolves to "Sweet potato" exactly;
+"sweet potatoes" folds to it).
+
+** Cases
+
+- Singular in the paste, plural in the catalog: tomato → Tomatoes; carrot →
+  Carrots; date → Dates.
+- Plural in the paste, singular in the catalog: avocados → Avocado; sweet
+  potatoes → Sweet potato; lemons → Lemons (already plural).
+- Casing only: EXTRA-VIRGIN OLIVE OIL and extra-virgin olive oil both adopt
+  "Extra-virgin olive oil".
+- ies/y folds: cherries → Cherries (exact), berry → Berries.
+- Must-not-merge pairs, asserted to stay distinct: Coconut milk vs Coconut;
+  Olive oil vs Olives; Date syrup vs Dates; Green onions vs Onions; Red lentils
+  vs Lentils.
+- Unknown foods pass through untouched, capitalized, and become ordinary
+  unlinked chips ("Saffron threads" when only "Saffron" exists is pinned down
+  explicitly — the last-word fold must not force it to "Saffron").
+- The within-recipe dedup runs after canonicalization, so "tomato" and
+  "Tomatoes" in one paste produce a single chip.
+
+** Where canonicalization applies
+
+The parser gains the catalog's names as an argument at its call site (the paste
+flow already has the loaded model in hand).  The AI-recipe and typed-ingredient
+flows are out of scope here but are natural follow-ups; the plan notes them so
+the decision is deliberate.
+
+* Robustness suite
+
+- Empty paste and whitespace-only paste (the caller already guards; the parser's
+  own behaviour is still pinned).
+- A paste with no recognizable structure at all (a news article): the parse must
+  not invent ingredients from prose.
+- Very long pastes (a full blog page with comments) parse in reasonable time and
+  cap nothing unexpectedly.
+- Emoji, smart quotes, and accented ingredients (jalapeño, açaí) survive intact
+  and match their catalog spellings.
+- Ingredient lines using unusual bullets (–, —, ·, •) and tab indentation are
+  recognized.
+- A paste whose "Ingredients" header repeats (two recipes in one paste) is
+  pinned to current behaviour and documented.
+
+* Acceptance criteria
+
+- Every fixture's assertions pass, or the failing case is either fixed in the
+  parser within this work or explicitly recorded as a known limitation in the
+  test with a comment saying why.
+- The canonicalization suite passes in full — it is the new behaviour and ships
+  with this work.
+- The must-not-merge list passes in full; a false merge is a defect, not a
+  limitation.
+- ~just test~ runs the Elm suite and fails the build on any regression.
+- The manual UI pass confirms: pasted chips carry tier tints for catalog foods,
+  the cart flow adds the catalog-named item, and the export/paste round-trip is
+  stable.
+
+* Execution order
+
+1. Wire the harness: test dependencies, dev shell runner, ~just test~.
+2. Write the canonicalization suite (red), implement resolution in the parser,
+   drive to green.
+3. Fetch the corpus, reduce each recipe to paste-shaped fixtures, write the
+   fidelity suite; fix the parser where a case warrants it, or record the
+   limitation.
+4. Robustness suite.
+5. Manual UI pass, then the changelog entry and the usual review.

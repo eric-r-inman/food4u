@@ -144,6 +144,9 @@
             # elm2nix bridge that pins Elm deps for reproducible builds.
             pkgs.elmPackages.elm
             pkgs.elmPackages.elm-format
+            # Runs the frontend's unit tests (the recipe parser suite);
+            # `just test` invokes it alongside the Rust suites.
+            pkgs.elmPackages.elm-test
             pkgs.elm2nix
             # Minifies the --optimize'd Elm output for the production build
             # (`just build-prod`); the same tool is used by the Nix package

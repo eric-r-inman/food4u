@@ -974,8 +974,14 @@ commitPaste category model =
         case model.data of
             Just data ->
                 let
+                    catalogNames =
+                        data.tiers
+                            |> List.concatMap .groups
+                            |> List.concatMap .foods
+                            |> List.map .name
+
                     parsed =
-                        parsePastedRecipe model.pasteValue
+                        parsePastedRecipe catalogNames model.pasteValue
 
                     ( ingredients, seqAfter ) =
                         List.foldl

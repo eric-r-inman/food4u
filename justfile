@@ -73,8 +73,12 @@ build-prod: build-elm-prod
 build-rust:
     cargo build --workspace
 
-# Run all tests (Elm compile check + Rust test suite).
-test: build-elm test-rust
+# Run all tests (Elm compile check, Elm unit tests, Rust test suite).
+test: build-elm test-elm test-rust
+
+# Run the Elm unit tests (the recipe parser suites).
+test-elm:
+    cd frontend && elm-test
 
 # Run the Rust test suite.
 test-rust:
