@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, dropZone, moveHereButton, viewAdder, viewItem)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnDragAttrs, columnTitleBar, dropZone, moveHereButton, viewAdder, viewItem)
 
 
 viewCartColumn : Model -> Data -> Html Msg
@@ -30,11 +30,13 @@ viewCartColumn model data =
         collapsedColumnBar "Shopping List"
             "oklch(0.52 0.1 42)"
             ToggleCart
-            (data.staples
-                |> List.filter (\c -> c.name == shoppingCartName)
-                |> List.head
-                |> Maybe.map (\cart -> dropZone (StoragePane cart.id))
-                |> Maybe.withDefault []
+            (columnDragAttrs "cart"
+                ++ (data.staples
+                        |> List.filter (\c -> c.name == shoppingCartName)
+                        |> List.head
+                        |> Maybe.map (\cart -> dropZone (StoragePane cart.id))
+                        |> Maybe.withDefault []
+                   )
             )
 
     else
@@ -60,7 +62,7 @@ viewCartBody derived staples toggled adding addValue confirmingDelete selection 
                 ++ List.filter (\c -> c.name /= shoppingCartName) shoppingCards
     in
     div (class "cart-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart
+        [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart (columnDragAttrs "cart")
         , div [ class "cart-toolbar" ]
             [ button
                 [ type_ "button", class "cart-btn cart-btn-export", onClick ExportShoppingList ]

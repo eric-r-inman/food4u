@@ -101,6 +101,11 @@ type alias Data =
     -- How many days the Meal Planner shows, named "Day 1".."Day N".
     -- Absent in older saved data.
     , plannerDays : Int
+
+    -- The user's left-to-right arrangement of the app's columns, by column
+    -- id. Absent in older saved data; the app falls back to its canonical
+    -- order.
+    , columnOrder : List String
     }
 
 
@@ -241,7 +246,7 @@ parseSelKey key =
 
 dataDecoder : Decoder Data
 dataDecoder =
-    Decode.map5 Data
+    Decode.map6 Data
         (Decode.field "tiers" (Decode.list tierDecoder))
         (Decode.field "staples" (Decode.list cardDecoder))
         -- "recipes" is absent in older saved data; default to empty.
@@ -260,6 +265,13 @@ dataDecoder =
         (Decode.oneOf
             [ Decode.field "plannerDays" Decode.int
             , Decode.succeed 7
+            ]
+        )
+        -- "columnOrder" is absent in older saved data; default to empty,
+        -- which the app reads as its canonical order.
+        (Decode.oneOf
+            [ Decode.field "columnOrder" (Decode.list Decode.string)
+            , Decode.succeed []
             ]
         )
 
@@ -374,6 +386,7 @@ encodeData data =
         , ( "recipes", Encode.list encodeRecipe data.recipes )
         , ( "planner", Encode.list encodePlannerEntry data.planner )
         , ( "plannerDays", Encode.int data.plannerDays )
+        , ( "columnOrder", Encode.list Encode.string data.columnOrder )
         ]
 
 

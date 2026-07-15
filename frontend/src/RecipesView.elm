@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (bookmarkButton, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (bookmarkButton, columnDragAttrs, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 {-| The longest a recipe name may be: what fits on one line of the expanded
@@ -304,7 +304,8 @@ viewRecipes model data =
             )
             [ div
                 (onClick ToggleRecipes
-                    :: styles
+                    :: columnDragAttrs "recipes"
+                    ++ styles
                         [ ( "background", "oklch(0.43 0.06 250)" )
                         , ( "color", "#fff" )
                         , ( "padding", "12px 16px" )
@@ -331,7 +332,8 @@ viewRecipes model data =
         div
             (class "recipes-pane-closed"
                 :: onClick ToggleRecipes
-                :: cardStyle
+                :: columnDragAttrs "recipes"
+                ++ cardStyle
                 ++ styles
                     [ ( "background", "oklch(0.43 0.06 250)" )
                     , ( "color", "#fff" )

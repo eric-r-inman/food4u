@@ -57,6 +57,7 @@ fn sample() -> Model {
     recipes: vec![],
     planner: vec![],
     planner_days: 7,
+    column_order: vec![],
   }
 }
 

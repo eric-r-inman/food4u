@@ -24,6 +24,11 @@ pub struct Model {
   /// documents written before the planner could grow and shrink.
   #[serde(default = "default_planner_days", rename = "plannerDays")]
   pub planner_days: i64,
+  /// The user's left-to-right arrangement of the app's columns.  Empty in
+  /// documents written before columns could be reordered; the frontend
+  /// falls back to its canonical order.
+  #[serde(default, rename = "columnOrder")]
+  pub column_order: Vec<String>,
 }
 
 /// The Meal Planner's original fixed length: seven days.

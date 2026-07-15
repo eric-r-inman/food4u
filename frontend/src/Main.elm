@@ -31,7 +31,7 @@ import Dict exposing (Dict)
 import File.Download as Download
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (on, onBlur, onClick, onInput)
+import Html.Events exposing (on, onBlur, onClick, onInput, preventDefaultOn)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -84,6 +84,8 @@ init flags =
       , recipeDropCategory = Nothing
       , recipeDropBefore = Nothing
       , plannerDropTarget = Nothing
+      , columnDrag = Nothing
+      , columnDropTarget = Nothing
       , seq = 0
       , toggled = Set.empty
       , pyramidOpen = True
@@ -652,6 +654,24 @@ update msg model =
                             , planner = List.filter (\e -> e.day < remaining) data.planner
                         }
                 )
+
+        ColumnDragStart columnId ->
+            ( { model | columnDrag = Just columnId, columnDropTarget = Nothing }, Cmd.none )
+
+        ColumnDragEnd ->
+            ( { model | columnDrag = Nothing, columnDropTarget = Nothing }, Cmd.none )
+
+        ColumnDragEnterColumn columnId ->
+            ( { model | columnDropTarget = Just columnId }, Cmd.none )
+
+        DropOnColumnSlot columnId ->
+            case ( model.columnDrag, model.data ) of
+                ( Just dragged, Just data ) ->
+                    persistData { model | columnDrag = Nothing, columnDropTarget = Nothing }
+                        { data | columnOrder = reorderColumns dragged columnId (normalizeColumnOrder data.columnOrder) }
+
+                _ ->
+                    ( { model | columnDrag = Nothing, columnDropTarget = Nothing }, Cmd.none )
 
         DropRecipeOnGroup gid ->
             case ( model.recipeDrag, model.data ) of
@@ -1238,6 +1258,163 @@ ensureStaplesTracker data =
         }
 
 
+{-| The app's columns in their canonical left-to-right order, by id.
+-}
+columnIds : List String
+columnIds =
+    [ "pyramid", "recipes", "planner", "kitchen", "cart" ]
+
+
+{-| A saved column order made safe to render: unknown ids dropped,
+duplicates collapsed, and any column the saved order lacks appended in
+canonical position — so every column always renders exactly once.
+-}
+normalizeColumnOrder : List String -> List String
+normalizeColumnOrder saved =
+    let
+        known =
+            List.foldl
+                (\c acc ->
+                    if List.member c columnIds && not (List.member c acc) then
+                        acc ++ [ c ]
+
+                    else
+                        acc
+                )
+                []
+                saved
+    in
+    known ++ List.filter (\c -> not (List.member c known)) columnIds
+
+
+{-| Move the dragged column to the dropped-on column's position: dropping
+on a column to the right lands just right of it, dropping on one to the
+left lands just left of it, so every arrangement is reachable.
+-}
+reorderColumns : String -> String -> List String -> List String
+reorderColumns dragged target order =
+    if dragged == target then
+        order
+
+    else
+        let
+            without =
+                List.filter ((/=) dragged) order
+
+            insertAt =
+                indexOfColumn target without
+                    + (if indexOfColumn dragged order < indexOfColumn target order then
+                        1
+
+                       else
+                        0
+                      )
+        in
+        List.take insertAt without ++ dragged :: List.drop insertAt without
+
+
+indexOfColumn : String -> List String -> Int
+indexOfColumn columnId order =
+    order
+        |> List.indexedMap Tuple.pair
+        |> List.filter (\( _, c ) -> c == columnId)
+        |> List.head
+        |> Maybe.map Tuple.first
+        |> Maybe.withDefault 0
+
+
+{-| One column in the layout, wrapped in an invisible slot that accepts a
+dragged column, plus the insertion line marking where the drag would land.
+The wrapper renders no box of its own, so the column keeps its flex sizing.
+-}
+viewColumnSlot : Model -> Data -> String -> List (Html Msg)
+viewColumnSlot model data columnId =
+    let
+        slot =
+            div (class "column-slot" :: columnSlotDropAttrs model.columnDrag columnId)
+                [ viewColumn model data columnId ]
+
+        line =
+            div [ class "column-insert-line" ] []
+    in
+    case insertionSide model columnId of
+        Just After ->
+            [ slot, line ]
+
+        Just Before ->
+            [ line, slot ]
+
+        Nothing ->
+            [ slot ]
+
+
+type InsertionSide
+    = Before
+    | After
+
+
+{-| Which edge of this column the dragged column would land on, if the
+pointer is over it — matching what `reorderColumns` will do on drop.
+-}
+insertionSide : Model -> String -> Maybe InsertionSide
+insertionSide model columnId =
+    case ( model.columnDrag, model.data ) of
+        ( Just dragged, Just data ) ->
+            if model.columnDropTarget == Just columnId && dragged /= columnId then
+                let
+                    order =
+                        normalizeColumnOrder data.columnOrder
+                in
+                if indexOfColumn dragged order < indexOfColumn columnId order then
+                    Just After
+
+                else
+                    Just Before
+
+            else
+                Nothing
+
+        _ ->
+            Nothing
+
+
+{-| The drop handlers a column slot carries while a column is being
+dragged, and nothing otherwise — so recipe and food drags pass through.
+-}
+columnSlotDropAttrs : Maybe String -> String -> List (Attribute Msg)
+columnSlotDropAttrs columnDrag columnId =
+    if columnDrag == Nothing then
+        []
+
+    else
+        [ preventDefaultOn "dragover" (Decode.succeed ( NoOp, True ))
+        , on "dragenter" (Decode.succeed (ColumnDragEnterColumn columnId))
+        , preventDefaultOn "drop" (Decode.succeed ( DropOnColumnSlot columnId, True ))
+        ]
+
+
+viewColumn : Model -> Data -> String -> Html Msg
+viewColumn model data columnId =
+    case columnId of
+        "pyramid" ->
+            viewPyramidColumn model data
+
+        "recipes" ->
+            viewRecipes model data
+
+        "planner" ->
+            viewPlannerColumn model data
+
+        "kitchen" ->
+            viewKitchenColumn model data
+
+        "cart" ->
+            viewCartColumn model data
+
+        _ ->
+            text ""
+
+
 {-| Scroll the Recipes column so the given recipe's card sits near the top
 of its visible area. The short sleep lets the column and the card render
 first — opening a recipe may have only just mounted them.
@@ -1638,12 +1815,7 @@ view model =
             Just data ->
                 div [ class "page" ]
                     [ div [ class "layout" ]
-                        [ viewPyramidColumn model data
-                        , viewRecipes model data
-                        , viewPlannerColumn model data
-                        , viewKitchenColumn model data
-                        , viewCartColumn model data
-                        ]
+                        (List.concatMap (viewColumnSlot model data) (normalizeColumnOrder data.columnOrder))
                     ]
 
             Nothing ->

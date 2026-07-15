@@ -219,6 +219,15 @@ pub async fn load(
       .map_err(read)?
       .unwrap_or(7);
 
+  let column_order = sqlx::query_scalar::<_, String>(
+    "select column_name from user_column_order \
+     where user_id = ? order by position",
+  )
+  .bind(user_id)
+  .fetch_all(pool)
+  .await
+  .map_err(read)?;
+
   Ok(assemble(
     tiers,
     groups,
@@ -230,6 +239,7 @@ pub async fn load(
     tags,
     planner,
     planner_days,
+    column_order,
   ))
 }
 
@@ -247,6 +257,7 @@ pub(crate) fn assemble(
   tags: Vec<TagRow>,
   planner: Vec<PlannerRow>,
   planner_days: i64,
+  column_order: Vec<String>,
 ) -> Model {
   let mut foods_by_group: HashMap<String, Vec<Food>> = HashMap::new();
   for row in foods {
@@ -352,6 +363,7 @@ pub(crate) fn assemble(
       })
       .collect(),
     planner_days,
+    column_order,
   }
 }
 
@@ -393,6 +405,11 @@ pub async fn save(
     .await
     .map_err(write)?;
   sqlx::query("delete from meal_plan_entries where user_id = ?")
+    .bind(user_id)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
+  sqlx::query("delete from user_column_order where user_id = ?")
     .bind(user_id)
     .execute(&mut *tx)
     .await
@@ -563,6 +580,19 @@ pub async fn save(
     .bind(&entry.meal)
     .bind(&entry.recipe_id)
     .bind(entry_pos as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
+  }
+
+  for (col_pos, column) in model.column_order.iter().enumerate() {
+    sqlx::query(
+      "insert into user_column_order (user_id, column_name, position) \
+       values (?, ?, ?)",
+    )
+    .bind(user_id)
+    .bind(column)
+    .bind(col_pos as i64)
     .execute(&mut *tx)
     .await
     .map_err(write)?;

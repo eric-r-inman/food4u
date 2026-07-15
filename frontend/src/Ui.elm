@@ -3,6 +3,7 @@ module Ui exposing
     , bookmarkButton
     , categoryDeleteControl
     , collapsedColumnBar
+    , columnDragAttrs
     , columnTitleBar
     , draggable
     , dropZone
@@ -78,8 +79,8 @@ editingPaneDomId =
 "Longevity Foods" style. With `Just color` it is a filled rail bar with
 white text; with `Nothing` it is dark text on the card background.
 -}
-columnTitleBar : Maybe String -> String -> Msg -> Html Msg
-columnTitleBar maybeBg titleText toggleMsg =
+columnTitleBar : Maybe String -> String -> Msg -> List (Attribute Msg) -> Html Msg
+columnTitleBar maybeBg titleText toggleMsg extraAttrs =
     let
         ( bg, fg, bottomBorder ) =
             case maybeBg of
@@ -91,7 +92,8 @@ columnTitleBar maybeBg titleText toggleMsg =
     in
     div
         (onClick toggleMsg
-            :: styles
+            :: extraAttrs
+            ++ styles
                 [ ( "display", "flex" )
                 , ( "align-items", "center" )
                 , ( "gap", "11px" )
@@ -579,6 +581,17 @@ draggable loc foodId =
     attribute "draggable" "true"
         :: on "dragstart" (Decode.succeed (DragStart loc foodId))
         :: [ on "dragend" (Decode.succeed DragEnd) ]
+
+
+{-| The drag-handle attributes a column's title bar or collapsed bar
+carries, so the whole column can be dragged to a new position in the row.
+-}
+columnDragAttrs : String -> List (Attribute Msg)
+columnDragAttrs columnId =
+    [ attribute "draggable" "true"
+    , on "dragstart" (Decode.succeed (ColumnDragStart columnId))
+    , on "dragend" (Decode.succeed ColumnDragEnd)
+    ]
 
 
 dropZone : Loc -> List (Attribute Msg)

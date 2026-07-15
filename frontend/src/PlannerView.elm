@@ -16,7 +16,7 @@ import Json.Decode as Decode
 import Model exposing (Model, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
-import Ui exposing (collapsedColumnBar, columnTitleBar)
+import Ui exposing (collapsedColumnBar, columnDragAttrs, columnTitleBar)
 
 
 {-| The column's rail colour, resolved from the stylesheet's palette so the
@@ -51,7 +51,7 @@ viewPlannerColumn model data =
 
     else
         div [ class "planner-col-open" ]
-            [ columnTitleBar (Just plannerColor) "Meal Planner" TogglePlanner
+            [ columnTitleBar (Just plannerColor) "Meal Planner" TogglePlanner (columnDragAttrs "planner")
             , div [ class "planner-body" ]
                 (List.map
                     (viewDay data.planner data.recipes model.toggled model.recipeDrag model.plannerDropTarget)
@@ -86,7 +86,7 @@ viewDayControls plannerDays =
 
 collapsedBar : Html Msg
 collapsedBar =
-    collapsedColumnBar "Meal Planner" plannerColor TogglePlanner []
+    collapsedColumnBar "Meal Planner" plannerColor TogglePlanner (columnDragAttrs "planner")
 
 
 {-| One day pane, "Day 1".."Day N": a plum rail header carrying the day's

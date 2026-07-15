@@ -18,13 +18,13 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, panePalette, styles)
 import Types exposing (AddTarget(..))
-import Ui exposing (collapsedColumnBar, columnTitleBar, dropZone, editingPaneDomId, moveHereButton, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
+import Ui exposing (collapsedColumnBar, columnDragAttrs, columnTitleBar, dropZone, editingPaneDomId, moveHereButton, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
 
 
 viewKitchenColumn : Model -> Data -> Html Msg
 viewKitchenColumn model data =
     if not model.kitchenOpen then
-        collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen []
+        collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen (columnDragAttrs "kitchen")
 
     else
         Lazy.lazy8 viewKitchenBody
@@ -67,7 +67,7 @@ viewKitchenBody adding addValue editingPane rawSearch toggled selection derived 
                 |> Maybe.withDefault (text "")
     in
     div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen
+        [ columnTitleBar (Just "oklch(0.55 0.08 74)") "Kitchen" ToggleKitchen (columnDragAttrs "kitchen")
         , div [ class "kitchen-body" ]
             (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput []
                 :: trackerView

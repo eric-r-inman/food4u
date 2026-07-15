@@ -80,6 +80,10 @@ type Msg
     | RemovePlannerEntry String
     | AddPlannerDay
     | RemovePlannerDay
+    | ColumnDragStart String
+    | ColumnDragEnd
+    | ColumnDragEnterColumn String
+    | DropOnColumnSlot String
     | OpenAi String
     | CloseAi
     | AiToggleConfigure

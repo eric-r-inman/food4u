@@ -108,6 +108,11 @@ type alias Model =
     -- While a recipe is being dragged, the Meal Planner (day, meal) slot the
     -- pointer is over, so it can be highlighted as the copy target.
     , plannerDropTarget : Maybe ( Int, String )
+
+    -- The column being dragged to a new position, and the column the
+    -- pointer is over, marking where the dragged one would land.
+    , columnDrag : Maybe String
+    , columnDropTarget : Maybe String
     , seq : Int
 
     -- Keys whose collapse is *toggled away from their default*. Food and

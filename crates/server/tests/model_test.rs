@@ -67,6 +67,7 @@ fn the_typed_model_round_trips_through_json() {
       recipe_id: "r1".into(),
     }],
     planner_days: 10,
+    column_order: vec!["planner".into(), "pyramid".into()],
   };
 
   let reserialized = serde_json::to_string(&model).unwrap();

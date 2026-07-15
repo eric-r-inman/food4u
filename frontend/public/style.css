@@ -115,6 +115,10 @@
   /* The insertion line shown above a recipe card while reordering. */
   --recipe-reorder-line: oklch(0.55 0.16 250);
 
+  /* The vertical insertion line shown between columns while one is being
+     dragged to a new position. */
+  --column-insert-line: oklch(0.55 0.16 250);
+
   /* The column card surface, mirroring the shared Elm cardStyle helper. */
   --card-bg: oklch(0.99 0.006 86);
   --card-shadow: 0 18px 50px -28px rgba(60, 45, 20, 0.35);
@@ -246,6 +250,21 @@ button {
 .recipes-pane-closed {
   flex: 0 0 46px;
   min-height: 0;
+}
+
+/* The wrapper each column sits in so it can receive a dragged column.  It
+   renders no box of its own — the column stays the flex item — but drag
+   events on the column bubble to it. */
+.column-slot {
+  display: contents;
+}
+
+/* The vertical line marking where a dragged column would land. */
+.column-insert-line {
+  flex: 0 0 4px;
+  align-self: stretch;
+  border-radius: 2px;
+  background: var(--column-insert-line);
 }
 
 /* The Meal Planner column: a week of collapsible day panes, each holding

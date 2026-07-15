@@ -131,6 +131,8 @@ async fn per_user_overlay_and_ordering_are_preserved() {
     ],
     // A non-default length, so the round-trip proves it persists.
     planner_days: 9,
+    // A non-canonical arrangement, so the round-trip proves it persists.
+    column_order: vec!["cart".into(), "pyramid".into(), "recipes".into()],
   };
 
   repo::save(&pool, "local", &model).await.unwrap();

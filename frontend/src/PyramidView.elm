@@ -17,13 +17,13 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, foodChipStyle, searchHighlightStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..))
-import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnTitleBar, moveHereButton, notepadButton, recipeDropZone, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnDragAttrs, columnTitleBar, moveHereButton, notepadButton, recipeDropZone, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 viewPyramidColumn : Model -> Data -> Html Msg
 viewPyramidColumn model data =
     if not model.pyramidOpen then
-        collapsedColumnBar "Longevity Foods" "oklch(0.5 0.07 128)" TogglePyramid []
+        collapsedColumnBar "Longevity Foods" "oklch(0.5 0.07 128)" TogglePyramid (columnDragAttrs "pyramid")
 
     else
         -- Lazy on the narrow set of inputs the pyramid actually reads, so a
@@ -54,7 +54,7 @@ viewPyramidBody rawSearch toggled adding addValue confirmingDelete selection inS
             search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) (List.concatMap (\t -> List.concatMap .foods t.groups) tiers)
     in
     div (class "pyramid-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
-        [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid
+        [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid (columnDragAttrs "pyramid")
         , div [ class "pyramid-body" ]
             [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput []
             , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
