@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (bookmarkButton, columnDragAttrs, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (bookmarkButton, collapsedColumnBar, columnDragAttrs, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 {-| The longest a recipe name may be: what fits on one line of the expanded
@@ -329,34 +329,9 @@ viewRecipes model data =
             ]
 
     else
-        div
-            (class "recipes-pane-closed"
-                :: onClick ToggleRecipes
-                :: columnDragAttrs "recipes"
-                ++ cardStyle
-                ++ styles
-                    [ ( "background", "oklch(0.43 0.06 250)" )
-                    , ( "color", "#fff" )
-                    , ( "cursor", "pointer" )
-                    , ( "user-select", "none" )
-                    , ( "display", "flex" )
-                    , ( "flex-direction", "column" )
-                    , ( "align-items", "center" )
-                    , ( "gap", "12px" )
-                    , ( "padding", "16px 0" )
-                    ]
-            )
-            [ span (styles [ ( "font-size", "11px" ), ( "opacity", "0.85" ) ]) [ text "◀" ]
-            , span
-                (styles
-                    [ ( "writing-mode", "vertical-rl" )
-                    , ( "font-size", "16px" )
-                    , ( "font-weight", "700" )
-                    , ( "letter-spacing", "0.5px" )
-                    ]
-                )
-                [ text "Recipes" ]
-            ]
+        -- Use the shared collapsed bar so the Recipes column folds to the
+        -- same shape (and caret direction) as every other column.
+        collapsedColumnBar "Recipes" "var(--recipes-rail)" ToggleRecipes (columnDragAttrs "recipes")
 
 
 viewRecipeCategory : Model -> Dict String String -> Set String -> Set String -> String -> Data -> String -> Html Msg

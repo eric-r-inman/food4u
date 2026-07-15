@@ -124,8 +124,10 @@ to ~Html.Attributes.style~, used across every view — a standing violation of t
 no-inline-styles rule that every compliance review of the decomposition flagged
 as pre-existing and systemic.  Migrate these to class-based rules in
 ~frontend/public/style.css~, driving the column accent colors from CSS custom
-properties.  A large, mechanical, codebase- wide pass; deferred so it does not
-tangle with the structural refactors.
+properties.  The shared column-bar helpers are part of this: they take a colour
+string applied inline, so their call sites should move to per-column classes.  A
+large, mechanical, codebase- wide pass; deferred so it does not tangle with the
+structural refactors.
 
 * DONE retire the remaining JSON vestiges from the server
 :PROPERTIES:

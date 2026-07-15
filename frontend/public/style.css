@@ -246,8 +246,7 @@ button {
   min-height: 0;
 }
 
-.col-closed,
-.recipes-pane-closed {
+.col-closed {
   flex: 0 0 46px;
   min-height: 0;
 }
@@ -543,8 +542,7 @@ button {
   .recipes-pane-open,
   .kitchen-col-open,
   .cart-col-open,
-  .col-closed,
-  .recipes-pane-closed {
+  .col-closed {
     flex: 0 0 auto;
   }
 }
