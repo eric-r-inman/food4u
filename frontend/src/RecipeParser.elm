@@ -235,16 +235,41 @@ cleanIngredient line =
             |> beforeFirst ";"
             |> afterLast " or "
             |> beforeFirst " from "
-            |> stripLeadingChars "-*•·–—.#)(▢□☐ 0123456789/½¼¾⅓⅔⅛⅜⅝⅞⅙⅚"
+            |> stripLeadingChars leadingChars
+            |> stripLeadingArticle
             |> stripFoodOfPrefix
-            |> stripLeadingChars "-*•·–—.#)(▢□☐ 0123456789/½¼¾⅓⅔⅛⅜⅝⅞⅙⅚"
+            |> stripLeadingChars leadingChars
             |> String.words
-            |> dropWhileList (\w -> isQuantityWord w || isPrepWord w)
+            |> dropWhileList (\w -> isQuantityWord w || isPrepWord w || isArticleWord w)
             |> dropTrailingMeasure
             |> String.join " "
             |> String.trim
             |> stripServingPhrase
             |> capitalizeFirst
+
+
+{-| The vulgar-fraction glyphs treated as quantities, kept in one place so
+the leading-strip and the quantity-token checks cannot drift apart.
+-}
+fractionChars : String
+fractionChars =
+    "½¼¾⅓⅔⅛⅜⅝⅞⅙⅚"
+
+
+{-| The characters that compose a bare quantity token: digits, the
+separators and multipliers that join them, and the vulgar fractions.
+-}
+quantityChars : String
+quantityChars =
+    "0123456789/.-x×" ++ fractionChars
+
+
+{-| The leading noise stripped from the front of an ingredient line:
+bullets, list punctuation, and a leading quantity.
+-}
+leadingChars : String
+leadingChars =
+    "-*•·–—.#)(▢□☐ 0123456789/" ++ fractionChars
 
 
 {-| Remove every "(...)" span, so "2 (15-ounce) cans black beans" keeps
@@ -351,6 +376,37 @@ afterLast sep s =
             s
 
 
+{-| Strip a leading article so it is gone before the "juice of" prefixes
+and the quantity words are examined ("the juice of 1 lemon" is a lemon,
+"a pinch of salt" is salt).
+-}
+stripLeadingArticle : String -> String
+stripLeadingArticle s =
+    List.foldl
+        (\article acc ->
+            if String.startsWith article (String.toLower acc) then
+                String.trim (String.dropLeft (String.length article) acc)
+
+            else
+                acc
+        )
+        s
+        [ "a ", "an ", "the " ]
+
+
+{-| An article standing between a count and its food ("half a lemon") is
+noise, not part of the food name.
+-}
+isArticleWord : String -> Bool
+isArticleWord w =
+    Set.member (String.toLower (stripTrailingPunct w)) articleWords
+
+
+articleWords : Set String
+articleWords =
+    Set.fromList [ "a", "an", "the" ]
+
+
 {-| Strip a "juice of" / "zest of" lead ("juice of 1 lemon" is a lemon).
 -}
 stripFoodOfPrefix : String -> String
@@ -429,14 +485,15 @@ isQuantityWord w =
             core
                 |> String.toLower
                 |> String.toList
-                |> dropWhileList (\ch -> String.contains (String.fromChar ch) "0123456789/.-×x½¼¾⅓⅔⅛")
+                |> dropWhileList (\ch -> String.contains (String.fromChar ch) quantityChars)
                 |> String.fromList
 
         digitPart =
             String.left (String.length core - String.length unitPart) core
     in
-    (core /= "" && (String.toList core |> List.all (\ch -> String.contains (String.fromChar ch) "0123456789/.-x×½¼¾⅓⅔⅛")))
+    (core /= "" && (String.toList core |> List.all (\ch -> String.contains (String.fromChar ch) quantityChars)))
         || Set.member (String.toLower core) measureWords
+        || Set.member (String.toLower core) numberWords
         -- A number fused to its unit ("28-ounce", "400g") is a quantity too.
         || (digitPart /= "" && Set.member unitPart measureWords)
 
@@ -445,6 +502,15 @@ measureWords : Set String
 measureWords =
     Set.fromList
         [ "cup", "cups", "tbsp", "tbs", "tablespoon", "tablespoons", "tsp", "teaspoon", "teaspoons", "oz", "ounce", "ounces", "lb", "lbs", "pound", "pounds", "g", "gram", "grams", "kg", "ml", "l", "liter", "liters", "litre", "litres", "clove", "cloves", "can", "cans", "jar", "jars", "slice", "slices", "pinch", "pinches", "dash", "handful", "bunch", "bunches", "sprig", "sprigs", "stick", "sticks", "head", "heads", "package", "packages", "pkg", "qt", "quart", "quarts", "pint", "pints", "stalk", "stalks", "fillet", "fillets", "piece", "pieces", "of", "rib", "ribs", "container", "containers", "bag", "bags", "box", "boxes", "envelope", "gallon", "gallons", "sheet", "sheets", "sprigs", "ear", "ears", "knob", "each" ]
+
+
+{-| Spelled-out cardinal counts that lead an ingredient the way a digit
+would ("two lemons", "half a cup").
+-}
+numberWords : Set String
+numberWords =
+    Set.fromList
+        [ "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "half", "dozen" ]
 
 
 isPrepWord : String -> Bool

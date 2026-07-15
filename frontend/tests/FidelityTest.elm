@@ -57,6 +57,16 @@ parse =
     parsePastedRecipe catalog
 
 
+{-| Parse a single pasted ingredient bullet and return its chip name.
+-}
+chip : String -> String
+chip line =
+    parse ("Test\n\nIngredients:\n- " ++ line)
+        |> .ingredients
+        |> List.head
+        |> Maybe.withDefault "(no chip)"
+
+
 {-| Budget Bytes, "Mediterranean Lentil Soup" — a food-blog recipe card
 with checkbox bullets and per-ingredient prices in parentheses.
 -}
@@ -329,6 +339,20 @@ suite =
                 \_ ->
                     (parse emailStyle).ingredients
                         |> Expect.equal [ "Chickpeas", "Tahini", "Lemons", "Garlic" ]
+            ]
+        , describe "leading articles and spelled-out counts"
+            [ test "a pinch of salt is salt" <|
+                \_ -> chip "A pinch of salt" |> Expect.equal "Salt"
+            , test "a handful of a food is the food" <|
+                \_ -> chip "A handful of spinach" |> Expect.equal "Spinach"
+            , test "the juice of a numbered lemon is the lemon" <|
+                \_ -> chip "The juice of 1 lemon" |> Expect.equal "Lemons"
+            , test "the zest of a spelled-out count is the food" <|
+                \_ -> chip "The zest of one lemon" |> Expect.equal "Lemons"
+            , test "a spelled-out count leads like a digit" <|
+                \_ -> chip "two lemons" |> Expect.equal "Lemons"
+            , test "an article between a count and its food is dropped" <|
+                \_ -> chip "half a lemon" |> Expect.equal "Lemons"
             ]
         , describe "export round-trip"
             [ test "an exported recipe re-parses to the same chips" <|
