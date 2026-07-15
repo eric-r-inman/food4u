@@ -134,8 +134,8 @@
   --pyramid-rail: oklch(0.5 0.07 128);
   --kitchen-rail: oklch(0.55 0.08 74);
 
-  /* The Recipes column's indigo rail, shared with the controls elsewhere
-     that point at a recipe (the planner's open-recipe arrow). */
+  /* The Recipes column's indigo rail, shared with the recipe card's
+     full-name row and the About page's column swatch. */
   --recipes-rail: oklch(0.43 0.06 250);
 
   /* The Meal Planner column: a plum rail distinct from its neighbours
@@ -419,16 +419,14 @@ button {
   min-width: 0;
 }
 
-/* The thick indigo arrow that jumps to the recipe in the Recipes column. */
+/* The magnifying glass that jumps to the recipe in the Recipes column. */
 .planner-entry-open {
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 13px;
   line-height: 1;
   padding: 1px 2px;
-  color: var(--recipes-rail);
   flex: 0 0 auto;
 }
 

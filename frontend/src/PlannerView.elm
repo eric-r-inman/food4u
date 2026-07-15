@@ -4,8 +4,8 @@ module PlannerView exposing (viewPlannerColumn)
 and shrunk one day at a time), each with a Breakfast/Lunch/Dinner/Snacks
 slot that recipes are dragged into. A drop copies the recipe by reference —
 the recipe stays in the Recipes column — so the same recipe can be planned
-any number of times. Entries jump to their recipe via an arrow and carry
-their own remove control.
+any number of times. Entries jump to their recipe via a magnifying glass
+and carry their own remove control.
 -}
 
 import Data exposing (Data, PlannerEntry, Recipe)
@@ -184,9 +184,9 @@ plannerDropAttrs recipeDrag day meal =
 
 
 {-| One planned recipe: a full-width card — the remove control at the far
-left, then the indigo arrow that jumps to the recipe in the Recipes column,
-then the recipe's full name. An entry whose recipe no longer exists renders
-nothing.
+left, then the magnifying glass that jumps to the recipe in the Recipes
+column, then the recipe's full name. An entry whose recipe no longer
+exists renders nothing.
 -}
 viewEntry : List Recipe -> PlannerEntry -> Maybe (Html Msg)
 viewEntry recipes entry =
@@ -207,7 +207,7 @@ viewEntry recipes entry =
                         , class "planner-entry-open"
                         , onClick (OpenRecipe recipe.id)
                         ]
-                        [ text "➔" ]
+                        [ text "🔍" ]
                     , span [ class "planner-entry-name" ] [ text recipe.name ]
                     ]
             )

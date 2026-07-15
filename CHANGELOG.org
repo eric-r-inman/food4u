@@ -26,9 +26,9 @@
    Breakfast, Lunch, Dinner, and Snacks slots. Drag a recipe card into a slot to
    plan it — the recipe is copied by reference, so it stays in the Recipes
    column and the same recipe can be planned any number of times.  A planned
-   entry is a full-width card: its arrow jumps to the recipe in the Recipes
-   column and scrolls it into view, and its ✕ unplans it. Days collapse like
-   panes, and the whole column collapses like its neighbours.
+   entry is a full-width card: its magnifying glass jumps to the recipe in the
+   Recipes column and scrolls it into view, and its ✕ unplans it. Days collapse
+   like panes, and the whole column collapses like its neighbours.
 7. The bundled defaults now open onto a stocked recipe collection: six recipes
    in every category, drawn from Mediterranean, Blue Zone, MIND,
    anti-inflammatory, and DASH cooking, each tagged by its diet plan, by
