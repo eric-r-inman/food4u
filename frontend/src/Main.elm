@@ -38,6 +38,7 @@ import Json.Encode as Encode
 import KitchenView exposing (viewKitchenColumn)
 import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen, noSelection)
 import Msg exposing (Msg(..))
+import Planner exposing (plannerText)
 import PlannerView exposing (viewPlannerColumn)
 import Process
 import PyramidView exposing (viewPyramidColumn)
@@ -654,6 +655,17 @@ update msg model =
                             , planner = List.filter (\e -> e.day < remaining) data.planner
                         }
                 )
+
+        ExportPlanner ->
+            ( model
+            , model.data
+                |> Maybe.map (\data -> Download.string "meal-plan.txt" "text/plain" (plannerText data))
+                |> Maybe.withDefault Cmd.none
+            )
+
+        ClearPlanner ->
+            -- Empty every day's slots but keep the number of days in the plan.
+            withData model (\data -> persistData model { data | planner = [] })
 
         ColumnDragStart columnId ->
             ( { model | columnDrag = Just columnId, columnDropTarget = Nothing }, Cmd.none )

@@ -15,6 +15,7 @@ import Html.Events exposing (on, onClick, preventDefaultOn)
 import Json.Decode as Decode
 import Model exposing (Model, isOpen)
 import Msg exposing (Msg(..))
+import Planner exposing (meals)
 import Set exposing (Set)
 import Ui exposing (collapsedColumnBar, columnDragAttrs, columnTitleBar)
 
@@ -25,11 +26,6 @@ plum lives in one place.
 plannerColor : String
 plannerColor =
     "var(--planner-rail)"
-
-
-meals : List String
-meals =
-    [ "Breakfast", "Lunch", "Dinner", "Snacks" ]
 
 
 {-| How many days the planner can grow to, and shrink to.
@@ -52,6 +48,14 @@ viewPlannerColumn model data =
     else
         div [ class "planner-col-open" ]
             [ columnTitleBar (Just plannerColor) "Meal Planner" TogglePlanner (columnDragAttrs "planner")
+            , div [ class "planner-toolbar" ]
+                [ button
+                    [ type_ "button", class "planner-btn planner-btn-export", onClick ExportPlanner ]
+                    [ text "⬇  Export to .txt" ]
+                , button
+                    [ type_ "button", class "planner-btn planner-btn-clear", onClick ClearPlanner ]
+                    [ text "🗑  Clear all" ]
+                ]
             , div [ class "planner-body" ]
                 (List.map
                     (viewDay data.planner data.recipes model.toggled model.recipeDrag model.plannerDropTarget)

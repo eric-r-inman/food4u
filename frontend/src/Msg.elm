@@ -80,6 +80,8 @@ type Msg
     | RemovePlannerEntry String
     | AddPlannerDay
     | RemovePlannerDay
+    | ExportPlanner
+    | ClearPlanner
     | ColumnDragStart String
     | ColumnDragEnd
     | ColumnDragEnterColumn String
