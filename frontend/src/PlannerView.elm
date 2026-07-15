@@ -183,9 +183,9 @@ plannerDropAttrs recipeDrag day meal =
         ]
 
 
-{-| One planned recipe: a full-width card — the remove control at the far
-left, then the magnifying glass that jumps to the recipe in the Recipes
-column, then the recipe's full name. An entry whose recipe no longer
+{-| One planned recipe: a full-width card — the magnifying glass that
+jumps to the recipe in the Recipes column, the recipe's full name, and
+the remove control at the right edge. An entry whose recipe no longer
 exists renders nothing.
 -}
 viewEntry : List Recipe -> PlannerEntry -> Maybe (Html Msg)
@@ -198,16 +198,16 @@ viewEntry recipes entry =
                 div [ class "planner-entry" ]
                     [ button
                         [ type_ "button"
-                        , class "planner-entry-x"
-                        , onClick (RemovePlannerEntry entry.id)
-                        ]
-                        [ text "✕" ]
-                    , button
-                        [ type_ "button"
                         , class "planner-entry-open"
                         , onClick (OpenRecipe recipe.id)
                         ]
                         [ text "🔍" ]
                     , span [ class "planner-entry-name" ] [ text recipe.name ]
+                    , button
+                        [ type_ "button"
+                        , class "planner-entry-x"
+                        , onClick (RemovePlannerEntry entry.id)
+                        ]
+                        [ text "✕" ]
                     ]
             )

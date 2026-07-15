@@ -398,14 +398,14 @@ button {
   cursor: default;
 }
 
-/* One planned recipe: a full-width card with the remove control at the far
-   left, then the open-recipe arrow, then the recipe's full name. */
+/* One planned recipe: a full-width card — the open-recipe magnifier, the
+   recipe's full name, and the remove control at the right edge. */
 .planner-entry {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 6px 10px 6px 6px;
+  padding: 6px 6px 6px 10px;
   border-radius: 8px;
   font-size: 12.5px;
   font-weight: 500;
