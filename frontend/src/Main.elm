@@ -1808,8 +1808,12 @@ saveModel data =
 view : Model -> Html Msg
 view model =
     div [ class "app-root" ]
-        [ viewToolbar model.me
-        , viewSelectBar model.selection.active (Set.size model.selection.items)
+        [ -- The toolbar and the Select row form one sticky header block, so
+          -- both stay pinned on screen wherever the page itself scrolls.
+          div [ class "app-header noprint" ]
+            [ viewToolbar model.me
+            , viewSelectBar model.selection.active (Set.size model.selection.items)
+            ]
         , viewError model.error
         , case model.data of
             Just data ->
@@ -1853,17 +1857,7 @@ viewError maybeError =
 
 viewToolbar : Maybe Me -> Html Msg
 viewToolbar me =
-    div
-        (class "noprint"
-            :: styles
-                [ ( "position", "sticky" )
-                , ( "top", "0" )
-                , ( "z-index", "60" )
-                , ( "background", "oklch(0.985 0.006 86 / 0.92)" )
-                , ( "backdrop-filter", "blur(8px)" )
-                , ( "border-bottom", "1px solid oklch(0.9 0.012 86)" )
-                ]
-        )
+    div [ class "noprint toolbar" ]
         [ div
             (styles
                 [ ( "display", "flex" )

@@ -18,6 +18,9 @@
   --cart-clear-bg: oklch(0.96 0.04 42);
   --cart-clear-fg: oklch(0.45 0.13 42);
 
+  /* The title toolbar's frosted background. */
+  --toolbar-bg: oklch(0.985 0.006 86 / 0.92);
+
   /* The toolbar's About link, styled as a quiet mono link. */
   --about-link-fg: oklch(0.45 0.02 70);
 
@@ -204,6 +207,23 @@ button {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* The title bar and the Select row travel as one sticky header, pinned to
+   the top of whatever scrolls the page (the stacked narrow-screen layout;
+   the side-by-side layout scrolls inside its columns instead). */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  flex: 0 0 auto;
+}
+
+/* The title toolbar: a frosted strip over whatever scrolls beneath it. */
+.toolbar {
+  background: var(--toolbar-bg);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--card-border);
 }
 
 /* The page fills the viewport width so the four columns have room.  On

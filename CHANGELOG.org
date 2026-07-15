@@ -69,7 +69,8 @@
     stay selected so you can send them somewhere else too. While on, the toggle
     counts the current selection — "Select: on (5)". A "Deselect all" button
     appears beside the toggle once more than one item is picked. Badges still
-    drag individually with a click-and-hold.
+    drag individually with a click-and-hold. The Select row stays pinned on
+    screen with the title bar wherever the page itself scrolls.
 16. Organize the Shopping List into your own categories: it starts with a
     default set (Produce, Canned & Dry Goods, Dairy, and so on), and you can add
     your own, drag to-buy items into any of them, and delete a category — with a
