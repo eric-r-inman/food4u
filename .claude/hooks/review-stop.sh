@@ -102,7 +102,8 @@ review="$(jq --slurp --raw-input --argjson skip "$last_prompt_idx" '
     | ([ $all[]
          | select(.type == "assistant")
          | .message.content[]?
-         | select(.type == "tool_use" and .name == "Task"
+         | select(.type == "tool_use"
+                  and (.name == "Task" or .name == "Agent")
                   and (.input.subagent_type == "template-compliance"))
          | .id ]) as $ids
     | ([ $all[]
