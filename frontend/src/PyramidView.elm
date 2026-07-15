@@ -23,7 +23,7 @@ import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnDragAttrs, 
 viewPyramidColumn : Model -> Data -> Html Msg
 viewPyramidColumn model data =
     if not model.pyramidOpen then
-        collapsedColumnBar "Longevity Foods" "oklch(0.5 0.07 128)" TogglePyramid (columnDragAttrs "pyramid")
+        collapsedColumnBar "Longevity Foods" "col-closed-pyramid" TogglePyramid (columnDragAttrs "pyramid")
 
     else
         -- Lazy on the narrow set of inputs the pyramid actually reads, so a

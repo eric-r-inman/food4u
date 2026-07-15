@@ -28,7 +28,7 @@ viewCartColumn model data =
         -- Even collapsed, the cart bar accepts foods dropped onto the
         -- uncategorised bucket.
         collapsedColumnBar "Shopping List"
-            "oklch(0.52 0.1 42)"
+            "col-closed-cart"
             ToggleCart
             (columnDragAttrs "cart"
                 ++ (data.staples

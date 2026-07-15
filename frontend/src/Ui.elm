@@ -165,39 +165,21 @@ moveHereButton msg =
         [ text "⬇" ]
 
 
-{-| The slim vertical bar a Pyramid/Kitchen column collapses to, in the
-given rail color (matching the Foundation / Pantry bars).
+{-| The slim vertical bar a column collapses to. The rail class names the
+per-column background (a `col-closed-*` rule in the stylesheet); all other
+presentation lives on the shared classes, so the narrow-screen stacked mode
+can lay the bar flat and turn its title horizontal.
 -}
 collapsedColumnBar : String -> String -> Msg -> List (Attribute Msg) -> Html Msg
-collapsedColumnBar titleText bgColor toggleMsg extraAttrs =
+collapsedColumnBar titleText railClass toggleMsg extraAttrs =
     div
         (class "col-closed"
+            :: class railClass
             :: onClick toggleMsg
             :: extraAttrs
-            ++ styles
-                [ ( "background", bgColor )
-                , ( "color", "#fff" )
-                , ( "border-radius", "14px" )
-                , ( "box-shadow", "0 18px 50px -28px rgba(60,45,20,0.35)" )
-                , ( "cursor", "pointer" )
-                , ( "user-select", "none" )
-                , ( "display", "flex" )
-                , ( "flex-direction", "column" )
-                , ( "align-items", "center" )
-                , ( "gap", "12px" )
-                , ( "padding", "18px 0" )
-                ]
         )
-        [ span (styles [ ( "font-size", "12px" ), ( "opacity", "0.75" ) ]) [ text "▶" ]
-        , span
-            (styles
-                [ ( "writing-mode", "vertical-rl" )
-                , ( "font-size", "16px" )
-                , ( "font-weight", "800" )
-                , ( "letter-spacing", "-0.3px" )
-                ]
-            )
-            [ text titleText ]
+        [ span [ class "col-closed-caret" ] [ text "▶" ]
+        , span [ class "col-closed-title" ] [ text titleText ]
         ]
 
 

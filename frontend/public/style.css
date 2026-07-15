@@ -121,6 +121,7 @@
 
   /* The column card surface, mirroring the shared Elm cardStyle helper. */
   --card-bg: oklch(0.99 0.006 86);
+  --card-radius: 14px;
   --card-shadow: 0 18px 50px -28px rgba(60, 45, 20, 0.35);
 
   /* The app's body font stack, shared with standalone pages. */
@@ -246,9 +247,54 @@ button {
   min-height: 0;
 }
 
+/* A collapsed column's slim vertical bar: the caret over a sideways
+   title.  Each column's bar carries a col-closed-* class naming its rail
+   colour. */
 .col-closed {
   flex: 0 0 46px;
   min-height: 0;
+  color: var(--pane-fg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0;
+}
+
+.col-closed-caret {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.col-closed-title {
+  writing-mode: vertical-rl;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.col-closed-pyramid {
+  background: var(--pyramid-rail);
+}
+
+.col-closed-recipes {
+  background: var(--recipes-rail);
+}
+
+.col-closed-planner {
+  background: var(--planner-rail);
+}
+
+.col-closed-kitchen {
+  background: var(--kitchen-rail);
+}
+
+.col-closed-cart {
+  background: var(--cart-cat-accent);
 }
 
 /* The wrapper each column sits in so it can receive a dragged column.  It
@@ -530,7 +576,8 @@ button {
   .pyramid-body,
   .recipes-body,
   .kitchen-body,
-  .cart-body {
+  .cart-body,
+  .planner-body {
     overflow: visible;
   }
 
@@ -542,8 +589,22 @@ button {
   .recipes-pane-open,
   .kitchen-col-open,
   .cart-col-open,
+  .planner-col-open,
   .col-closed {
     flex: 0 0 auto;
+  }
+
+  /* Stacked columns lay their collapsed bars flat: a full-width row with
+     the title reading horizontally.  The sideways title is only for the
+     side-by-side layout. */
+  .col-closed {
+    flex-direction: row;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+
+  .col-closed-title {
+    writing-mode: horizontal-tb;
   }
 }
 

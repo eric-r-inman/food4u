@@ -86,7 +86,7 @@ viewDayControls plannerDays =
 
 collapsedBar : Html Msg
 collapsedBar =
-    collapsedColumnBar "Meal Planner" plannerColor TogglePlanner (columnDragAttrs "planner")
+    collapsedColumnBar "Meal Planner" "col-closed-planner" TogglePlanner (columnDragAttrs "planner")
 
 
 {-| One day pane, "Day 1".."Day N": a plum rail header carrying the day's

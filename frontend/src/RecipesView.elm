@@ -331,7 +331,7 @@ viewRecipes model data =
     else
         -- Use the shared collapsed bar so the Recipes column folds to the
         -- same shape (and caret direction) as every other column.
-        collapsedColumnBar "Recipes" "var(--recipes-rail)" ToggleRecipes (columnDragAttrs "recipes")
+        collapsedColumnBar "Recipes" "col-closed-recipes" ToggleRecipes (columnDragAttrs "recipes")
 
 
 viewRecipeCategory : Model -> Dict String String -> Set String -> Set String -> String -> Data -> String -> Html Msg

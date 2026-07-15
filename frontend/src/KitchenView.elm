@@ -24,7 +24,7 @@ import Ui exposing (collapsedColumnBar, columnDragAttrs, columnTitleBar, dropZon
 viewKitchenColumn : Model -> Data -> Html Msg
 viewKitchenColumn model data =
     if not model.kitchenOpen then
-        collapsedColumnBar "Kitchen" "oklch(0.55 0.08 74)" ToggleKitchen (columnDragAttrs "kitchen")
+        collapsedColumnBar "Kitchen" "col-closed-kitchen" ToggleKitchen (columnDragAttrs "kitchen")
 
     else
         Lazy.lazy8 viewKitchenBody
