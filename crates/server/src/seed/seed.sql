@@ -18,7 +18,7 @@ insert into food_groups (id, tier_id, label, position) values ('d183', 'd241', '
 insert into food_groups (id, tier_id, label, position) values ('d203', 'd241', 'Legumes & pulses', 1);
 insert into food_groups (id, tier_id, label, position) values ('d222', 'd241', 'Nuts & seeds', 2);
 insert into food_groups (id, tier_id, label, position) values ('d231', 'd241', 'Soy & fermented', 3);
-insert into food_groups (id, tier_id, label, position) values ('d238', 'd241', 'Cultured dairy · moderate', 4);
+insert into food_groups (id, tier_id, label, position) values ('d238', 'd241', 'Cultured dairy', 4);
 insert into food_groups (id, tier_id, label, position) values ('d240', 'd241', 'Supplements', 5);
 insert into food_groups (id, tier_id, label, position) values ('d255', 'd260', 'Oily & white fish', 0);
 insert into food_groups (id, tier_id, label, position) values ('d259', 'd260', 'Eggs & poultry', 1);
