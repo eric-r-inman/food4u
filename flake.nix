@@ -57,7 +57,17 @@
         # produce a binary.
       };
       commonArgs = {
-        src = craneLib.cleanCargoSource self;
+        # The default cargo source filter keeps only Rust-relevant files,
+        # which would drop the SQL the binary embeds at compile time: the
+        # sqlx migrations and the bundled default-model seed.  Widen the
+        # filter to keep .sql sources too.
+        src = nixpkgs.lib.cleanSourceWith {
+          src = self;
+          filter = path: type:
+            nixpkgs.lib.hasSuffix ".sql" path
+            || craneLib.filterCargoSources path type;
+          name = "source";
+        };
         # Run only unit tests (--lib --bins), skip integration tests in
         # tests/ directories.  Integration tests may require external
         # services not available in the Nix sandbox.
