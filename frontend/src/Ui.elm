@@ -120,7 +120,6 @@ selectToggle on selectedCount msg =
     button
         [ type_ "button"
         , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
-        , title "Tap items to select several, then drag one to move them all"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text
@@ -159,7 +158,6 @@ moveHereButton msg =
     button
         [ type_ "button"
         , class "move-here-btn"
-        , title "Move selected here"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text "⬇" ]
@@ -258,7 +256,6 @@ notepadButton msg =
     button
         (type_ "button"
             :: stopPropagationOn "click" (Decode.succeed ( msg, True ))
-            :: title "Open linked recipe"
             :: styles
                 [ ( "border", "none" )
                 , ( "background", "transparent" )
@@ -281,7 +278,6 @@ recipeCartButton active msg =
     button
         [ type_ "button"
         , classList [ ( "recipe-cart-btn", True ), ( "recipe-cart-btn-active", active ) ]
-        , title "Add missing ingredients to Shopping List"
         , onClick msg
         ]
         [ text "🛒" ]
@@ -297,13 +293,6 @@ bookmarkButton on msg =
     button
         [ type_ "button"
         , classList [ ( "recipe-bookmark-btn", True ), ( "recipe-bookmark-btn-on", on ) ]
-        , title
-            (if on then
-                "Remove bookmark"
-
-             else
-                "Bookmark this recipe"
-            )
         , onClick msg
         ]
         [ span [ classList [ ( "recipe-bookmark-glyph", True ), ( "recipe-bookmark-glyph-on", on ) ] ] [ text "🔖" ] ]
@@ -316,7 +305,6 @@ recipeExportButton msg =
     button
         [ type_ "button"
         , class "recipe-export-btn"
-        , title "Export recipe to .txt"
         , onClick msg
         ]
         [ text "⬇" ]
@@ -354,7 +342,6 @@ paneDeleteButton msg =
     button
         [ type_ "button"
         , class "pane-delete-btn"
-        , title "Delete this pane"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text "✕" ]
@@ -368,7 +355,6 @@ paneEditButton msg =
     button
         [ type_ "button"
         , class "pane-edit-btn"
-        , title "Edit this pane"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text "✎" ]
@@ -404,7 +390,6 @@ paneColorButton msg =
     button
         [ type_ "button"
         , class "pane-edit-btn"
-        , title "Recolour this pane"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text "🎨" ]
@@ -419,7 +404,6 @@ paneColorSwatch selected color =
     button
         [ type_ "button"
         , classList [ ( "pane-swatch", True ), ( "pane-swatch-selected", selected ) ]
-        , title "Use this colour"
         , style "background" color
         , stopPropagationOn "click" (Decode.succeed ( SetPaneColor color, True ))
         ]
@@ -485,7 +469,6 @@ categoryDeleteControl confirming requestMsg confirmMsg cancelMsg =
         button
             [ type_ "button"
             , class "cat-delete-btn"
-            , title "Delete this category"
             , stopPropagationOn "click" (Decode.succeed ( requestMsg, True ))
             ]
             [ text "✕" ]
@@ -661,7 +644,6 @@ stapleCartButton active msg =
     button
         [ type_ "button"
         , classList [ ( "staple-cart-btn", True ), ( "staple-cart-btn-active", active ) ]
-        , title "Add missing staples to the Shopping List"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text "🛒" ]

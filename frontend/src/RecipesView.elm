@@ -107,7 +107,6 @@ viewTagFilter : Maybe String -> Data -> Html Msg
 viewTagFilter selectedTag data =
     select
         [ class "recipe-tag-select noprint"
-        , title "Show only recipes with the selected tag"
         , value (Maybe.withDefault "" selectedTag)
         , onInput SetRecipeTagFilter
         ]
@@ -126,7 +125,7 @@ viewTagChip rid tag =
     span [ class "recipe-tag" ]
         [ text tag
         , button
-            [ type_ "button", class "recipe-tag-x", title "Remove tag", onClick (RemoveRecipeTag rid tag) ]
+            [ type_ "button", class "recipe-tag-x", onClick (RemoveRecipeTag rid tag) ]
             [ text "✕" ]
         ]
 
@@ -415,7 +414,7 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                     ]
                 , span [] [ text category ]
                 , if bookmarkedCount > 0 then
-                    span [ class "recipe-cat-bookmarks", title "Bookmarked recipes" ] [ text ("🔖 " ++ String.fromInt bookmarkedCount) ]
+                    span [ class "recipe-cat-bookmarks" ] [ text ("🔖 " ++ String.fromInt bookmarkedCount) ]
 
                   else
                     text ""
@@ -544,9 +543,7 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                 []
             , if allStocked then
                 span
-                    (title "You have all the ingredients on hand"
-                        :: styles [ ( "color", "oklch(0.55 0.16 150)" ), ( "font-size", "14px" ), ( "font-weight", "700" ), ( "flex", "0 0 auto" ) ]
-                    )
+                    (styles [ ( "color", "oklch(0.55 0.16 150)" ), ( "font-size", "14px" ), ( "font-weight", "700" ), ( "flex", "0 0 auto" ) ])
                     [ text "✓" ]
 
               else
@@ -557,7 +554,6 @@ viewRecipe toggled selectMode selected nameToTierRail inStock stockedNoCart reci
                     :: attribute "draggable" "true"
                     :: on "dragstart" (Decode.succeed (RecipeDragStart recipe.id))
                     :: on "dragend" (Decode.succeed RecipeDragEnd)
-                    :: title "Drag onto another card to reorder, onto a category to re-home, or onto a pyramid category to link"
                     :: styles [ ( "cursor", "grab" ), ( "font-size", "13px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "padding", "0 2px" ), ( "user-select", "none" ) ]
                 )
                 [ text "⠿" ]
@@ -653,14 +649,13 @@ viewRecipeItem selectMode selected nameToTierRail inStock loc item =
 
                 else
                     [ span
-                        (title "Not in food list — drag onto a pyramid category to add it"
-                            :: styles
-                                [ ( "font-family", "'IBM Plex Mono',monospace" )
-                                , ( "font-size", "11px" )
-                                , ( "font-weight", "800" )
-                                , ( "color", "oklch(0.6 0.2 50)" )
-                                , ( "cursor", "help" )
-                                ]
+                        (styles
+                            [ ( "font-family", "'IBM Plex Mono',monospace" )
+                            , ( "font-size", "11px" )
+                            , ( "font-weight", "800" )
+                            , ( "color", "oklch(0.6 0.2 50)" )
+                            , ( "cursor", "default" )
+                            ]
                         )
                         [ text "!" ]
                     ]

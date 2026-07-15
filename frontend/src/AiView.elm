@@ -21,7 +21,7 @@ viewPanel model category =
         (div [ class "ai-panel-head" ]
             [ span [ class "ai-title" ] [ text ("✨ AI recipe · " ++ category) ]
             , button
-                [ type_ "button", class "ai-close", title "Close", onClick CloseAi ]
+                [ type_ "button", class "ai-close", onClick CloseAi ]
                 [ text "✕" ]
             ]
             :: (if model.ai.configuring then
