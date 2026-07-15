@@ -51,6 +51,12 @@ tower-http = { version = "0.6", features = ["trace", "cors", "fs", "set-header"]
 # avoid pulling a second async runtime; only the tokio runtime is enabled.
 sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "sqlite", "postgres", "migrate", "macros"] }
 
+# Embeds the compiled Elm frontend into the server binary.
+# interpolate-folder-path lets the #[folder] attribute expand the
+# RUST_TEMPLATE_FRONTEND_DIR variable the server crate's build.rs exports;
+# mime-guess serves each embedded asset with its correct content type.
+rust-embed = { version = "8", features = ["mime-guess", "interpolate-folder-path"] }
+
 # Testing
 tempfile = "3"
 

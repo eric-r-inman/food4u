@@ -17,6 +17,9 @@ path = "src/main.rs"
 
 [dependencies]
 rust-template-foundation = { workspace = true, features = ["auth"] }
+# Embeds the compiled frontend; the folder is resolved by build.rs, which
+# exports it as `RUST_TEMPLATE_FRONTEND_DIR` for the `Frontend` derive.
+rust-embed = { workspace = true }
 food4u-lib = { workspace = true }
 clap = { workspace = true }
 tracing = { workspace = true }

@@ -1,5 +1,6 @@
 pub mod config;
 pub mod db;
+pub mod frontend;
 pub mod limits;
 pub mod model;
 pub mod provision;

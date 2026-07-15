@@ -7,6 +7,7 @@
 
 use food4u_server::config::Config;
 use food4u_server::db::Db;
+use food4u_server::frontend::Frontend;
 use food4u_server::routes;
 use food4u_server::seed::seed_if_empty;
 use food4u_server::web_base::AppState;
@@ -40,7 +41,10 @@ pub async fn main(
       db: db.clone(),
       user_id: LOCAL_USER.to_string(),
     })
-    .merge(routes::router());
+    .merge(routes::router())
+    // Serve the embedded Elm frontend as an SPA, falling back to
+    // `index.html` for client-side routes.
+    .spa::<Frontend>();
   server.listen().await?;
   Ok(ExitCode::SUCCESS)
 }

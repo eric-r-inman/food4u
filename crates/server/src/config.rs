@@ -62,12 +62,6 @@ pub struct Config {
     parse
   )]
   pub listen_address: ListenerAddress,
-  /// Path to compiled frontend static assets.
-  #[merge_config(
-    env,
-    default = "std::path::PathBuf::from(\"frontend/public\")"
-  )]
-  pub frontend_path: PathBuf,
   /// Database url for the relational store.  A `sqlite:<path>` url selects
   /// the local file backend, created on first run.
   #[merge_config(env, default = "\"sqlite:food4u.db\".to_string()")]
@@ -91,7 +85,6 @@ impl ServerApp for Config {
     vec![ServerRunConfig {
       app_name: Self::app_name().to_string(),
       listen_address: self.listen_address.clone(),
-      frontend_path: Some(self.frontend_path.clone()),
       base_url: self.base_url.clone(),
       oidc: self.oidc.clone(),
     }]
