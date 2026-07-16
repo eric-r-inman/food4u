@@ -6,9 +6,10 @@
 1. A Donate page, linked from the toolbar beside About: a placeholder — "Work in
    progress" — while a way to support the app is set up.
 2. Clear or export the whole week from the Meal Planner: a toolbar under its
-   title bar, matching the Shopping List's, adds an "Export to .txt" button that
-   downloads the plan day by day and a "Clear all" button that empties every
-   day's slots in one press.
+   title bar, matching the Shopping List's, adds an "Export to .txt" button and
+   a "Clear all" button that empties every day's slots in one press. The
+   exported file lays out the plan day by day, then prints the full text of
+   every recipe it draws on, so it is enough to cook the week from on its own.
 3. Pasted recipes now read far more of the wild's formats — checkbox and dash
    bullets, "(15-ounce)" can sizes, fused units like "28-ounce", price notes,
    "or"-alternatives, subsection labels, and "juice of 1 lemon" — and every
