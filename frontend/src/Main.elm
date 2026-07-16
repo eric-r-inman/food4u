@@ -1896,6 +1896,7 @@ viewToolbar me =
                 )
                 [ text "Longevity Pantry" ]
             , a [ class "about-link noprint", href "/about.html" ] [ text "About" ]
+            , a [ class "about-link noprint", href "/donate.html" ] [ text "Donate" ]
             , div [ class "toolbar-auth" ] (viewAuth me)
             ]
         ]
