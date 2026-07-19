@@ -52,6 +52,12 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex56', 'd1
 insert into foods (id, group_id, name, prep, hero, position) values ('ex57', 'd109', 'Whole-wheat couscous', 'P', false, 25);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex58', 'd109', 'Red rice', 'P', false, 26);
 insert into foods (id, group_id, name, prep, hero, position) values ('u2', 'd109', 'Whole-wheat pita', 'F', false, 27);
+insert into foods (id, group_id, name, prep, hero, position) values ('u709', 'd109', 'Rye flour', 'F', false, 28);
+insert into foods (id, group_id, name, prep, hero, position) values ('u710', 'd109', 'Whole-wheat flour', 'F', false, 29);
+insert into foods (id, group_id, name, prep, hero, position) values ('u711', 'd109', 'Buckwheat flour', 'F', false, 30);
+insert into foods (id, group_id, name, prep, hero, position) values ('u712', 'd109', 'Oat flour', 'F', false, 31);
+insert into foods (id, group_id, name, prep, hero, position) values ('u713', 'd109', 'Cornmeal', 'F', false, 32);
+insert into foods (id, group_id, name, prep, hero, position) values ('u714', 'd109', 'Oat milk', 'F', false, 33);
 insert into foods (id, group_id, name, prep, hero, position) values ('d110', 'd138', 'Berries', 'F', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d111', 'd138', 'Pomegranate', 'F', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d112', 'd138', 'Figs', 'F', false, 2);
@@ -117,6 +123,10 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ai1', 'd13
 insert into foods (id, group_id, name, prep, hero, position) values ('ai2', 'd138', 'Açaí', 'F', false, 62);
 insert into foods (id, group_id, name, prep, hero, position) values ('ai3', 'd138', 'Camu camu', 'P', false, 63);
 insert into foods (id, group_id, name, prep, hero, position) values ('u1', 'd138', 'Limes', 'F', false, 64);
+insert into foods (id, group_id, name, prep, hero, position) values ('u717', 'd138', 'Dried figs', 'F', false, 65);
+insert into foods (id, group_id, name, prep, hero, position) values ('u718', 'd138', 'Dried apricots', 'F', false, 66);
+insert into foods (id, group_id, name, prep, hero, position) values ('u719', 'd138', 'Dried cranberries', 'F', false, 67);
+insert into foods (id, group_id, name, prep, hero, position) values ('u720', 'd138', 'Applesauce', 'F', false, 68);
 insert into foods (id, group_id, name, prep, hero, position) values ('d139', 'd159', 'Turmeric', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d140', 'd159', 'Ginger', 'F', true, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d141', 'd159', 'Basil', 'F', false, 2);
@@ -164,6 +174,8 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex116', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex117', 'd159', 'Gochugaru', 'P', false, 44);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex118', 'd159', 'Chinese five-spice', 'P', false, 45);
 insert into foods (id, group_id, name, prep, hero, position) values ('ai4', 'd159', 'Cayenne', 'P', false, 46);
+insert into foods (id, group_id, name, prep, hero, position) values ('u721', 'd159', 'Ground ginger', 'F', false, 47);
+insert into foods (id, group_id, name, prep, hero, position) values ('u722', 'd159', 'Garlic powder', 'F', false, 48);
 insert into foods (id, group_id, name, prep, hero, position) values ('d160', 'd165', 'Green tea', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d161', 'd165', 'Matcha', 'P', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d162', 'd165', 'Sencha', 'P', false, 2);
@@ -248,6 +260,11 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex157', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex158', 'd203', 'Peanuts', 'P', false, 30);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex159', 'd203', 'Moth beans', 'P', false, 31);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex160', 'd203', 'Horse gram', 'P', false, 32);
+insert into foods (id, group_id, name, prep, hero, position) values ('u704', 'd203', 'Canned chickpeas', 'F', false, 33);
+insert into foods (id, group_id, name, prep, hero, position) values ('u705', 'd203', 'Canned black beans', 'F', false, 34);
+insert into foods (id, group_id, name, prep, hero, position) values ('u706', 'd203', 'Canned cannellini beans', 'F', false, 35);
+insert into foods (id, group_id, name, prep, hero, position) values ('u707', 'd203', 'Canned kidney beans', 'F', false, 36);
+insert into foods (id, group_id, name, prep, hero, position) values ('u708', 'd203', 'Chickpea flour', 'F', false, 37);
 insert into foods (id, group_id, name, prep, hero, position) values ('d204', 'd222', 'Walnuts', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d205', 'd222', 'Almonds', 'P', true, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d206', 'd222', 'Pistachios', 'P', false, 2);
@@ -274,6 +291,8 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex165', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex166', 'd222', 'Coconut', 'P', false, 23);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex167', 'd222', 'Lotus seeds', 'P', false, 24);
 insert into foods (id, group_id, name, prep, hero, position) values ('u5', 'd222', 'Coconut milk', 'F', false, 25);
+insert into foods (id, group_id, name, prep, hero, position) values ('u715', 'd222', 'Almond flour', 'F', false, 26);
+insert into foods (id, group_id, name, prep, hero, position) values ('u716', 'd222', 'Almond milk', 'F', false, 27);
 insert into foods (id, group_id, name, prep, hero, position) values ('d223', 'd231', 'Tofu', 'F', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d224', 'd231', 'Natto', 'F', true, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d225', 'd231', 'Miso', 'P', true, 2);
@@ -344,6 +363,7 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex194', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex195', 'd255', 'Tilapia', 'F', false, 25);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex196', 'd255', 'Barramundi', 'F', false, 26);
 insert into foods (id, group_id, name, prep, hero, position) values ('u7', 'd255', 'Rockfish', 'F', false, 27);
+insert into foods (id, group_id, name, prep, hero, position) values ('u723', 'd255', 'Canned mackerel', 'F', false, 28);
 insert into foods (id, group_id, name, prep, hero, position) values ('d256', 'd259', 'Eggs', 'F', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d257', 'd259', 'Chicken', 'F', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d258', 'd259', 'Turkey', 'F', false, 2);
@@ -540,6 +560,10 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex44', 'd9
 insert into foods (id, group_id, name, prep, hero, position) values ('ex45', 'd94', 'Cassava', 'F', false, 89);
 insert into foods (id, group_id, name, prep, hero, position) values ('u3', 'd94', 'Wakame', 'F', false, 90);
 insert into foods (id, group_id, name, prep, hero, position) values ('u4', 'd94', 'Nori', 'F', false, 91);
+insert into foods (id, group_id, name, prep, hero, position) values ('u700', 'd94', 'Canned tomatoes', 'F', false, 92);
+insert into foods (id, group_id, name, prep, hero, position) values ('u701', 'd94', 'Roasted red peppers', 'F', false, 93);
+insert into foods (id, group_id, name, prep, hero, position) values ('u702', 'd94', 'Artichoke hearts', 'F', false, 94);
+insert into foods (id, group_id, name, prep, hero, position) values ('u703', 'd94', 'Dried shiitake', 'F', false, 95);
 insert into user_food_state (user_id, food_id, in_stock, recipe_id) values ('local', 'd179', true, NULL);
 insert into user_food_state (user_id, food_id, in_stock, recipe_id) values ('local', 'd180', true, NULL);
 insert into user_food_state (user_id, food_id, in_stock, recipe_id) values ('local', 'd2', true, NULL);
