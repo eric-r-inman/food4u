@@ -58,6 +58,9 @@
   --move-here-hover-bg: oklch(0.52 0.17 145);
   --move-here-fg: #fff;
   --staples-option-hover-bg: oklch(0.95 0.02 265);
+  --chip-x-fg: oklch(0.5 0.16 25);
+  --chip-x-bg: oklch(0.99 0.008 25 / 0.95);
+  --chip-x-border: oklch(0.85 0.06 25);
 
   /* The recipe header's cart button: a green pill when the recipe still has
      something to buy, a muted grey one when everything is already stocked. */
@@ -1600,10 +1603,31 @@ button {
 }
 
 /* The per-chip remove control is hidden until the chip is hovered, so a
-   dense list of foods stays readable.  display:none (not visibility)
-   so the hidden control reserves no space to the right of the text. */
+   dense list of foods stays readable.  It overlays the chip's right edge
+   as a small pill instead of sitting in the flow: taking layout width on
+   hover used to widen the chip, and a chip flush against the pane edge
+   would wrap to the next row, out from under the cursor, making its ✕
+   unclickable. */
+.chip {
+  position: relative;
+}
+
 .chip-x {
   display: none;
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mono-font);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+  padding: 1px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid var(--chip-x-border);
+  background: var(--chip-x-bg);
+  color: var(--chip-x-fg);
 }
 
 .chip:hover .chip-x {

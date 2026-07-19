@@ -477,23 +477,10 @@ categoryDeleteControl confirming requestMsg confirmMsg cancelMsg =
 removeButton : Msg -> Html Msg
 removeButton msg =
     button
-        (class "chip-x"
-            :: type_ "button"
-            :: stopPropagationOn "click" (Decode.succeed ( msg, True ))
-            :: styles
-                [ ( "font-family", "'IBM Plex Mono',monospace" )
-                , ( "font-size", "10px" )
-                , ( "font-weight", "700" )
-                , ( "padding", "0 3px" )
-                , ( "border-radius", "3px" )
-                , ( "cursor", "pointer" )
-                , ( "border", "none" )
-                , ( "background", "transparent" )
-                , ( "color", "oklch(0.55 0.12 25)" )
-                , ( "line-height", "1.3" )
-                , ( "margin-left", "1px" )
-                ]
-        )
+        [ class "chip-x"
+        , type_ "button"
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
         [ text "✕" ]
 
 
