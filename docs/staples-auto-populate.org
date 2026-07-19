@@ -40,14 +40,22 @@ exact spellings for the same reason.
 1. /Staples, not groceries./ Each list is the pantry backbone a follower of that
    diet reaches for weekly — not produce variety, which the pyramid itself
    teaches.
-2. /Every name is a catalog name./ A tracker chip only gets its tier tint, stock
+2. /Keeps, or it is not a staple./ Staples favour dry goods, jars, cans, the
+   freezer, and the spice cupboard.  Leafy greens are excluded outright — they
+   are weekly fresh shopping, not stock — and vegetables make the list only when
+   they keep for weeks (alliums, carrots, cabbage, winter roots).  Perishable
+   forms give way to pantry forms: tomato paste over fresh tomatoes, canned
+   salmon over fresh.  Berries stay because the freezer stocks them as well as
+   the produce aisle does.
+3. /Every name is a catalog name./ A tracker chip only gets its tier tint, stock
    tracking, and shopping-list identity when its name matches a Longevity Foods
    entry exactly, so every staple is spelled precisely as the bundled catalog
    spells it ("Banana", "Sweet potato", "Extra-virgin olive oil").  A
-   verification pass checks every staple against the seed.
-3. /Sixteen per diet./ Enough to be a real starter pantry, small enough to read
+   verification pass checks every staple against the seed, and that none sits in
+   the catalog's leafy-greens category.
+4. /Sixteen per diet./ Enough to be a real starter pantry, small enough to read
    at a glance and prune by hand.
-4. /Distinctive over generic./ Where diets overlap (they all like greens), each
+5. /Distinctive over generic./ Where diets overlap (they all like beans), each
    list leans into what distinguishes the diet — corn tortillas and miso for
    Blue Zone, berries and poultry for MIND, low-fat dairy and potassium fruit
    for DASH, the spice rack for Anti-Inflammatory.
@@ -56,53 +64,57 @@ exact spellings for the same reason.
 
 *** Mediterranean
 
-Olive oil as the principal fat; legumes and intact grains as the base; tomatoes,
-alliums, and greens as the daily vegetables; nuts, fermented dairy, and small
-oily fish as the signature proteins.
+Olive oil as the principal fat; legumes and intact grains as the base; the
+jarred and canned Mediterranean larder (tomato paste, olives, capers) with
+long-keeping alliums; nuts, fermented dairy, and small oily fish as the
+signature proteins.
 
-Extra-virgin olive oil, Chickpeas, Lentils, Farro, Whole-wheat pasta, Tomatoes,
-Garlic, Onions, Spinach, Lemons, Olives, Almonds, Walnuts, Greek yogurt, Feta,
-Canned sardines.
+Extra-virgin olive oil, Chickpeas, Lentils, Farro, Whole-wheat pasta, Tomato
+paste, Garlic, Onions, Capers, Lemons, Olives, Almonds, Walnuts, Greek yogurt,
+Feta, Canned sardines.
 
 *** Blue Zone
 
 The common denominators of the five regions: beans at every meal, slow
-carbohydrates, garden vegetables — plus each region's signature (Okinawa's sweet
-potato, tofu, and green tea; Nicoya's corn tortillas; Sardinia and Ikaria's
-olive oil; Loma Linda's nuts and oats).
+carbohydrates, long-keeping garden vegetables — plus each region's signature
+(Okinawa's sweet potato, tofu, edamame, and green tea; Nicoya's corn tortillas;
+Sardinia and Ikaria's olive oil; Loma Linda's nuts and oats).
 
 Black beans, Chickpeas, Fava beans, Brown rice, Oats, Whole-grain corn
-tortillas, Sweet potato, Cabbage, Kale, Garlic, Onions, Tofu, Miso, Walnuts,
+tortillas, Sweet potato, Cabbage, Edamame, Garlic, Onions, Tofu, Miso, Walnuts,
 Extra-virgin olive oil, Green tea.
 
 *** MIND
 
-The MIND trial scores ten food groups; the staples map to them directly: leafy
-greens daily (kale, spinach, romaine), berries specifically (blueberries and
-strawberries are the studied ones), whole grains, beans, nuts, olive oil, fish,
-and poultry.
+The MIND trial scores ten food groups; the shelf-stable ones map to staples
+directly: berries (blueberries and strawberries are the studied ones, stocked
+frozen), whole grains, beans, nuts, olive oil, fish from the can, and poultry
+from the freezer.  Its daily leafy greens are deliberately absent — that is
+fresh shopping, not stock.
 
-Blueberries, Strawberries, Kale, Spinach, Romaine, Oats, Quinoa, Whole-grain
-bread, Brown rice, Black beans, Lentils, Walnuts, Almonds, Extra-virgin olive
-oil, Salmon, Chicken.
+Blueberries, Strawberries, Chickpeas, Peanut butter, Whole-wheat pasta, Oats,
+Quinoa, Whole-grain bread, Brown rice, Black beans, Lentils, Walnuts, Almonds,
+Extra-virgin olive oil, Canned salmon, Chicken.
 
 *** DASH
 
-Built around potassium, magnesium, calcium, and fibre: fruit and vegetables in
-volume, whole grains, legumes, low-fat dairy, lean protein, unsalted nuts.
+Built around potassium, magnesium, calcium, and fibre: fruit and long-keeping
+vegetables in volume, whole grains, legumes, low-fat dairy, lean protein,
+unsalted nuts.
 
 Oats, Brown rice, Whole-grain bread, Black beans, Kidney beans, Lentils, Banana,
-Oranges, Apples, Spinach, Broccoli, Carrots, Sweet potato, Greek yogurt,
-Almonds, Chicken.
+Oranges, Apples, Onions, Broccoli, Carrots, Sweet potato, Greek yogurt, Almonds,
+Chicken.
 
 *** Anti-Inflammatory
 
-The spice rack does the heavy lifting (turmeric, ginger, cinnamon, garlic), with
-omega-3 fish, polyphenol berries, crucifers and greens, omega-3 seeds, and green
-tea rounding it out.
+The spice rack does the heavy lifting (turmeric, ginger, cinnamon, garlic, and
+the black pepper that unlocks turmeric's curcumin), with omega-3 fish, frozen
+polyphenol berries, freezer-friendly crucifers, storage alliums, omega-3 seeds,
+and green tea rounding it out.
 
-Turmeric, Ginger, Cinnamon, Garlic, Extra-virgin olive oil, Salmon, Canned
-sardines, Blueberries, Tart cherries, Kale, Spinach, Broccoli, Walnuts,
+Turmeric, Ginger, Cinnamon, Garlic, Black pepper, Extra-virgin olive oil,
+Salmon, Canned sardines, Blueberries, Tart cherries, Onions, Broccoli, Walnuts,
 Flaxseed, Chia seeds, Green tea.
 
 * Behaviour decisions
