@@ -53,9 +53,17 @@ exact spellings for the same reason.
    spells it ("Banana", "Sweet potato", "Extra-virgin olive oil").  A
    verification pass checks every staple against the seed, and that none sits in
    the catalog's leafy-greens category.
-4. /Sixteen per diet./ Enough to be a real starter pantry, small enough to read
-   at a glance and prune by hand.
-5. /Distinctive over generic./ Where diets overlap (they all like beans), each
+4. /The recipes are the referee./ Each list is checked against the bundled
+   recipe collection: for every diet tag, the ingredients its recipes reach for
+   most often earn a place, in their shelf-stable form where one exists (canned
+   tomatoes for the tomatoes every Mediterranean recipe opens with, bottled
+   lemon juice for the constant squeeze).  The spice rack gets full
+   representation this way — oregano, basil, mint, and parsley for
+   Mediterranean; bay leaves for Blue Zone; thyme for MIND; cumin and cinnamon
+   for DASH; garam masala and smoked paprika for Anti-Inflammatory.
+5. /Sized by evidence, roughly two dozen per diet./ Big enough to cook the
+   collection's recipes from, small enough to read and prune by hand.
+6. /Distinctive over generic./ Where diets overlap (they all like beans), each
    list leans into what distinguishes the diet — corn tortillas and miso for
    Blue Zone, berries and poultry for MIND, low-fat dairy and potassium fruit
    for DASH, the spice rack for Anti-Inflammatory.
@@ -65,24 +73,31 @@ exact spellings for the same reason.
 *** Mediterranean
 
 Olive oil as the principal fat; legumes and intact grains as the base; the
-jarred and canned Mediterranean larder (tomato paste, olives, capers) with
-long-keeping alliums; nuts, fermented dairy, and small oily fish as the
-signature proteins.
+jarred and canned Mediterranean larder (tomatoes two ways, olives, capers, three
+vinegars) with long-keeping alliums; nuts, tahini, fermented dairy, and small
+oily fish as the signature proteins; and the herbs its recipes lean on —
+oregano, basil, mint, parsley — from the spice rack.
 
 Extra-virgin olive oil, Chickpeas, Lentils, Farro, Whole-wheat pasta, Tomato
-paste, Garlic, Onions, Capers, Lemons, Olives, Almonds, Walnuts, Greek yogurt,
-Feta, Canned sardines.
+paste, Canned tomatoes, Garlic, Onions, Capers, Lemons, Lemon juice, Olives,
+Almonds, Walnuts, Pine nuts, Pistachios, Tahini, Greek yogurt, Feta, Canned
+sardines, Red wine vinegar, Balsamic vinegar, Apple cider vinegar, Honey,
+Oregano, Basil, Mint, Parsley, Cumin, Smoked paprika.
 
 *** Blue Zone
 
 The common denominators of the five regions: beans at every meal, slow
 carbohydrates, long-keeping garden vegetables — plus each region's signature
 (Okinawa's sweet potato, tofu, edamame, and green tea; Nicoya's corn tortillas;
-Sardinia and Ikaria's olive oil; Loma Linda's nuts and oats).
+Sardinia and Ikaria's olive oil; Loma Linda's nuts and oats).  The recipe check
+surfaced the East Asian pantry the collection actually cooks from — tamari,
+sesame two ways, rice vinegar, ginger, kimchi, and the dried seaweeds.
 
 Black beans, Chickpeas, Fava beans, Brown rice, Oats, Whole-grain corn
-tortillas, Sweet potato, Cabbage, Edamame, Garlic, Onions, Tofu, Miso, Walnuts,
-Extra-virgin olive oil, Green tea.
+tortillas, Sweet potato, Cabbage, Carrots, Edamame, Garlic, Onions, Ginger,
+Tofu, Miso, Tamari / soy sauce, Toasted sesame oil, Sesame seeds, Rice vinegar,
+Kimchi, Nori, Wakame, Canned tomatoes, Honey, Bay leaves, Walnuts, Extra-virgin
+olive oil, Green tea.
 
 *** MIND
 
@@ -90,32 +105,42 @@ The MIND trial scores ten food groups; the shelf-stable ones map to staples
 directly: berries (blueberries and strawberries are the studied ones, stocked
 frozen), whole grains, beans, nuts, olive oil, fish from the can, and poultry
 from the freezer.  Its daily leafy greens are deliberately absent — that is
-fresh shopping, not stock.
+fresh shopping, not stock.  The recipe check added the breakfast-and-broth
+pantry the collection's MIND dishes run on: cinnamon, dates, honey, maple syrup,
+soy milk, vegetable broth, thyme, and dried shiitake.
 
 Blueberries, Strawberries, Chickpeas, Peanut butter, Whole-wheat pasta, Oats,
-Quinoa, Whole-grain bread, Brown rice, Black beans, Lentils, Walnuts, Almonds,
-Extra-virgin olive oil, Canned salmon, Chicken.
+Quinoa, Farro, Whole-grain bread, Brown rice, Black beans, Lentils, Walnuts,
+Almonds, Extra-virgin olive oil, Canned salmon, Chicken, Cinnamon, Thyme, Dates,
+Honey, Maple syrup, Soy milk, Vegetable broth, Dried shiitake.
 
 *** DASH
 
 Built around potassium, magnesium, calcium, and fibre: fruit and long-keeping
 vegetables in volume, whole grains, legumes, low-fat dairy, lean protein,
-unsalted nuts.
+unsalted nuts.  The recipe check added the quiet workhorses of the DASH dishes:
+garlic, limes, quinoa, canned tomatoes, pistachios, honey, and the
+cumin-and-cinnamon end of the spice rack.
 
-Oats, Brown rice, Whole-grain bread, Black beans, Kidney beans, Lentils, Banana,
-Oranges, Apples, Onions, Broccoli, Carrots, Sweet potato, Greek yogurt, Almonds,
-Chicken.
+Oats, Brown rice, Quinoa, Whole-grain bread, Black beans, Kidney beans, Lentils,
+Banana, Oranges, Apples, Limes, Garlic, Onions, Broccoli, Carrots, Sweet potato,
+Canned tomatoes, Greek yogurt, Almonds, Pistachios, Chicken, Honey, Cinnamon,
+Cumin.
 
 *** Anti-Inflammatory
 
 The spice rack does the heavy lifting (turmeric, ginger, cinnamon, garlic, and
-the black pepper that unlocks turmeric's curcumin), with omega-3 fish, frozen
-polyphenol berries, freezer-friendly crucifers, storage alliums, omega-3 seeds,
-and green tea rounding it out.
+the black pepper that unlocks turmeric's curcumin — joined by the cumin, garam
+masala, and smoked paprika its recipes actually season with), with omega-3 fish,
+frozen polyphenol berries, freezer-friendly crucifers, storage alliums and
+carrots, omega-3 seeds, and green tea rounding it out.  The recipe check also
+added the curry base the collection's anti-inflammatory dishes are built on:
+coconut milk, red lentils, brown rice, canned tomatoes, and bottled lemon juice.
 
-Turmeric, Ginger, Cinnamon, Garlic, Black pepper, Extra-virgin olive oil,
-Salmon, Canned sardines, Blueberries, Tart cherries, Onions, Broccoli, Walnuts,
-Flaxseed, Chia seeds, Green tea.
+Turmeric, Ginger, Cinnamon, Cumin, Garam masala, Smoked paprika, Garlic, Black
+pepper, Extra-virgin olive oil, Coconut milk, Lemon juice, Salmon, Canned
+sardines, Blueberries, Tart cherries, Onions, Carrots, Broccoli, Brown rice, Red
+lentils, Canned tomatoes, Walnuts, Flaxseed, Chia seeds, Green tea.
 
 * Behaviour decisions
 

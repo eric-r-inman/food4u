@@ -36,14 +36,14 @@ suite =
             \_ ->
                 missingStaples [] "MIND"
                     |> List.length
-                    |> Expect.equal 16
+                    |> Expect.equal 25
         , test "a staple already present is skipped, case-insensitively" <|
             \_ ->
                 missingStaples [ "extra-virgin olive oil", "WALNUTS" ] "Mediterranean"
                     |> Expect.all
                         [ \names -> List.member "Extra-virgin olive oil" names |> Expect.equal False
                         , \names -> List.member "Walnuts" names |> Expect.equal False
-                        , \names -> List.length names |> Expect.equal 14
+                        , \names -> List.length names |> Expect.equal 29
                         ]
         , test "re-running a diet adds nothing" <|
             \_ ->
