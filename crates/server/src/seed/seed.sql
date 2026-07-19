@@ -58,6 +58,7 @@ insert into foods (id, group_id, name, prep, hero, position) values ('u711', 'd1
 insert into foods (id, group_id, name, prep, hero, position) values ('u712', 'd109', 'Oat flour', 'F', false, 31);
 insert into foods (id, group_id, name, prep, hero, position) values ('u713', 'd109', 'Cornmeal', 'F', false, 32);
 insert into foods (id, group_id, name, prep, hero, position) values ('u714', 'd109', 'Oat milk', 'F', false, 33);
+insert into foods (id, group_id, name, prep, hero, position) values ('u726', 'd109', 'Brown rice flour', 'F', false, 34);
 insert into foods (id, group_id, name, prep, hero, position) values ('d110', 'd138', 'Berries', 'F', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d111', 'd138', 'Pomegranate', 'F', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d112', 'd138', 'Figs', 'F', false, 2);
@@ -364,6 +365,8 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex195', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex196', 'd255', 'Barramundi', 'F', false, 26);
 insert into foods (id, group_id, name, prep, hero, position) values ('u7', 'd255', 'Rockfish', 'F', false, 27);
 insert into foods (id, group_id, name, prep, hero, position) values ('u723', 'd255', 'Canned mackerel', 'F', false, 28);
+insert into foods (id, group_id, name, prep, hero, position) values ('u724', 'd255', 'Smoked salmon', 'F', false, 29);
+insert into foods (id, group_id, name, prep, hero, position) values ('u725', 'd255', 'Smoked mackerel', 'F', false, 30);
 insert into foods (id, group_id, name, prep, hero, position) values ('d256', 'd259', 'Eggs', 'F', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d257', 'd259', 'Chicken', 'F', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d258', 'd259', 'Turkey', 'F', false, 2);
