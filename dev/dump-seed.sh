@@ -30,8 +30,14 @@ emit "select 'insert into tiers (id, no, name, freq, width, rail, tint, line, po
 emit "select 'insert into food_groups (id, tier_id, label, position) values ('||quote(id)||', '||quote(tier_id)||', '||quote(label)||', '||position||');' from food_groups order by tier_id, position;"
 emit "select 'insert into foods (id, group_id, name, prep, hero, position) values ('||quote(id)||', '||quote(group_id)||', '||quote(name)||', '||quote(prep)||', '||(case when hero then 'true' else 'false' end)||', '||position||');' from foods order by group_id, position;"
 emit "select 'insert into user_food_state (user_id, food_id, in_stock, recipe_id) values ('||quote(user_id)||', '||quote(food_id)||', '||(case when in_stock then 'true' else 'false' end)||', '||quote(recipe_id)||');' from user_food_state order by user_id, food_id;"
-emit "select 'insert into storage_locations (id, user_id, name, meta, rail, line, note, zone, position) values ('||quote(id)||', '||quote(user_id)||', '||quote(name)||', '||quote(meta)||', '||quote(rail)||', '||quote(line)||', '||quote(note)||', '||quote(zone)||', '||position||');' from storage_locations order by user_id, position;"
-emit "select 'insert into storage_items (id, location_id, name, needs, position) values ('||quote(id)||', '||quote(location_id)||', '||quote(name)||', '||(case when needs then 'true' else 'false' end)||', '||position||');' from storage_items order by location_id, position;"
+# The Staples Tracker and the Shopping List's default categories are
+# minted client-side for every account, so the seed-editing session always
+# contains them; baking them into the seed would provision them twice and
+# freeze what the frontend intends to own.  The dump leaves them (and any
+# items inside them) out.
+minted="(name = 'Staples Tracker' or zone = 'shopping')"
+emit "select 'insert into storage_locations (id, user_id, name, meta, rail, line, note, zone, position) values ('||quote(id)||', '||quote(user_id)||', '||quote(name)||', '||quote(meta)||', '||quote(rail)||', '||quote(line)||', '||quote(note)||', '||quote(zone)||', '||position||');' from storage_locations where not $minted order by user_id, position;"
+emit "select 'insert into storage_items (id, location_id, name, needs, position) values ('||quote(id)||', '||quote(location_id)||', '||quote(name)||', '||(case when needs then 'true' else 'false' end)||', '||position||');' from storage_items where location_id not in (select id from storage_locations where $minted) order by location_id, position;"
 emit "select 'insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('||quote(id)||', '||quote(user_id)||', '||quote(name)||', '||quote(category)||', '||quote(instructions)||', '||(case when bookmarked then 'true' else 'false' end)||', '||position||');' from recipes order by user_id, position;"
 emit "select 'insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('||quote(id)||', '||quote(recipe_id)||', '||quote(name)||', '||(case when needs then 'true' else 'false' end)||', '||position||');' from recipe_ingredients order by recipe_id, position;"
 emit "select 'insert into recipe_tags (recipe_id, tag, position) values ('||quote(recipe_id)||', '||quote(tag)||', '||position||');' from recipe_tags order by recipe_id, position;"
