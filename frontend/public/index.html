@@ -27,6 +27,10 @@
       // chip, whose ghost is the chip itself.  When a drag starts on the
       // grip, promote the drag image to the enclosing card, anchored where
       // the pointer sits over it.
+      // The ✕ is hidden for the duration of a badge drag; this holds it
+      // so dragend can restore exactly the control that dragstart hid.
+      var draggedChipX = null;
+
       document.addEventListener(
         "dragstart",
         function (event) {
@@ -43,7 +47,31 @@
                 event.clientY - rect.top,
               );
             }
+            // A dragged badge is hovered, so its remove control is showing
+            // — and the browser snapshots the drag ghost right after this
+            // event, which would bake the ✕ into it.  Hiding the control
+            // synchronously here, inline so no stylesheet rule can reveal
+            // it, keeps the ghost clean; dragend below restores it.
+            var chip = event.target.closest && event.target.closest(".chip");
+            var chipX = chip && chip.querySelector(".chip-x");
+            if (chipX) {
+              chipX.style.display = "none";
+              draggedChipX = chipX;
+            }
           } catch (_) {}
+        },
+        true,
+      );
+
+      // Restore the hidden control when the drag ends, dropped or
+      // abandoned alike — dragend fires on the source either way.
+      document.addEventListener(
+        "dragend",
+        function () {
+          if (draggedChipX) {
+            draggedChipX.style.display = "";
+            draggedChipX = null;
+          }
         },
         true,
       );
