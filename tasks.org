@@ -143,6 +143,17 @@ provision their default panes from the seeded local user rather than a second
 source.  The =just seed-edit= / =just seed-save= workflow dumps that database
 back to the SQL fixture with =dev/dump-seed.sh=.
 
+* DONE choose the diets and staples behind the Staples Tracker's Auto button
+:PROPERTIES:
+:PLAN: docs/staples-auto-populate.org
+:END:
+
+/Done./ The Auto button offers the five diets the recipe collection is tagged
+with, and each diet's sixteen staples are spelled exactly as the bundled catalog
+spells them so every chip stays linked to the pyramid.  The plan document
+records the diets considered and rejected, the ground rules for the staple
+lists, and the reasoning behind each list.
+
 * DONE test the recipe parser against real-world formats
 :PROPERTIES:
 :PLAN: docs/recipe-parser-test-plan.org

@@ -13,9 +13,10 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Keyed as Keyed
 import Html.Lazy as Lazy
-import Model exposing (Indices, Model, PaneEdit, Selection, isOpen)
+import Model exposing (Indices, Model, PaneEdit, Selection, isOpen, staplesMenuKey)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
+import Staples
 import Style exposing (cardStyle, panePalette, styles)
 import Types exposing (AddTarget(..))
 import Ui exposing (collapsedColumnBar, columnDragAttrs, columnTitleBar, dropZone, editingPaneDomId, moveHereButton, paneColorButton, paneColorSwatch, paneDeleteButton, paneDeleteConfirm, paneEditButton, paneMetaInput, paneNameInput, stapleCartButton, viewAdder, viewItem, viewSearchField)
@@ -127,12 +128,41 @@ viewStaplesTracker toggled search selectMode selected derived card =
 
                 else
                     [ div [ class "staples-tracker-body" ]
-                        [ p [ class "staples-note" ] [ text "Add staple foods here. Click the 🛒 button to add missing staples (not in your Kitchen, colored red) to your shopping list." ]
+                        [ viewAutoStaples (isOpen False staplesMenuKey toggled)
+                        , p [ class "staples-note" ] [ text "Add staple foods here. Click the 🛒 button to add missing staples (not in your Kitchen, colored red) to your shopping list." ]
                         , Keyed.node "div"
                             [ class "staples-items" ]
                             (List.map (\item -> ( item.id, viewItem selectMode selected (missing item) search derived.nameTierRail loc item )) sorted)
                         ]
                     ]
+               )
+        )
+
+
+{-| The Auto row under the tracker's title bar: a button opening a menu of
+longevity diets, each of which fills the tracker with that diet's
+essential staples (skipping any already present).
+-}
+viewAutoStaples : Bool -> Html Msg
+viewAutoStaples menuOpen =
+    div [ class "staples-auto" ]
+        (button
+            [ type_ "button", class "staples-auto-btn", onClick (ToggleCategory staplesMenuKey) ]
+            [ text "Auto" ]
+            :: (if menuOpen then
+                    [ div [ class "staples-auto-menu" ]
+                        (List.map
+                            (\diet ->
+                                button
+                                    [ type_ "button", class "staples-auto-option", onClick (AutoPopulateStaples diet.name) ]
+                                    [ text diet.name ]
+                            )
+                            Staples.diets
+                        )
+                    ]
+
+                else
+                    []
                )
         )
 

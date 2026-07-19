@@ -1,0 +1,117 @@
+#+title:    Auto-populating the Staples Tracker
+#+language: en
+
+* What this documents
+
+The Staples Tracker's "Auto" button offers a menu of longevity diets and fills
+the tracker with that diet's essential staples.  This records how the diets and
+their staples were chosen, so the lists can be revisited with the reasoning in
+hand rather than reverse-engineered from code.
+
+* Choosing the diets
+
+** The shortlist and the verdicts
+
+| Diet              | Verdict  | Reasoning                                                                                     |
+|-------------------+----------+-----------------------------------------------------------------------------------------------|
+| Mediterranean     | Included | The most-studied longevity pattern (PREDIMED and decades of cohort data); already an app tag. |
+| Blue Zone         | Included | The explicit longevity brand — the shared pattern of the five long-lived regions.             |
+| MIND              | Included | Mediterranean-DASH hybrid built for brain aging, with named food-group targets.               |
+| DASH              | Included | Strong outcome evidence via blood pressure; a pillar of the app's recipe collection.          |
+| Anti-Inflammatory | Included | Chronic inflammation is the through-line of aging; the app tags recipes with it already.      |
+| Okinawan          | Folded   | One of the five Blue Zones; its staples (sweet potato, tofu, green tea) enter through there.  |
+| Nordic            | Omitted  | Genuinely healthful, but its evidence base and food list largely restate Mediterranean.       |
+| Ornish / vegan    | Omitted  | A therapeutic reversal protocol more than a longevity pattern; poor fit for a staples list.   |
+| Keto / paleo      | Omitted  | Popular, but without longevity evidence; contradicts the pyramid's legume-and-grain base.     |
+
+** The deciding constraint: consistency with the rest of the app
+
+The recipe collection is already tagged =Mediterranean=, =Blue Zone=, =MIND=,
+=DASH=, and =Anti-Inflammatory=, and the About page names the same five
+approaches.  Offering exactly these five means a user can auto-stock staples for
+a diet and then filter recipes by the same name — the feature teaches the app's
+own vocabulary instead of introducing a parallel one.  The menu uses the tags'
+exact spellings for the same reason.
+
+* Choosing the staples
+
+** Ground rules
+
+1. /Staples, not groceries./ Each list is the pantry backbone a follower of that
+   diet reaches for weekly — not produce variety, which the pyramid itself
+   teaches.
+2. /Every name is a catalog name./ A tracker chip only gets its tier tint, stock
+   tracking, and shopping-list identity when its name matches a Longevity Foods
+   entry exactly, so every staple is spelled precisely as the bundled catalog
+   spells it ("Banana", "Sweet potato", "Extra-virgin olive oil").  A
+   verification pass checks every staple against the seed.
+3. /Sixteen per diet./ Enough to be a real starter pantry, small enough to read
+   at a glance and prune by hand.
+4. /Distinctive over generic./ Where diets overlap (they all like greens), each
+   list leans into what distinguishes the diet — corn tortillas and miso for
+   Blue Zone, berries and poultry for MIND, low-fat dairy and potassium fruit
+   for DASH, the spice rack for Anti-Inflammatory.
+
+** The lists and their reasoning
+
+*** Mediterranean
+
+Olive oil as the principal fat; legumes and intact grains as the base; tomatoes,
+alliums, and greens as the daily vegetables; nuts, fermented dairy, and small
+oily fish as the signature proteins.
+
+Extra-virgin olive oil, Chickpeas, Lentils, Farro, Whole-wheat pasta, Tomatoes,
+Garlic, Onions, Spinach, Lemons, Olives, Almonds, Walnuts, Greek yogurt, Feta,
+Canned sardines.
+
+*** Blue Zone
+
+The common denominators of the five regions: beans at every meal, slow
+carbohydrates, garden vegetables — plus each region's signature (Okinawa's sweet
+potato, tofu, and green tea; Nicoya's corn tortillas; Sardinia and Ikaria's
+olive oil; Loma Linda's nuts and oats).
+
+Black beans, Chickpeas, Fava beans, Brown rice, Oats, Whole-grain corn
+tortillas, Sweet potato, Cabbage, Kale, Garlic, Onions, Tofu, Miso, Walnuts,
+Extra-virgin olive oil, Green tea.
+
+*** MIND
+
+The MIND trial scores ten food groups; the staples map to them directly: leafy
+greens daily (kale, spinach, romaine), berries specifically (blueberries and
+strawberries are the studied ones), whole grains, beans, nuts, olive oil, fish,
+and poultry.
+
+Blueberries, Strawberries, Kale, Spinach, Romaine, Oats, Quinoa, Whole-grain
+bread, Brown rice, Black beans, Lentils, Walnuts, Almonds, Extra-virgin olive
+oil, Salmon, Chicken.
+
+*** DASH
+
+Built around potassium, magnesium, calcium, and fibre: fruit and vegetables in
+volume, whole grains, legumes, low-fat dairy, lean protein, unsalted nuts.
+
+Oats, Brown rice, Whole-grain bread, Black beans, Kidney beans, Lentils, Banana,
+Oranges, Apples, Spinach, Broccoli, Carrots, Sweet potato, Greek yogurt,
+Almonds, Chicken.
+
+*** Anti-Inflammatory
+
+The spice rack does the heavy lifting (turmeric, ginger, cinnamon, garlic), with
+omega-3 fish, polyphenol berries, crucifers and greens, omega-3 seeds, and green
+tea rounding it out.
+
+Turmeric, Ginger, Cinnamon, Garlic, Extra-virgin olive oil, Salmon, Canned
+sardines, Blueberries, Tart cherries, Kale, Spinach, Broccoli, Walnuts,
+Flaxseed, Chia seeds, Green tea.
+
+* Behaviour decisions
+
+- /No duplicates./ A staple already in the tracker (case-insensitively) is
+  skipped, so re-running a diet — or stacking two overlapping diets — never
+  doubles a chip.  Stacking is deliberate: the lists are additive, and a user
+  following "Mediterranean plus MIND" gets the union.
+- /Nothing is removed./ Auto-populate only adds; hand-curated staples are never
+  touched.  Clearing is what chip ✕ buttons are for.
+- /The menu lives under the pane's title bar/ and only shows while the tracker
+  is expanded, like the rest of the pane's contents.

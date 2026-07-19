@@ -1,4 +1,4 @@
-module Model exposing (AiState, Drag, Indices, Model, PaneEdit, Selection, derive, emptyDerived, initialAi, isOpen, noSelection)
+module Model exposing (AiState, Drag, Indices, Model, PaneEdit, Selection, derive, emptyDerived, initialAi, isOpen, noSelection, staplesMenuKey)
 
 {-| The application model, the in-progress drag, and the indices cached on
 the model. The indices are recomputed once whenever the data changes (see
@@ -211,3 +211,13 @@ isOpen defaultOpen key toggled =
 
     else
         defaultOpen
+
+
+{-| The collapse key of the Staples Tracker's Auto diet menu. The menu's
+open state rides the same toggled set as every other collapsible, so it
+flows through the kitchen view's lazy inputs without a model field of its
+own.
+-}
+staplesMenuKey : String
+staplesMenuKey =
+    "staples:auto-menu"

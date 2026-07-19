@@ -37,7 +37,7 @@ import Ids exposing (nextId, nextSeq)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import KitchenView exposing (viewKitchenColumn)
-import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen, noSelection)
+import Model exposing (Drag, Model, derive, emptyDerived, initialAi, isOpen, noSelection, staplesMenuKey)
 import Msg exposing (Msg(..))
 import Planner exposing (plannerText)
 import PlannerView exposing (viewPlannerColumn)
@@ -48,6 +48,7 @@ import RecipeParser exposing (parsePastedRecipe)
 import RecipesView exposing (recipeCardDomId, recipeCategories, recipeNameLimit, recipesBodyId, viewRecipes)
 import Set exposing (Set)
 import Shopping exposing (cartCardId, shoppingListText)
+import Staples exposing (missingStaples)
 import Style exposing (styles)
 import Task
 import Types exposing (AddTarget(..), Me, RecipeFilter(..))
@@ -363,6 +364,9 @@ update msg model =
 
         AddStaplesToCart ->
             addStaplesToCart model
+
+        AutoPopulateStaples dietName ->
+            autoPopulateStaples dietName model
 
         OpenRecipe rid ->
             case Maybe.andThen (\data -> List.head (List.filter (\r -> r.id == rid) data.recipes)) model.data of
@@ -1134,6 +1138,38 @@ addStaplesToCart model =
 
         Nothing ->
             ( model, Cmd.none )
+
+
+{-| Fill the Staples Tracker with a diet's essential staples, skipping any
+already present, and close the diet menu. Only adds — hand-curated
+staples are never touched, and stacking overlapping diets yields their
+union.
+-}
+autoPopulateStaples : String -> Model -> ( Model, Cmd Msg )
+autoPopulateStaples dietName model =
+    withData model
+        (\data ->
+            let
+                existingNames =
+                    data.staples
+                        |> List.filter (\c -> c.name == staplesTrackerName)
+                        |> List.concatMap .items
+                        |> List.map .name
+
+                ( newData, newSeq ) =
+                    List.foldl
+                        (\name ( d, s ) ->
+                            ( pushItemTo (StoragePane staplesTrackerId) (Item (nextId s) name False) d
+                            , s + 1
+                            )
+                        )
+                        ( data, model.seq )
+                        (missingStaples existingNames dietName)
+            in
+            persistData
+                { model | seq = newSeq, toggled = Set.remove staplesMenuKey model.toggled }
+                newData
+        )
 
 
 {-| The Shopping List categories a model starts with, in aisle-ish order,

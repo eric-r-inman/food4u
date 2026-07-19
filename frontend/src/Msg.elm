@@ -58,6 +58,7 @@ type Msg
     | PasteInput String
     | CommitPaste String
     | CancelPaste
+    | AutoPopulateStaples String
     | ExportShoppingList
     | ExportRecipe String
     | ClearCart
