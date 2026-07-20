@@ -141,19 +141,23 @@
 34. Recolour a Kitchen pane's header from the app's palette while editing it,
     and delete a pane — with a confirmation — from the same editor.
 ** Fixes
-1. A recipe's cart button is now green only when the recipe has an ingredient
+1. The packaged build no longer cross-compiles a Windows binary of the server —
+   a hosted Linux service ships none, and that build could not carry the SQL
+   seed the server embeds — so the release build and its CI smoke check pass
+   again.
+2. A recipe's cart button is now green only when the recipe has an ingredient
    that is neither in the Kitchen nor already on the Shopping List; when there
    is nothing left to add it is greyed out, so a glance says which recipes still
    need shopping.
-2. The "Paste" and "AI" buttons in a recipe category now work: pressing one no
+3. The "Paste" and "AI" buttons in a recipe category now work: pressing one no
    longer dismisses the add row before the click takes effect.
-3. Adding items after a fresh page load — by dragging, by the Staples Tracker
+4. Adding items after a fresh page load — by dragging, by the Staples Tracker
    cart button, and so on — no longer occasionally fails to save; newly created
    items are given ids that cannot collide with existing ones.
-4. The Staples Tracker now starts collapsed, and its shopping-cart button stands
+5. The Staples Tracker now starts collapsed, and its shopping-cart button stands
    out clearly against the header — and turns green when it holds staples not
    yet in the Kitchen or on the Shopping List.
-5. Editing a Kitchen pane no longer clips the controls on the right edge, and
+6. Editing a Kitchen pane no longer clips the controls on the right edge, and
    clicking away from the pane closes the editor without saving.
 ** Breaking
 1. The frontend_path setting (config file, CLI flag, and environment variable)
