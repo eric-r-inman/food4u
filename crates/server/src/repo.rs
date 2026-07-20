@@ -228,7 +228,7 @@ pub async fn load(
   .await
   .map_err(read)?;
 
-  Ok(assemble(
+  Ok(assemble(ModelRows {
     tiers,
     groups,
     foods,
@@ -240,25 +240,43 @@ pub async fn load(
     planner,
     planner_days,
     column_order,
-  ))
+  }))
+}
+
+/// The ordered row sets a model is assembled from, gathered into one value
+/// so the two read paths hand `assemble` a single argument rather than a
+/// long positional list.
+pub(crate) struct ModelRows {
+  pub tiers: Vec<TierRow>,
+  pub groups: Vec<GroupRow>,
+  pub foods: Vec<FoodRow>,
+  pub locations: Vec<CardRow>,
+  pub items: Vec<StorageItemRow>,
+  pub recipes: Vec<RecipeRow>,
+  pub ingredients: Vec<IngredientRow>,
+  pub tags: Vec<TagRow>,
+  pub planner: Vec<PlannerRow>,
+  pub planner_days: i64,
+  pub column_order: Vec<String>,
 }
 
 /// Build the model from the ordered row sets: bucket each child by its
 /// parent id, then assemble the parents in order.  Shared by the SQLite
 /// and PostgreSQL read paths, which differ only in how they fetch.
-pub(crate) fn assemble(
-  tiers: Vec<TierRow>,
-  groups: Vec<GroupRow>,
-  foods: Vec<FoodRow>,
-  locations: Vec<CardRow>,
-  items: Vec<StorageItemRow>,
-  recipes: Vec<RecipeRow>,
-  ingredients: Vec<IngredientRow>,
-  tags: Vec<TagRow>,
-  planner: Vec<PlannerRow>,
-  planner_days: i64,
-  column_order: Vec<String>,
-) -> Model {
+pub(crate) fn assemble(rows: ModelRows) -> Model {
+  let ModelRows {
+    tiers,
+    groups,
+    foods,
+    locations,
+    items,
+    recipes,
+    ingredients,
+    tags,
+    planner,
+    planner_days,
+    column_order,
+  } = rows;
   let mut foods_by_group: HashMap<String, Vec<Food>> = HashMap::new();
   for row in foods {
     foods_by_group.entry(row.group_id).or_default().push(Food {

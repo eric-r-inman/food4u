@@ -123,7 +123,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .await
   .map_err(read)?;
 
-  Ok(repo::assemble(
+  Ok(repo::assemble(repo::ModelRows {
     tiers,
     groups,
     foods,
@@ -135,7 +135,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
     planner,
     planner_days,
     column_order,
-  ))
+  }))
 }
 
 /// Decompose and persist the whole model for one user, replacing whatever
