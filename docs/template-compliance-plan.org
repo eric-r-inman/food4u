@@ -1,0 +1,342 @@
+#+title:    Template compliance plan (food4u ← rust-template @ 65f9706)
+#+language: en
+
+* Implementation status
+
+This plan has been applied, using *Option B* for the Windows exception.
+
+- *Done:* item 1 (=publish.yml= + =release-binaries.yml= added), item 3
+  (llms.org "Read CONTRIBUTING.org before contributing" section and the
+  Capturing-plans change-set clause), item 4 (CONTRIBUTING.org "Release
+  binaries" section and the changelog-conventions sentences), item 5 (Windows
+  Option B — =compliance-ignores= for =flake-windows-x86-package=,
+  =flake-windows-aarch64-package=, and =contributing-windows-binaries-section=),
+  and item 6 (=65f9706= appended to =template_sync_hashes=).
+- *Pending — needs a networked shell:* item 2 (=Cargo.lock= foundation pin).
+  =cargo update --package rust-template-foundation= could not run in the
+  implementation environment — updating the pin re-resolves the foundation's
+  changed transitive dependencies, which needs the crates.io index, and the
+  sandbox blocks cargo's registry access (nix and the =git= CLI reach GitHub,
+  cargo's fetch does not).  Run this once with network:
+
+#+begin_src sh :exports code cd ~/dev/food4u CARGO_NET_GIT_FETCH_WITH_CLI=true \
+nix develop --command cargo update --package rust-template-foundation nix
+develop --command cargo build --workspace nix develop --command cargo test
+--workspace #+end_src
+
+Until it runs, =foundation-pins-agree= and =foundation-pins-current= stay red
+(=Cargo.lock= at =3aa551c=, =flake.lock= at =65f9706=).  These are a pending
+fix, *not* opted out — they are a real gap the networked run closes.
+
+* Summary
+
+The local template mirror at =~/dev/rust-template= was fast-forwarded from
+=0da0b1f= (v0.45.0) to the current GitHub =HEAD= =65f9706= (18 commits; latest
+release tag v0.54.0 is an ancestor, so =HEAD= is the newest state).  food4u is a
+registered spawn in the template's =config.json=, and its =rust-template.json=
+records a prior sync at =ad92be1e=, so this is a *diff-based* compliance pass:
+the work is bounded by =git diff ad92be1e..65f9706= in the template, and by the
+codified structural checks in the template's =compliance-checks.toml=.
+
+*Overall food4u is in good shape.* Of the roughly 150 codified checks, the large
+majority pass — required files, provenance, foundation wiring, the
+GitHub-Actions machinery for the workflows we ship, the foundation =main= /
+=config= wiring, the embedded-frontend mechanism, module layout, workspace
+metadata inheritance, the =tap= convention, treefmt, the pre-commit hook, the
+integration test, the changelog scaffold, the dev-shell markers, and the
+=.claude= review gate (including the =or .name == "Agent"= hook fix, which the
+template independently adopted — we already match it).
+
+There are *six remediation items* and *one deliberate exception* (Windows
+cross-compilation).  None touches business logic; all are plumbing.
+
+A caveat on method: the canonical first step is =just compliance --project
+food4u=, which runs the checker from the template repo.  It could not run in
+this environment — building the checker needs crates.io and the sandbox blocks
+cargo's registry access.  In place of it, every check in
+=compliance-checks.toml= was evaluated by hand against food4u's actual files;
+the findings below are that evaluation.  Re-run =just compliance --project
+food4u= in a networked shell to confirm before and after the work.
+
+* Remediation items
+
+** 1. Add the two missing GitHub workflow files
+
+*Gap.* =/.github/workflows/publish.yml= and
+=/.github/workflows/release-binaries.yml= are absent.  The template emits both
+into *every* spawn, public or private, and the checker requires them
+unconditionally (their bodies are gated by per-crate config, so for a project
+that publishes and releases nothing they are present-but-inert).
+
+*Checks failed.* =publish-workflow-present=, =publish-workflow-uses-reusable=,
+=publish-workflow-push-main=, =publish-workflow-workflow-dispatch=,
+=publish-workflow-contents-write=, =publish-workflow-id-token-write=,
+=release-binaries-workflow-present=, =release-binaries-workflow-uses-reusable=,
+=release-binaries-workflow-dispatch=,
+=release-binaries-workflow-id-token-write=,
+=release-binaries-workflow-attestations-write=.
+
+*Fix.* Copy both files verbatim from
+=~/dev/rust-template/template/.github/workflows/=, applying the same
+project-name substitution the other emitted workflows use (our =ci.yml=,
+=branch-protection.yml=, and =dependabot-automerge.yml= are the reference shape
+— each is a thin wrapper delegating to
+=rust-template/.github/workflows/reusable-*.yml@main=).  No secrets or
+repository settings change; the reusable workflows short-circuit when a crate's
+publish-destination / release-binary lists are empty, which is food4u's case
+(=release-binary: false= for both crates).
+
+*Risk.* Low.  Inert workflows; no behavior change.
+
+** 2. Bring the Cargo.lock foundation pin up to the flake pin
+
+*Gap.* The foundation is pinned twice — once as a Nix flake input, once as a
+Cargo =git= dependency — and the two disagree:
+
+- =flake.lock= foundation rev: =65f9706= (current template =HEAD=) ✓
+- =Cargo.lock= foundation rev: =3aa551c= (v0.51.0, an older ancestor) ✗
+
+This drift was introduced this session: bumping the Nix input (=nix flake update
+foundation=, for the Windows-smoke CI fix) moved =flake.lock= but not
+=Cargo.lock=.
+
+*Checks failed.* =foundation-pins-agree= (the two locks must match each other),
+=foundation-pins-current= (both must match the template =HEAD=).
+
+*Fix.* =nix develop --command cargo update --package rust-template-foundation=,
+which moves the Cargo git dependency to the branch =HEAD= (=65f9706=).  Confirm
+both locks then read =65f9706=.
+
+*Risk.* Medium — this is the one item that pulls *code* rather than
+configuration.  The =3aa551c..65f9706= foundation diff touches
+=crates/foundation/src/server/systemd.rs= and =crates/foundation/Cargo.toml=, so
+a rebuild is required and could surface an API change our =main.rs= /
+=config.rs= must follow.  Gate it on =nix develop --command cargo build
+--workspace= and =cargo test --workspace= before committing (see [[*Verification]]).
+
+** 3. Add the missing llms.org section and phrases
+
+*Gap.* The template grew an llms.org section and two load-bearing phrases we
+predate.
+
+*Checks failed.*
+- =llms-read-contributing-section= — llms.org must carry a "Read
+  CONTRIBUTING.org before contributing" section directing the agent to the
+  contribution conventions.
+- =llms-read-contributing-covers-landing= — that section must state that
+  CONTRIBUTING.org "covers how to land a change".
+- =llms-capturing-plans-flips-todo-in-pr= — the existing "Capturing plans"
+  section must state that finishing a TODO flips it to DONE "in the same change
+  set that does the work".
+
+*Fix.* Port the new "Read CONTRIBUTING.org before contributing" section verbatim
+from =~/dev/rust-template/template/llms.org=, and add the one-line change-set
+clause to our existing "Capturing plans" section.  Both are additive; our
+existing llms.org content stays.
+
+*Risk.* Low (documentation).  Match the template's exact wording — the checks
+are exact-substring on the two phrases.
+
+** 4. Add the missing CONTRIBUTING.org sections and phrases
+
+*Gap.* The template added a "Release binaries" section (with a nested "Windows
+binaries" subsection) and tightened the "Changelog conventions" wording.
+
+*Checks failed.*
+- =contributing-release-binaries-section= — "Release binaries" section.
+- =contributing-windows-binaries-section= — nested "Windows binaries"
+  subsection.  (Tied to the Windows decision — see [[*The Windows exception]].)
+- =contributing-changelog-required-per-pr= — the phrase "Every pull request must
+  add at least one entry under".
+- =contributing-changelog-ci-enforced= — the phrase "CI rejects a pull request
+  that adds none".
+- =contributing-changelog-adopter-impact= — the phrase "Lead with the impact".
+
+*Fix.* Port the "Release binaries" section and the three changelog sentences
+verbatim from =~/dev/rust-template/template/CONTRIBUTING.org= into our
+CONTRIBUTING.org (which already carries Code style, Error handling, CSS, Systemd
+secrets, Logging levels, and Changelog conventions).  The changelog sentences
+describe the gate that already governs us — CI *does* reject an entry-less PR,
+as this session's own changelog-gate work confirmed — so the prose simply
+documents existing behavior.
+
+The "Windows binaries" subsection documents cross-compiled Windows artifacts we
+have opted not to build; adopting it verbatim would describe machinery the flake
+does not run.  Resolve it together with the Windows decision below: adopt the
+subsection if we pursue the upstream foundation fix, or opt its check out
+alongside the package checks if we keep Windows off.
+
+*Risk.* Low (documentation).
+
+** 5. Reconcile the Windows cross-compilation wiring
+
+See [[*The Windows exception]] — this is the one genuine tension and is written up
+separately.
+
+** 6. Update the provenance record
+
+*Gap.* After applying the above, =rust-template.json='s =template_sync_hashes=
+still ends at =ad92be1e=.
+
+*Fix.* Append the template =HEAD= this pass syncs to — =65f9706= — as the new
+last entry, so the next compliance pass diffs from here.  Commit it together
+with the ported changes.
+
+*Risk.* None.
+
+* The Windows exception
+
+This is the only place where "what the template emits today" and "what food4u
+can ship" genuinely conflict, so it gets a full accounting.
+
+** What the template now requires
+
+The template added an always-on Windows cross-compile: =template/flake.nix=
+wires =mkWindowsCrossPackages= / =mkWindowsMsvcCrossPackages= and a
+=windowsSmoke= check, and three new checks enforce it:
+
+- =flake-windows-x86-package= — a =<crate>-x86_64-windows= package output
+  resolves.
+- =flake-windows-aarch64-package= — a =<crate>-aarch64-windows= package output
+  resolves.
+- =flake-windows-smoke-check= — the =windowsSmoke= check exists on x86_64-linux.
+
+The first two are =flake-output-present= checks: they *=nix eval=* the outputs
+(prove they resolve), they do not build them.
+
+** Why food4u currently fails two of the three
+
+Earlier this session the Windows cross build was wired in, and CI's "Windows
+smoke (wine)" job — which *builds*, not just evaluates — failed:
+
+#+begin_example
+error: couldn't read `crates/server/src/seed/seed.sql`: No such file or directory
+  --> crates/server/src/seed.rs:16 (const SEED_SQL = include_str!("seed/seed.sql"))
+#+end_example
+
+Root cause: the foundation's cross helpers set =src = craneLib.cleanCargoSource
+self=, which re-filters the source through crane's default rules and *drops the
+=.sql= seed the server embeds with =include_str!=*.  Our flake's own
+=commonArgs.src= keeps =.sql= (that fix landed earlier for the native build),
+but the helper overrides =src= and never consults =commonArgs.src=, so the
+embedded seed vanishes only on the cross paths.  The same latent breakage
+affects the darwin / musl / gnu cross packages; nothing builds those today
+(=release-binary: false=), so only the Windows smoke job forced a cross build
+and exposed it.
+
+To make CI green, the Windows cross packages were removed and the required
+=windowsSmoke= check kept over an empty set, where it passes trivially — the
+behaviour that check is explicitly designed for "when a project ships no Windows
+binaries".  That is why =flake-windows-smoke-check= passes but
+=flake-windows-x86-package= / =flake-windows-aarch64-package= now fail.
+
+The bind: re-adding the package outputs satisfies the two eval-only *checker*
+rules, but the =windowsSmoke= *CI* job then builds them and fails on the dropped
+seed again.  With the foundation helper as-is, the checker and CI cannot both be
+green.
+
+** Two ways forward (recommended first)
+
+*Option A — fix the foundation upstream (the fully-compliant path).* Propose a
+change to =rust-template= so the cross helpers preserve embedded non-Rust
+sources — either by honoring the caller's =commonArgs.src= instead of overriding
+it, or by accepting a source-filter argument that keeps =.sql= (and by extension
+any =include_str!=-embedded asset).  This fixes a genuine template bug that hits
+*any* seed-embedding spawn, not just food4u.  Once the foundation carries it, we
+re-add the Windows wiring to our flake and all three checks *and* the CI smoke
+job go green — full compliance, no opt-out.  Because our future host authored
+the template, this is the change most in the spirit of "be as compliant as
+possible": it removes the exception rather than declaring one.  It is also the
+only option that lets the darwin / musl / gnu cross builds actually build here.
+
+*Option B — declare the deviation honestly (the interim/fallback).* Until the
+foundation carries the fix, list the two package checks under
+=compliance-ignores= in =rust-template.json= with a stated reason, keeping the
+trivial =windowsSmoke= check so its rule still passes:
+
+#+begin_src json :exports code
+"compliance-ignores": [
+  { "id": "flake-windows-x86-package",
+    "reason": "The server embeds seed.sql via include_str!; the foundation cross helper drops it, so the Windows PE cannot build. A hosted Linux service also ships no Windows binary. Tracked for the upstream foundation fix; see docs/template-compliance-plan.org." },
+  { "id": "flake-windows-aarch64-package",
+    "reason": "Same as flake-windows-x86-package." }
+]
+#+end_src
+
+An ignored check reports as ignored, not failed, and does not affect the exit
+code — the checker stays honest about a declared, reasoned deviation.  If we
+keep Windows off, also ignore =contributing-windows-binaries-section= for the
+same reason rather than documenting binaries we do not build.
+
+*Recommendation.* Pursue Option A (open the foundation PR) as the real fix, and
+apply Option B in the same compliance commit as the honest interim so CI and the
+checker are both green today.  Revert the ignores once the foundation fix is in.
+
+* README.org — a difference, not a gap
+
+The user asked how our README.org compares with the template's.  The template
+=README.org= is a *fill-in-the-blanks scaffold* ("=#+title: <project-name>=",
+"Briefly describe the problem this project solves…", "Explain how to install…").
+Ours is a *fully written project README* describing the four-column app, how to
+run it (=just dev=, =just login-demo=), and the Elm-front / Rust-server / SQLite
+or Postgres architecture.
+
+This is expected and correct: =docs/compliance.org= states plainly that "the
+content of README.org … is for the human" and is *not* a compliance item.
+Replacing the scaffold with real content is exactly its intended use, so there
+is nothing to reconcile.  One cosmetic nit, not a compliance item: our README's
+=#+title:= line is empty; consider setting it to "Longevity Pantry".
+
+* Handled automatically — no food4u action
+
+These template changes in the =ad92be1e..65f9706= diff reach us without edits:
+
+- *Foundation library changes* (=systemd.rs=, foundation =Cargo.toml=, the new
+  =nix/lib/mkWindows*.nix=, =llvm-mingw.nix=, =xwin-sdk.nix=) flow in through
+  the foundation input — realized once item 2 syncs =Cargo.lock=.
+- *Reusable workflow changes* (=reusable-ci.yml=,
+  =reusable-dependabot-automerge.yml=, =reusable-release-binaries.yml=) are
+  referenced =@main=, so they apply on every run already.
+- *Template-internal tooling* (=crates/compliance-*=, =crates/cross-fixture=,
+  =new-project.sh=, the =test-*.sh= scripts, =config.json=,
+  =compliance-checks.toml=) lives only in the template and is never emitted into
+  a spawn.
+
+* Verification
+
+After applying items 1–6, from the food4u root:
+
+#+begin_src sh :exports code
+nix develop --command cargo build --workspace
+nix develop --command cargo test --workspace
+nix develop --command just test          # Elm suites + Rust suites
+#+end_src
+
+And re-run the structural checker from the template repo (needs crates.io
+access):
+
+#+begin_src sh :exports code
+cd ~/dev/rust-template && just compliance --project food4u
+#+end_src
+
+A clean checker run plus a green build and test suite is the bar.  Note the
+checker is necessary, not sufficient: the doc-section ports (items 3–4) and the
+Windows decision are the judgment calls it cannot fully adjudicate.
+
+* Suggested execution order and effort
+
+| # | Item                                   | Kind        | Risk   | Effort |
+|---+----------------------------------------+-------------+--------+--------|
+| 1 | Add publish.yml + release-binaries.yml | copy files  | low    | small  |
+| 3 | llms.org section + phrases             | doc port    | low    | small  |
+| 4 | CONTRIBUTING.org section + phrases     | doc port    | low    | small  |
+| 2 | Cargo.lock foundation sync             | cargo update| medium | small* |
+| 5 | Windows: Option A upstream + Option B  | judgment    | —      | medium |
+| 6 | Append 65f9706 to sync hashes          | one line    | none   | tiny   |
+
+=*= small to apply, but do it with the full build+test gate because it is the
+only item that moves compiled code.
+
+Do 1, 3, 4, 6 first (pure additive, low risk), then 2 behind the build gate,
+then 5 once the Windows direction is chosen.  All of it is one compliance
+commit's worth of work, plus a separate upstream PR if we take Option A.

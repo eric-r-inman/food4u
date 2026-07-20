@@ -1,7 +1,22 @@
 {
   "template_sync_hashes": [
     "2e4cdac079954e9e6b6fd817379c9cbfd2291485",
-    "ad92be1e8285ce75e6b65eff15198f7377c66d9e"
+    "ad92be1e8285ce75e6b65eff15198f7377c66d9e",
+    "65f9706d19e13c908438b112be318f9bf0f90125"
+  ],
+  "compliance-ignores": [
+    {
+      "id": "flake-windows-x86-package",
+      "reason": "The server embeds seed.sql via include_str!; the foundation cross helper drops it (it re-filters through crane's cleanCargoSource), so the Windows PE cannot build. A hosted Linux service also ships no Windows binary. Interim opt-out under Option B; revert once the foundation preserves embedded sources. See docs/template-compliance-plan.org."
+    },
+    {
+      "id": "flake-windows-aarch64-package",
+      "reason": "Same cause as flake-windows-x86-package: the embedded seed.sql is dropped by the foundation cross helper, and this Linux service ships no Windows binary. Interim opt-out; revert with the foundation fix. See docs/template-compliance-plan.org."
+    },
+    {
+      "id": "contributing-windows-binaries-section",
+      "reason": "The flake does not wire the Windows cross build (see the two flake-windows checks above), so CONTRIBUTING.org does not document Windows binaries it never produces. Revert alongside the Windows package opt-outs once the foundation fix lands. See docs/template-compliance-plan.org."
+    }
   ],
   "workspaces": {
     "food4u-lib": { "release-binary": false },

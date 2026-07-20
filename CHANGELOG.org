@@ -3,13 +3,20 @@
 
 * Upcoming
 ** Added
-1. A food's alternate grocery forms are named base-first now — "Salmon, canned",
+1. Sync with the project template (rust-template 65f9706): the standard Publish
+   and Release-binaries GitHub workflows are added — inert here, since the
+   project ships no release binaries — and the contribution docs gain the
+   template's Release-binaries and changelog-gate conventions. The Windows
+   cross-build the template now ships is opted out (the server embeds an SQL
+   seed the cross helper drops, and a hosted Linux service ships no Windows
+   binary), recorded honestly under compliance-ignores. No adopter action.
+2. A food's alternate grocery forms are named base-first now — "Salmon, canned",
    "Figs, dried", "Tomatoes, canned, diced" — so an alphabetized Longevity Foods
    list keeps every form beside the food it comes from rather than scattering
    them under "Canned", "Dried", and the like. More canned staples join along
    the way: red, great northern, and white beans, crushed tomatoes, and jarred
    tomato sauce.
-2. The Longevity Foods catalog gains the pantry forms of foods it already
+3. The Longevity Foods catalog gains the pantry forms of foods it already
    teaches, where those forms are common in longevity cooking: canned tomatoes,
    beans, and mackerel; jarred roasted red peppers and artichoke hearts; whole-
    grain and nut flours (rye, whole-wheat, buckwheat, oat, chickpea, almond,
@@ -17,48 +24,48 @@
    milk; applesauce; smoked salmon and mackerel; brown rice flour; and ground
    ginger and garlic powder. Each is its own entry with its own stock tracking,
    beside its fresh counterpart.
-3. Stock the Staples Tracker with one press: an "Auto" button under its title
+4. Stock the Staples Tracker with one press: an "Auto" button under its title
    bar offers the five longevity diets the recipes are tagged with
    (Mediterranean, Blue Zone, MIND, DASH, Anti-Inflammatory), and picking one
    fills the tracker with that diet's essential staples. Staples already present
    are never duplicated, so re-running a diet is harmless and stacking two diets
    yields their union.
-4. A Donate page, linked from the toolbar beside About: a placeholder — "Work in
+5. A Donate page, linked from the toolbar beside About: a placeholder — "Work in
    progress" — while a way to support the app is set up.
-5. Clear or export the whole week from the Meal Planner: a toolbar under its
+6. Clear or export the whole week from the Meal Planner: a toolbar under its
    title bar, matching the Shopping List's, adds an "Export to .txt" button and
    a "Clear all" button that empties every day's slots in one press. The
    exported file lays out the plan day by day, then prints the full text of
    every recipe it draws on, so it is enough to cook the week from on its own.
-6. Pasted recipes now read far more of the wild's formats — checkbox and dash
+7. Pasted recipes now read far more of the wild's formats — checkbox and dash
    bullets, "(15-ounce)" can sizes, fused units like "28-ounce", price notes,
    "or"-alternatives, subsection labels, and "juice of 1 lemon" — and every
    parsed ingredient resolves against the Longevity Foods catalog, so "tomato"
    joins the "Tomatoes" your kitchen already tracks instead of arriving as a
    lookalike. Near-misses never merge: coconut milk stays distinct from coconut,
    olive oil from olives.
-7. On a narrow screen, where the columns stack instead of sitting side by side,
+8. On a narrow screen, where the columns stack instead of sitting side by side,
    a collapsed column now lies flat as a full-width bar with its title reading
    horizontally; the sideways title is only for the side-by-side layout.
-8. The server ships as a single self-contained binary: the compiled frontend is
+9. The server ships as a single self-contained binary: the compiled frontend is
    embedded into it at build time, so a release needs no asset directory
    alongside — and in development the assets are still read live from disk.
-9. Arrange the columns however you like: drag a column by its title bar (or its
-   collapsed bar) and drop it on another column to take that side of it — a
-   vertical line previews where it will land. The arrangement is saved with your
-   kitchen, so it follows your account.
-10. An About page describes the app, its philosophy, and each column, linked
+10. Arrange the columns however you like: drag a column by its title bar (or its
+    collapsed bar) and drop it on another column to take that side of it — a
+    vertical line previews where it will land. The arrangement is saved with
+    your kitchen, so it follows your account.
+11. An About page describes the app, its philosophy, and each column, linked
     from the toolbar next to the title.
-11. Breakfast, Lunch, and Dinner are meal tags now, not recipe categories: the
+12. Breakfast, Lunch, and Dinner are meal tags now, not recipe categories: the
     recipe box organizes by dish type alone, and the tag filter slices by meal
     instead. Recipes previously filed under a meal re-home themselves to a dish
     category with their meal as a tag. The bundled defaults also gain six
     pressure-cooker and slow-cooker dishes, tagged "Instant Pot" and "Slow
     Cooker".
-12. An expanded recipe card shows its full name on a line of its own beneath the
+13. An expanded recipe card shows its full name on a line of its own beneath the
     header row, and recipe names are capped at 48 characters so that line always
     fits.
-13. Plan the days ahead in a new Meal Planner column between Recipes and
+14. Plan the days ahead in a new Meal Planner column between Recipes and
     Kitchen: a pane per day ("Day 1" onward — add or remove days, up to ten),
     each with Breakfast, Lunch, Dinner, and Snacks slots. Drag a recipe card
     into a slot to plan it — the recipe is copied by reference, so it stays in
@@ -67,35 +74,35 @@
     recipe in the Recipes column and scrolls it into view, and its ✕ unplans it.
     Days collapse like panes, and the whole column collapses like its
     neighbours.
-14. The bundled defaults now open onto a stocked recipe collection: six recipes
+15. The bundled defaults now open onto a stocked recipe collection: six recipes
     in every category, drawn from Mediterranean, Blue Zone, MIND,
     anti-inflammatory, and DASH cooking, each tagged by its diet plan, by
     convenience (quick, one-pot, no-cook), and by any featured fish, poultry, or
     eggs — along with the few pantry foods they needed added to the Longevity
     Foods pyramid.
-15. Edit the bundled default foods and recipes visually: ~just seed-edit~ opens
+16. Edit the bundled default foods and recipes visually: ~just seed-edit~ opens
     the app on a throwaway copy of the defaults, and ~just seed-save~ bakes what
     you changed back into the shipped seed.
-16. Export a recipe to a plain-text file from the ⬇ button in its header; the
+17. Export a recipe to a plain-text file from the ⬇ button in its header; the
     file is named after the recipe and lists its tags, ingredients, and
     instructions.
-17. Tag recipes with your own labels and filter by one: tags are edited as chips
+18. Tag recipes with your own labels and filter by one: tags are edited as chips
     in the expanded recipe card, and a dropdown beside "Search recipes" narrows
     the list to recipes carrying the chosen tag, re-counting each category to
     match.
-18. Reorder recipes by dragging: drop a card onto another to slot it in just
+19. Reorder recipes by dragging: drop a card onto another to slot it in just
     above, or onto a category to send it to that category's end — across
     categories too. The whole card floats with the pointer as you drag it by its
     grip — the same feel as dragging a food badge — a blue line marks where it
     will land, and the card's own category stays open while it drags.
-19. Each Longevity Foods tier header shows how many of its foods are in stock
+20. Each Longevity Foods tier header shows how many of its foods are in stock
     beside its food count.
-20. Bookmark a recipe from its header, between the drag grip and the cart button
+21. Bookmark a recipe from its header, between the drag grip and the cart button
     — a marker for remembering a recipe, such as one whose ingredients you have
     just sent to the Shopping List. A recipe category's title row shows how many
     of its recipes are bookmarked. Bookmarked recipes read at a glance as a
     light-blue pill.
-21. Select several items and move them together: a "Select: off / on" toggle in
+22. Select several items and move them together: a "Select: off / on" toggle in
     its own row under the page title turns on a tap-to-select circle on every
     item badge. Move the whole selection either by dragging one selected badge,
     or — with no dragging at all, so it works on a phone — by pressing the green
@@ -106,39 +113,39 @@
     appears beside the toggle once more than one item is picked. Badges still
     drag individually with a click-and-hold. The Select row stays pinned on
     screen with the title bar wherever the page itself scrolls.
-22. Organize the Shopping List into your own categories: it starts with a
+23. Organize the Shopping List into your own categories: it starts with a
     default set (Produce, Canned & Dry Goods, Dairy, and so on), and you can add
     your own, drag to-buy items into any of them, and delete a category — with a
     confirmation — from the ✕ on its title row.  Each category collapses to a
     labelled row with a count, matching the Recipes column.  Recipe and staple
     additions still land in the main list, ready to sort.  (The automatic
     grocery-department grouping is replaced by these categories.)
-23. Delete a Longevity Foods category with the ✕ on its title row, with a
+24. Delete a Longevity Foods category with the ✕ on its title row, with a
     confirmation.
-24. Add your own food category to any tier of the Longevity Foods pyramid, then
+25. Add your own food category to any tier of the Longevity Foods pyramid, then
     fill it with foods like the built-in categories.
-25. Generate recipes with AI: an "AI" button in each recipe category opens an
+26. Generate recipes with AI: an "AI" button in each recipe category opens an
     assistant that creates a recipe from the meal category, your remembered
     preferences and allergies, and — if you like — what is in your Kitchen; you
     preview it before it is added, and its missing ingredients can go straight
     to the Shopping List.  You bring your own LLM key (Google Gemini's free
     tier, OpenAI/ChatGPT, or Anthropic Claude); the request goes from your
     browser directly to the provider and your key is kept only in your browser.
-26. Sign in and sign out through an OIDC identity provider, with each account
+27. Sign in and sign out through an OIDC identity provider, with each account
     keeping its own kitchen.
-27. Add and remove Kitchen storage panes.
-28. Edit a Kitchen pane's name and description inline — a pencil opens the
+28. Add and remove Kitchen storage panes.
+29. Edit a Kitchen pane's name and description inline — a pencil opens the
     editor, Enter saves, and Escape cancels without saving.
-29. A Staples Tracker pane in the Kitchen: drag in the foods you always want on
+30. A Staples Tracker pane in the Kitchen: drag in the foods you always want on
     hand, see the ones you are out of turn red, and send those to the Shopping
     List with one button.
-30. Move a recipe to another category by dragging it there; categories highlight
+31. Move a recipe to another category by dragging it there; categories highlight
     as you drag over them.
-31. Seed a new account with the default storage panes on its first sign-in.
-32. =just login-demo= runs the app against a local identity provider for trying
+32. Seed a new account with the default storage panes on its first sign-in.
+33. =just login-demo= runs the app against a local identity provider for trying
     the signed-in experience.
-33. Rename the app to Longevity Pantry (the code keeps the =food4u= name).
-34. Recolour a Kitchen pane's header from the app's palette while editing it,
+34. Rename the app to Longevity Pantry (the code keeps the =food4u= name).
+35. Recolour a Kitchen pane's header from the app's palette while editing it,
     and delete a pane — with a confirmation — from the same editor.
 ** Fixes
 1. The packaged build no longer cross-compiles a Windows binary of the server —

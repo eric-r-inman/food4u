@@ -1,6 +1,14 @@
 #+title:     LLMs
 #+language:  en
 
+* Read CONTRIBUTING.org before contributing
+
+This file covers how to write code.  ~CONTRIBUTING.org~ covers how to land a
+change: changelog entries, commit messages, dependency comments, and the other
+conventions every pull request must follow.  Read it before making a change, not
+after a compliance check rejects one — the conventions are enforced, and
+rediscovering them from a failed check wastes a round trip.
+
 * Server crate: role and scope
 
 The =crates/server= crate is the project's general-purpose long-running service.
@@ -491,6 +499,12 @@ the signal that it should be codified here instead.
 When a planning pass produces a design worth keeping, record it as a ~TODO~
 entry in ~tasks.org~ (the project's backlog), cross-linking related entries and
 marking superseded ones, rather than leaving it only in an ephemeral plan file.
+
+When a change completes a ~TODO~, flip that entry to ~DONE~ in the same change
+set that does the work — the way a commit ~Closes #1234~ claims an issue.  The
+implementing PR carries its own status flip; do not leave it for a follow-up
+commit, which otherwise either drifts (the work merges but the backlog still
+says ~TODO~) or forces an otherwise-empty commit just to move the marker.
 
 * Verification
 
