@@ -97,11 +97,35 @@
       darwinCrossPackages = foundation.lib.mkDarwinCrossPackages {
         inherit self pkgs system crates crane commonArgs;
       };
+      # Native Windows PE variants (`<key>-{x86_64,aarch64}-windows`),
+      # cross-compiled via llvm-mingw for the gnullvm targets — no Microsoft
+      # SDK, no Cygwin/MSYS2 runtime.  Unlike the darwin cross build this is
+      # host-agnostic (llvm-mingw ships a per-host toolchain), so it builds on
+      # the Linux CI runners and on a contributor's Mac alike.
+      windowsCrossPackages = foundation.lib.mkWindowsCrossPackages {
+        inherit self pkgs system crates crane commonArgs;
+      };
+      # The opt-in MSVC-ABI Windows variant, for a dependency that requires
+      # the MSVC ABI rather than the default gnullvm path above.  Off unless
+      # `"windows-msvc": true` is set in rust-template.json; absent here, so it
+      # stays disabled and the helper is handed no SDK.
+      windowsMsvcEnabled =
+        (builtins.fromJSON (builtins.readFile ./rust-template.json)).windows-msvc
+        or false;
+      windowsMsvcCrossPackages = foundation.lib.mkWindowsMsvcCrossPackages {
+        inherit self pkgs system crates crane commonArgs;
+        xwinSdk =
+          if windowsMsvcEnabled
+          then foundation.lib.xwinSdk {inherit pkgs;}
+          else null;
+      };
       packages =
         rustPackages.packages
         // muslPackages
         // gnuPortablePackages
         // darwinCrossPackages
+        // windowsCrossPackages
+        // windowsMsvcCrossPackages
         // {
           default =
             craneLib.buildPackage (commonArgs // {pname = "food4u";});
@@ -113,6 +137,13 @@
         nixpkgs.lib.filterAttrs
         (name: _: nixpkgs.lib.hasSuffix "-aarch64-darwin" name)
         darwinCrossPackages;
+      # The x86_64 subset of the Windows cross outputs, smoke-tested under
+      # wine.  The wine check below is gated on `system == "x86_64-linux"`
+      # rather than on emptiness: wine runs a win64 PE reliably only there.
+      windowsX86Packages =
+        nixpkgs.lib.filterAttrs
+        (name: _: nixpkgs.lib.hasSuffix "-x86_64-windows" name)
+        windowsCrossPackages;
     in {
       inherit packages;
       inherit (rustPackages) apps;
@@ -125,6 +156,16 @@
           darwinSignatures = foundation.lib.mkDarwinSignatureCheck {
             inherit pkgs;
             darwinPackages = aarch64DarwinPackages;
+          };
+        }
+        # Run the x86_64 Windows cross binaries under wine to prove they
+        # execute, not merely link.  Gated to x86_64-linux: wine cannot exec an
+        # aarch64 PE and is unreliable on Apple Silicon, so aarch64 Windows is
+        # build-verified only.  Passes trivially when no Windows binaries ship.
+        // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
+          windowsSmoke = foundation.lib.mkWindowsSmokeCheck {
+            inherit pkgs;
+            windowsPackages = windowsX86Packages;
           };
         };
       devShells = {
