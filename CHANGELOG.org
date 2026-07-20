@@ -5,6 +5,8 @@
 ** Added
 ** Fixes
 ** Breaking
+** Maintenance
+1. Bump rust-template-foundation from `3aa551c` to `65f9706` (https://github.com/eric-r-inman/food4u/pull/11)
 * v0.1.0
 ** Added
 1. Sync with the project template (rust-template 65f9706): the standard Publish
