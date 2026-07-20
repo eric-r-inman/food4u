@@ -3,6 +3,10 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+* v0.1.0
+** Added
 1. Sync with the project template (rust-template 65f9706): the standard Publish
    and Release-binaries GitHub workflows are added — inert here, since the
    project ships no release binaries — and the contribution docs gain the
