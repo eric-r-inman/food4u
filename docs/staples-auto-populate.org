@@ -79,9 +79,9 @@ oily fish as the signature proteins; and the herbs its recipes lean on —
 oregano, basil, mint, parsley — from the spice rack.
 
 Extra-virgin olive oil, Chickpeas, Lentils, Farro, Whole-wheat pasta, Tomato
-paste, Canned tomatoes, Garlic, Onions, Capers, Lemons, Lemon juice, Olives,
-Almonds, Walnuts, Pine nuts, Pistachios, Tahini, Greek yogurt, Feta, Canned
-sardines, Red wine vinegar, Balsamic vinegar, Apple cider vinegar, Honey,
+paste, Tomatoes canned and diced, Garlic, Onions, Capers, Lemons, Lemon juice,
+Olives, Almonds, Walnuts, Pine nuts, Pistachios, Tahini, Greek yogurt, Feta,
+Canned sardines, Red wine vinegar, Balsamic vinegar, Apple cider vinegar, Honey,
 Oregano, Basil, Mint, Parsley, Cumin, Smoked paprika.
 
 *** Blue Zone
@@ -96,8 +96,8 @@ sesame two ways, rice vinegar, ginger, kimchi, and the dried seaweeds.
 Black beans, Chickpeas, Fava beans, Brown rice, Oats, Whole-grain corn
 tortillas, Sweet potato, Cabbage, Carrots, Edamame, Garlic, Onions, Ginger,
 Tofu, Miso, Tamari / soy sauce, Toasted sesame oil, Sesame seeds, Rice vinegar,
-Kimchi, Nori, Wakame, Canned tomatoes, Honey, Bay leaves, Walnuts, Extra-virgin
-olive oil, Green tea.
+Kimchi, Nori, Wakame, Tomatoes canned and diced, Honey, Bay leaves, Walnuts,
+Extra-virgin olive oil, Green tea.
 
 *** MIND
 
@@ -124,8 +124,8 @@ cumin-and-cinnamon end of the spice rack.
 
 Oats, Brown rice, Quinoa, Whole-grain bread, Black beans, Kidney beans, Lentils,
 Banana, Oranges, Apples, Limes, Garlic, Onions, Broccoli, Carrots, Sweet potato,
-Canned tomatoes, Greek yogurt, Almonds, Pistachios, Chicken, Honey, Cinnamon,
-Cumin.
+Tomatoes canned and diced, Greek yogurt, Almonds, Pistachios, Chicken, Honey,
+Cinnamon, Cumin.
 
 *** Anti-Inflammatory
 
@@ -140,7 +140,7 @@ coconut milk, red lentils, brown rice, canned tomatoes, and bottled lemon juice.
 Turmeric, Ginger, Cinnamon, Cumin, Garam masala, Smoked paprika, Garlic, Black
 pepper, Extra-virgin olive oil, Coconut milk, Lemon juice, Salmon, Canned
 sardines, Blueberries, Tart cherries, Onions, Carrots, Broccoli, Brown rice, Red
-lentils, Canned tomatoes, Walnuts, Flaxseed, Chia seeds, Green tea.
+lentils, Tomatoes canned and diced, Walnuts, Flaxseed, Chia seeds, Green tea.
 
 * Behaviour decisions
 
