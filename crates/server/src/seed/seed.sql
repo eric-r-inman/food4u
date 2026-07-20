@@ -124,9 +124,9 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ai1', 'd13
 insert into foods (id, group_id, name, prep, hero, position) values ('ai2', 'd138', 'Açaí', 'F', false, 62);
 insert into foods (id, group_id, name, prep, hero, position) values ('ai3', 'd138', 'Camu camu', 'P', false, 63);
 insert into foods (id, group_id, name, prep, hero, position) values ('u1', 'd138', 'Limes', 'F', false, 64);
-insert into foods (id, group_id, name, prep, hero, position) values ('u717', 'd138', 'Dried figs', 'F', false, 65);
-insert into foods (id, group_id, name, prep, hero, position) values ('u718', 'd138', 'Dried apricots', 'F', false, 66);
-insert into foods (id, group_id, name, prep, hero, position) values ('u719', 'd138', 'Dried cranberries', 'F', false, 67);
+insert into foods (id, group_id, name, prep, hero, position) values ('u717', 'd138', 'Figs, dried', 'F', false, 65);
+insert into foods (id, group_id, name, prep, hero, position) values ('u718', 'd138', 'Apricots, dried', 'F', false, 66);
+insert into foods (id, group_id, name, prep, hero, position) values ('u719', 'd138', 'Cranberries, dried', 'F', false, 67);
 insert into foods (id, group_id, name, prep, hero, position) values ('u720', 'd138', 'Applesauce', 'F', false, 68);
 insert into foods (id, group_id, name, prep, hero, position) values ('d139', 'd159', 'Turmeric', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d140', 'd159', 'Ginger', 'F', true, 1);
@@ -175,7 +175,7 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex116', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex117', 'd159', 'Gochugaru', 'P', false, 44);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex118', 'd159', 'Chinese five-spice', 'P', false, 45);
 insert into foods (id, group_id, name, prep, hero, position) values ('ai4', 'd159', 'Cayenne', 'P', false, 46);
-insert into foods (id, group_id, name, prep, hero, position) values ('u721', 'd159', 'Ground ginger', 'F', false, 47);
+insert into foods (id, group_id, name, prep, hero, position) values ('u721', 'd159', 'Ginger, ground', 'F', false, 47);
 insert into foods (id, group_id, name, prep, hero, position) values ('u722', 'd159', 'Garlic powder', 'F', false, 48);
 insert into foods (id, group_id, name, prep, hero, position) values ('d160', 'd165', 'Green tea', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d161', 'd165', 'Matcha', 'P', false, 1);
@@ -261,8 +261,8 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex157', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex158', 'd203', 'Peanuts', 'P', false, 30);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex159', 'd203', 'Moth beans', 'P', false, 31);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex160', 'd203', 'Horse gram', 'P', false, 32);
-insert into foods (id, group_id, name, prep, hero, position) values ('u705', 'd203', 'Canned black beans', 'F', false, 33);
-insert into foods (id, group_id, name, prep, hero, position) values ('u706', 'd203', 'Canned cannellini beans', 'F', false, 34);
+insert into foods (id, group_id, name, prep, hero, position) values ('u705', 'd203', 'Black beans, canned', 'F', false, 33);
+insert into foods (id, group_id, name, prep, hero, position) values ('u706', 'd203', 'Cannellini beans, canned', 'F', false, 34);
 insert into foods (id, group_id, name, prep, hero, position) values ('u708', 'd203', 'Chickpea flour', 'F', false, 35);
 insert into foods (id, group_id, name, prep, hero, position) values ('u753', 'd203', 'Red beans, canned', 'F', false, 36);
 insert into foods (id, group_id, name, prep, hero, position) values ('u754', 'd203', 'Chickpeas, canned', 'F', false, 37);
@@ -349,9 +349,9 @@ insert into foods (id, group_id, name, prep, hero, position) values ('d248', 'd2
 insert into foods (id, group_id, name, prep, hero, position) values ('d249', 'd255', 'Trout', 'F', false, 7);
 insert into foods (id, group_id, name, prep, hero, position) values ('d250', 'd255', 'Sea bass', 'F', false, 8);
 insert into foods (id, group_id, name, prep, hero, position) values ('d251', 'd255', 'Pollock', 'F', false, 9);
-insert into foods (id, group_id, name, prep, hero, position) values ('d252', 'd255', 'Canned tuna', 'P', false, 10);
-insert into foods (id, group_id, name, prep, hero, position) values ('d253', 'd255', 'Canned sardines', 'P', false, 11);
-insert into foods (id, group_id, name, prep, hero, position) values ('d254', 'd255', 'Canned salmon', 'P', false, 12);
+insert into foods (id, group_id, name, prep, hero, position) values ('d252', 'd255', 'Tuna, canned', 'P', false, 10);
+insert into foods (id, group_id, name, prep, hero, position) values ('d253', 'd255', 'Sardines, canned', 'P', false, 11);
+insert into foods (id, group_id, name, prep, hero, position) values ('d254', 'd255', 'Salmon, canned', 'P', false, 12);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex183', 'd255', 'Shrimp', 'F', false, 13);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex184', 'd255', 'Mussels', 'F', false, 14);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex185', 'd255', 'Clams', 'F', false, 15);
@@ -367,9 +367,9 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex194', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('ex195', 'd255', 'Tilapia', 'F', false, 25);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex196', 'd255', 'Barramundi', 'F', false, 26);
 insert into foods (id, group_id, name, prep, hero, position) values ('u7', 'd255', 'Rockfish', 'F', false, 27);
-insert into foods (id, group_id, name, prep, hero, position) values ('u723', 'd255', 'Canned mackerel', 'F', false, 28);
-insert into foods (id, group_id, name, prep, hero, position) values ('u724', 'd255', 'Smoked salmon', 'F', false, 29);
-insert into foods (id, group_id, name, prep, hero, position) values ('u725', 'd255', 'Smoked mackerel', 'F', false, 30);
+insert into foods (id, group_id, name, prep, hero, position) values ('u723', 'd255', 'Mackerel, canned', 'F', false, 28);
+insert into foods (id, group_id, name, prep, hero, position) values ('u724', 'd255', 'Salmon, smoked', 'F', false, 29);
+insert into foods (id, group_id, name, prep, hero, position) values ('u725', 'd255', 'Mackerel, smoked', 'F', false, 30);
 insert into foods (id, group_id, name, prep, hero, position) values ('d256', 'd259', 'Eggs', 'F', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d257', 'd259', 'Chicken', 'F', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d258', 'd259', 'Turkey', 'F', false, 2);
@@ -495,7 +495,7 @@ insert into foods (id, group_id, name, prep, hero, position) values ('d47', 'd94
 insert into foods (id, group_id, name, prep, hero, position) values ('d48', 'd94', 'Brussels sprouts', 'F', false, 18);
 insert into foods (id, group_id, name, prep, hero, position) values ('d49', 'd94', 'Okra', 'F', false, 19);
 insert into foods (id, group_id, name, prep, hero, position) values ('d50', 'd94', 'Capers', 'P', false, 20);
-insert into foods (id, group_id, name, prep, hero, position) values ('d51', 'd94', 'Sun-dried tomatoes', 'P', false, 21);
+insert into foods (id, group_id, name, prep, hero, position) values ('d51', 'd94', 'Tomatoes, sun-dried', 'P', false, 21);
 insert into foods (id, group_id, name, prep, hero, position) values ('d52', 'd94', 'Sweet potato', 'F', false, 22);
 insert into foods (id, group_id, name, prep, hero, position) values ('d53', 'd94', 'Butternut squash', 'F', false, 23);
 insert into foods (id, group_id, name, prep, hero, position) values ('d54', 'd94', 'Green beans', 'F', false, 24);
@@ -566,9 +566,9 @@ insert into foods (id, group_id, name, prep, hero, position) values ('ex44', 'd9
 insert into foods (id, group_id, name, prep, hero, position) values ('ex45', 'd94', 'Cassava', 'F', false, 89);
 insert into foods (id, group_id, name, prep, hero, position) values ('u3', 'd94', 'Wakame', 'F', false, 90);
 insert into foods (id, group_id, name, prep, hero, position) values ('u4', 'd94', 'Nori', 'F', false, 91);
-insert into foods (id, group_id, name, prep, hero, position) values ('u701', 'd94', 'Roasted red peppers', 'F', false, 92);
+insert into foods (id, group_id, name, prep, hero, position) values ('u701', 'd94', 'Red peppers, roasted', 'F', false, 92);
 insert into foods (id, group_id, name, prep, hero, position) values ('u702', 'd94', 'Artichoke hearts', 'F', false, 93);
-insert into foods (id, group_id, name, prep, hero, position) values ('u703', 'd94', 'Dried shiitake', 'F', false, 94);
+insert into foods (id, group_id, name, prep, hero, position) values ('u703', 'd94', 'Shiitake, dried', 'F', false, 94);
 insert into foods (id, group_id, name, prep, hero, position) values ('u756', 'd94', 'Tomatoes, canned, diced', 'F', false, 95);
 insert into foods (id, group_id, name, prep, hero, position) values ('u757', 'd94', 'Tomatoes, canned, crushed', 'F', false, 96);
 insert into foods (id, group_id, name, prep, hero, position) values ('u760', 'd94', 'Tomato sauce, jar/can', 'F', false, 97);
@@ -1907,7 +1907,7 @@ insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u211', 'u208', 'Mint', false, 2);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u212', 'u208', 'Extra-virgin olive oil', false, 3);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u213', 'u208', 'Balsamic vinegar', false, 4);
-insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u215', 'u214', 'Canned sardines', false, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u215', 'u214', 'Sardines, canned', false, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u216', 'u214', 'Whole-grain bread', false, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u217', 'u214', 'Tomatoes', false, 2);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u218', 'u214', 'Garlic', false, 3);
@@ -2341,7 +2341,7 @@ insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u663', 'u658', 'Walnuts', false, 4);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u664', 'u658', 'Soy milk', false, 5);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u665', 'u658', 'Maple syrup', false, 6);
-insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u74', 'u73', 'Canned tuna', false, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u74', 'u73', 'Tuna, canned', false, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u75', 'u73', 'Eggs', false, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u76', 'u73', 'Green beans', false, 2);
 insert into recipe_ingredients (id, recipe_id, name, needs, position) values ('u77', 'u73', 'Potatoes', false, 3);

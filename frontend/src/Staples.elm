@@ -25,7 +25,7 @@ diets : List Diet
 diets =
     [ { name = "Mediterranean"
       , staples =
-            [ "Extra-virgin olive oil", "Chickpeas", "Lentils", "Farro", "Whole-wheat pasta", "Tomato paste", "Tomatoes, canned, diced", "Garlic", "Onions", "Capers", "Lemons", "Lemon juice", "Olives", "Almonds", "Walnuts", "Pine nuts", "Pistachios", "Tahini", "Greek yogurt", "Feta", "Canned sardines", "Red wine vinegar", "Balsamic vinegar", "Apple cider vinegar", "Honey", "Oregano", "Basil", "Mint", "Parsley", "Cumin", "Smoked paprika" ]
+            [ "Extra-virgin olive oil", "Chickpeas", "Lentils", "Farro", "Whole-wheat pasta", "Tomato paste", "Tomatoes, canned, diced", "Garlic", "Onions", "Capers", "Lemons", "Lemon juice", "Olives", "Almonds", "Walnuts", "Pine nuts", "Pistachios", "Tahini", "Greek yogurt", "Feta", "Sardines, canned", "Red wine vinegar", "Balsamic vinegar", "Apple cider vinegar", "Honey", "Oregano", "Basil", "Mint", "Parsley", "Cumin", "Smoked paprika" ]
       }
     , { name = "Blue Zone"
       , staples =
@@ -33,7 +33,7 @@ diets =
       }
     , { name = "MIND"
       , staples =
-            [ "Blueberries", "Strawberries", "Chickpeas", "Peanut butter", "Whole-wheat pasta", "Oats", "Quinoa", "Farro", "Whole-grain bread", "Brown rice", "Black beans", "Lentils", "Walnuts", "Almonds", "Extra-virgin olive oil", "Canned salmon", "Chicken", "Cinnamon", "Thyme", "Dates", "Honey", "Maple syrup", "Soy milk", "Vegetable broth", "Dried shiitake" ]
+            [ "Blueberries", "Strawberries", "Chickpeas", "Peanut butter", "Whole-wheat pasta", "Oats", "Quinoa", "Farro", "Whole-grain bread", "Brown rice", "Black beans", "Lentils", "Walnuts", "Almonds", "Extra-virgin olive oil", "Salmon, canned", "Chicken", "Cinnamon", "Thyme", "Dates", "Honey", "Maple syrup", "Soy milk", "Vegetable broth", "Shiitake, dried" ]
       }
     , { name = "DASH"
       , staples =
@@ -41,7 +41,7 @@ diets =
       }
     , { name = "Anti-Inflammatory"
       , staples =
-            [ "Turmeric", "Ginger", "Cinnamon", "Cumin", "Garam masala", "Smoked paprika", "Garlic", "Black pepper", "Extra-virgin olive oil", "Coconut milk", "Lemon juice", "Salmon", "Canned sardines", "Blueberries", "Tart cherries", "Onions", "Carrots", "Broccoli", "Brown rice", "Red lentils", "Tomatoes, canned, diced", "Walnuts", "Flaxseed", "Chia seeds", "Green tea" ]
+            [ "Turmeric", "Ginger", "Cinnamon", "Cumin", "Garam masala", "Smoked paprika", "Garlic", "Black pepper", "Extra-virgin olive oil", "Coconut milk", "Lemon juice", "Salmon", "Sardines, canned", "Blueberries", "Tart cherries", "Onions", "Carrots", "Broccoli", "Brown rice", "Red lentils", "Tomatoes, canned, diced", "Walnuts", "Flaxseed", "Chia seeds", "Green tea" ]
       }
     ]
 
