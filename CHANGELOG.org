@@ -6,6 +6,7 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+1. Bump tower-http from 0.6.8 to 0.7.0 (https://github.com/eric-r-inman/food4u/pull/15)
 * v0.3.0
 ** Added
 1. Give an item a count: a "Count" toggle beside "Select" turns on an up/down
