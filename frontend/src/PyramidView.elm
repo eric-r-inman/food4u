@@ -2,8 +2,9 @@ module PyramidView exposing (viewPyramidColumn)
 
 {-| The Longevity Foods column: the staples pyramid of tiers, each with
 its category groups and draggable food chips. The whole column is lazy on
-the narrow set of inputs it reads, and a live search force-expands the
-categories that contain a match.
+the narrow set of inputs it reads, and a live search decides collapse on
+its own — categories with a match open, the rest collapse — so the results
+read without noise from unrelated categories the user had left open.
 -}
 
 import Data exposing (Data, Food, Group, Loc(..), Tier)
@@ -125,10 +126,17 @@ viewCategory toggled adding addValue confirmingDelete selectMode selected inStoc
         categoryHasMatch =
             search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) group.foods
 
-        -- Categories default collapsed; a live search force-expands any
-        -- category containing a match.
+        -- A live search drives collapse on its own: only categories that
+        -- contain a match stay open, and every other category collapses even
+        -- if the user had opened it — the toggle state is untouched, so it
+        -- returns once the search clears.  With no search, categories default
+        -- collapsed and follow the user's toggle.
         isCollapsed =
-            not (categoryHasMatch || isOpen False group.id toggled)
+            if search /= "" then
+                not categoryHasMatch
+
+            else
+                not (isOpen False group.id toggled)
 
         -- Every food in a tier shares the tier's badge tint, regardless of
         -- its sub-category.
