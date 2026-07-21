@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.5.0
+** Added
 1. The bundled default catalog renames two Longevity Foods categories: the
    Foundation tier's "Oils & healthy fats" becomes "Plant-based Oils & Fats",
    and the Occasionally tier's "Limit" becomes "Snacks". Existing kitchens keep
@@ -16,8 +21,6 @@
    no match, even ones you had opened, and expands only the categories whose
    foods match — so the results stand alone instead of mixed in with unrelated
    open categories. Clearing the search restores your categories as they were.
-** Breaking
-** Maintenance
 * v0.4.0
 ** Maintenance
 1. Bump clap from 4.6.0 to 4.6.3 (https://github.com/eric-r-inman/food4u/pull/12)
