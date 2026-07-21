@@ -1082,15 +1082,19 @@ button {
   background: var(--recipe-bookmark-on-bg);
   filter: none;
   opacity: 1;
-  font-size: 14px;
   box-shadow: 0 1px 2px var(--recipe-bookmark-on-shadow);
+}
+
+/* Keep the glyph a constant inline-block box in both states so toggling the
+   bookmark never changes the card's height — only the tint below differs. */
+.recipe-bookmark-glyph {
+  display: inline-block;
 }
 
 /* Rotate the red ribbon emoji into the light-blue range so the set
    bookmark matches its pill.  Only the glyph is filtered, leaving the pill's
    own colours untouched. */
 .recipe-bookmark-glyph-on {
-  display: inline-block;
   filter: hue-rotate(200deg) saturate(1.15);
 }
 

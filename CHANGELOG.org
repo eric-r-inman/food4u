@@ -8,7 +8,11 @@
    and the Occasionally tier's "Limit" becomes "Snacks". Existing kitchens keep
    their own category names; the rename reaches only kitchens seeded afterward.
 ** Fixes
-1. A search in the Longevity Foods column now collapses every category that has
+1. Toggling a recipe's bookmark no longer changes the card's height. The set
+   state used to enlarge the bookmark glyph, which grew the header row and
+   nudged the whole card taller; the glyph now keeps a constant size and the set
+   state stands out through its filled pill alone.
+2. A search in the Longevity Foods column now collapses every category that has
    no match, even ones you had opened, and expands only the categories whose
    foods match — so the results stand alone instead of mixed in with unrelated
    open categories. Clearing the search restores your categories as they were.
