@@ -6,6 +6,7 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+1. Bump clap from 4.6.0 to 4.6.3 (https://github.com/eric-r-inman/food4u/pull/12)
 * v0.3.0
 ** Added
 1. Give an item a count: a "Count" toggle beside "Select" turns on an up/down
