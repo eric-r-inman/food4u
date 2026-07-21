@@ -3,6 +3,12 @@
 
 * Upcoming
 ** Added
+1. Give an item a count: a "Count" toggle beside "Select" turns on an up/down
+   stepper at the left of every badge in the Kitchen, Recipes, and Shopping List
+   columns, and the badge shows the tally beside its name — "Jicama (3)". The
+   Longevity Foods pyramid is a catalog, not a tally, so its foods carry no
+   count. Counts start at one, never go below it, and are saved with your
+   kitchen.
 ** Fixes
 ** Breaking
 ** Maintenance

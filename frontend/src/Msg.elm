@@ -63,6 +63,8 @@ type Msg
     | ExportRecipe String
     | ClearCart
     | ToggleSelectMode
+    | ToggleCountMode
+    | ChangeItemCount Loc String Int
     | ToggleItemSelected String
     | MoveSelectedTo Loc
     | DeselectAll

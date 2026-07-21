@@ -99,6 +99,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
         id: "i1".into(),
         name: "Rice".into(),
         na: true,
+        count: 1,
       }],
     }],
     recipes: vec![Recipe {
@@ -109,6 +110,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
         id: "in1".into(),
         name: "Kale".into(),
         na: false,
+        count: 1,
       }],
       instructions: "Toss it.".into(),
       bookmarked: false,

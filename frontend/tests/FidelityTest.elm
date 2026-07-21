@@ -363,11 +363,11 @@ suite =
                             , name = "Hummus"
                             , category = "Sauces & Condiments"
                             , ingredients =
-                                [ { id = "i1", name = "Chickpeas", na = False }
-                                , { id = "i2", name = "Tahini", na = False }
-                                , { id = "i3", name = "Extra-virgin olive oil", na = False }
-                                , { id = "i4", name = "Lemon juice", na = False }
-                                , { id = "i5", name = "Garlic", na = False }
+                                [ { id = "i1", name = "Chickpeas", na = False, count = 1 }
+                                , { id = "i2", name = "Tahini", na = False, count = 1 }
+                                , { id = "i3", name = "Extra-virgin olive oil", na = False, count = 1 }
+                                , { id = "i4", name = "Lemon juice", na = False, count = 1 }
+                                , { id = "i5", name = "Garlic", na = False, count = 1 }
                                 ]
                             , instructions = "Blend everything until smooth."
                             , bookmarked = False

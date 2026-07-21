@@ -52,6 +52,9 @@ viewCartBody derived staples toggled adding addValue confirmingDelete selection 
         selectMode =
             selection.active
 
+        countMode =
+            selection.countMode
+
         shoppingCards =
             List.filter isShoppingCard staples
 
@@ -72,7 +75,7 @@ viewCartBody derived staples toggled adding addValue confirmingDelete selection 
                 [ text "🗑  Clear all" ]
             ]
         , div [ class "cart-body" ]
-            (List.map (viewCartCard derived.nameTierRail toggled selectMode selection.items confirmingDelete) ordered
+            (List.map (viewCartCard derived.nameTierRail toggled selectMode countMode selection.items confirmingDelete) ordered
                 ++ [ viewAdder adding addValue AddCartCategory "New category…" "+ Add category" ]
             )
         ]
@@ -84,8 +87,8 @@ categories, but not the reserved bucket) over its item chips. The reserved
 bucket defaults open, since recipe and staple additions land there; the
 user categories default collapsed, showing just their counts until opened.
 -}
-viewCartCard : Dict String String -> Set String -> Bool -> Set String -> Maybe String -> Card -> Html Msg
-viewCartCard nameToTierRail toggled selectMode selected confirmingDelete card =
+viewCartCard : Dict String String -> Set String -> Bool -> Bool -> Set String -> Maybe String -> Card -> Html Msg
+viewCartCard nameToTierRail toggled selectMode countMode selected confirmingDelete card =
     let
         loc =
             StoragePane card.id
@@ -125,7 +128,7 @@ viewCartCard nameToTierRail toggled selectMode selected confirmingDelete card =
                 [ div [ class "cart-cat-body" ]
                     (card.items
                         |> List.sortBy (\i -> String.toLower i.name)
-                        |> List.map (viewItem selectMode selected False "" nameToTierRail loc)
+                        |> List.map (viewItem selectMode countMode selected False "" nameToTierRail loc)
                     )
                 ]
     in

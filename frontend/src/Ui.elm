@@ -5,6 +5,9 @@ module Ui exposing
     , collapsedColumnBar
     , columnDragAttrs
     , columnTitleBar
+    , countArrows
+    , countSuffix
+    , countToggle
     , draggable
     , dropZone
     , editingPaneDomId
@@ -135,6 +138,28 @@ selectToggle on selectedCount msg =
 
                     else
                         ""
+                   )
+            )
+        ]
+
+
+{-| The app-wide count-mode toggle, beside the Select toggle. When on,
+item badges outside the pyramid grow up/down arrows to edit their count.
+-}
+countToggle : Bool -> Msg -> Html Msg
+countToggle on msg =
+    button
+        [ type_ "button"
+        , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
+        [ text
+            ("Count: "
+                ++ (if on then
+                        "on"
+
+                    else
+                        "off"
                    )
             )
         ]
@@ -569,8 +594,8 @@ the Kitchen panes and the Shopping List sections. A `missing` staple
 (tracked but not on hand) overrides the tint with the red missing style.
 The dictionary maps a food name to its tier's rail colour.
 -}
-viewItem : Bool -> Set String -> Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
-viewItem selectMode selected missing search nameToTierRail loc item =
+viewItem : Bool -> Bool -> Set String -> Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
+viewItem selectMode countMode selected missing search nameToTierRail loc item =
     let
         bg =
             Dict.get (String.toLower item.name) nameToTierRail
@@ -589,10 +614,51 @@ viewItem selectMode selected missing search nameToTierRail loc item =
     in
     span (class "chip" :: chip ++ draggable loc item.id ++ selectAttrs selectMode loc item.id)
         (selectLead selectMode selected loc item.id
-            ++ [ span [] [ text item.name ]
-               , removeButton (RemoveFoodMsg loc item.id)
-               ]
+            ++ countArrows countMode loc item
+            ++ (span [] [ text item.name ] :: countSuffix countMode item)
+            ++ [ removeButton (RemoveFoodMsg loc item.id) ]
         )
+
+
+{-| The up/down count controls at the left of an item badge, shown only
+while count mode is on. The down arrow floors the count at one, and reads
+as disabled once there. Their clicks stay off the badge's own drag and
+tap-to-select handlers.
+-}
+countArrows : Bool -> Loc -> Item -> List (Html Msg)
+countArrows countMode loc item =
+    if countMode then
+        [ span [ class "chip-count-ctl" ]
+            [ button
+                [ type_ "button"
+                , class "chip-count-btn"
+                , stopPropagationOn "click" (Decode.succeed ( ChangeItemCount loc item.id 1, True ))
+                ]
+                [ text "▲" ]
+            , button
+                [ type_ "button"
+                , classList [ ( "chip-count-btn", True ), ( "chip-count-btn-min", item.count <= 1 ) ]
+                , stopPropagationOn "click" (Decode.succeed ( ChangeItemCount loc item.id (negate 1), True ))
+                ]
+                [ text "▼" ]
+            ]
+        ]
+
+    else
+        []
+
+
+{-| The count shown to the right of an item's name — "(3)" — whenever the
+count is more than one, and always while count mode is on so the number
+being edited is visible even at one.
+-}
+countSuffix : Bool -> Item -> List (Html Msg)
+countSuffix countMode item =
+    if item.count > 1 || countMode then
+        [ span [ class "chip-count-n" ] [ text ("(" ++ String.fromInt item.count ++ ")") ] ]
+
+    else
+        []
 
 
 {-| The click-to-select attribute an item badge carries while its column is

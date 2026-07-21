@@ -45,6 +45,7 @@ fn the_typed_model_round_trips_through_json() {
         id: "i1".into(),
         name: "Rice".into(),
         na: true,
+        count: 1,
       }],
     }],
     recipes: vec![Recipe {
@@ -55,6 +56,7 @@ fn the_typed_model_round_trips_through_json() {
         id: "in1".into(),
         name: "Kale".into(),
         na: false,
+        count: 1,
       }],
       instructions: "Toss it.\nServe cold.".into(),
       bookmarked: true,

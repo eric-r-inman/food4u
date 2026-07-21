@@ -30,12 +30,17 @@ badge moves every selected item at once.
 type alias Selection =
     { active : Bool
     , items : Set String
+
+    -- App-wide count mode: when on, item badges outside the pyramid show
+    -- up/down arrows to edit their count. Co-located here so both badge
+    -- modes reach the lazy column views as one already-threaded value.
+    , countMode : Bool
     }
 
 
 noSelection : Selection
 noSelection =
-    { active = False, items = Set.empty }
+    { active = False, items = Set.empty, countMode = False }
 
 
 {-| The AI recipe assistant's state. `settings` and `prefs` persist across

@@ -57,7 +57,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .map_err(read)?;
 
   let items = sqlx::query_as::<_, StorageItemRow>(
-    "select i.location_id, i.id, i.name, i.needs as na from storage_items i \
+    "select i.location_id, i.id, i.name, i.needs as na, i.count from storage_items i \
      join storage_locations l on l.id = i.location_id \
      where l.user_id = $1 order by i.location_id, i.position",
   )
@@ -76,7 +76,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .map_err(read)?;
 
   let ingredients = sqlx::query_as::<_, IngredientRow>(
-    "select g.recipe_id, g.id, g.name, g.needs as na from recipe_ingredients g \
+    "select g.recipe_id, g.id, g.name, g.needs as na, g.count from recipe_ingredients g \
      join recipes r on r.id = g.recipe_id \
      where r.user_id = $1 order by g.recipe_id, g.position",
   )
@@ -277,13 +277,14 @@ pub async fn save(
 
     for (item_pos, item) in card.items.iter().enumerate() {
       sqlx::query(
-        "insert into storage_items (id, location_id, name, needs, position) \
-         values ($1, $2, $3, $4, $5)",
+        "insert into storage_items (id, location_id, name, needs, count, position) \
+         values ($1, $2, $3, $4, $5, $6)",
       )
       .bind(&item.id)
       .bind(&card.id)
       .bind(&item.name)
       .bind(item.na)
+      .bind(item.count)
       .bind(item_pos as i64)
       .execute(&mut *tx)
       .await
@@ -309,13 +310,14 @@ pub async fn save(
 
     for (ing_pos, ingredient) in recipe.ingredients.iter().enumerate() {
       sqlx::query(
-        "insert into recipe_ingredients (id, recipe_id, name, needs, position) \
-         values ($1, $2, $3, $4, $5)",
+        "insert into recipe_ingredients (id, recipe_id, name, needs, count, position) \
+         values ($1, $2, $3, $4, $5, $6)",
       )
       .bind(&ingredient.id)
       .bind(&recipe.id)
       .bind(&ingredient.name)
       .bind(ingredient.na)
+      .bind(ingredient.count)
       .bind(ing_pos as i64)
       .execute(&mut *tx)
       .await

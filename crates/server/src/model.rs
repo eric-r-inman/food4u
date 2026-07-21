@@ -101,6 +101,16 @@ pub struct Item {
   pub id: String,
   pub name: String,
   pub na: bool,
+  /// How many of this item the badge stands for; at least one.  Absent in
+  /// documents saved before counts existed, where it reads as a single
+  /// unit.
+  #[serde(default = "one")]
+  pub count: i64,
+}
+
+/// The default item count for documents that predate the field.
+fn one() -> i64 {
+  1
 }
 
 /// A recipe: its meal category, ingredient chips, and free-text

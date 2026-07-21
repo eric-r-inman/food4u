@@ -52,7 +52,7 @@ import Staples exposing (missingStaples)
 import Style exposing (styles)
 import Task
 import Types exposing (AddTarget(..), Me, RecipeFilter(..))
-import Ui exposing (addInputId, editingPaneDomId, pasteInputId, selectToggle)
+import Ui exposing (addInputId, countToggle, editingPaneDomId, pasteInputId, selectToggle)
 
 
 {-| Persist the AI settings and preferences to the browser's localStorage.
@@ -511,16 +511,40 @@ update msg model =
 
         ToggleSelectMode ->
             -- Flipping select mode starts a fresh selection, so no stale
-            -- picks linger from a previous round.
-            ( { model | selection = { active = not model.selection.active, items = Set.empty } }
+            -- picks linger from a previous round; count mode is left as is.
+            ( { model | selection = { active = not model.selection.active, items = Set.empty, countMode = model.selection.countMode } }
             , Cmd.none
             )
+
+        ToggleCountMode ->
+            ( { model | selection = (\s -> { s | countMode = not s.countMode }) model.selection }, Cmd.none )
+
+        ChangeItemCount loc itemId delta ->
+            -- Count applies to stored and recipe items only; mapStorage is a
+            -- no-op on a pyramid loc, so a stray pyramid change does nothing.
+            withData model
+                (\data ->
+                    persistData model
+                        (mapStorage loc
+                            (List.map
+                                (\i ->
+                                    if i.id == itemId then
+                                        { i | count = Basics.max 1 (i.count + delta) }
+
+                                    else
+                                        i
+                                )
+                            )
+                            data
+                        )
+                )
 
         ToggleItemSelected key ->
             ( { model
                 | selection =
                     { active = model.selection.active
                     , items = toggleMember key model.selection.items
+                    , countMode = model.selection.countMode
                     }
               }
             , Cmd.none
@@ -540,14 +564,14 @@ update msg model =
                         | data = Just newData
                         , derived = derive newData
                         , seq = newSeq
-                        , selection = { active = model.selection.active, items = Set.fromList newKeys }
+                        , selection = { active = model.selection.active, items = Set.fromList newKeys, countMode = model.selection.countMode }
                       }
                     , saveModel newData
                     )
                 )
 
         DeselectAll ->
-            ( { model | selection = { active = model.selection.active, items = Set.empty } }, Cmd.none )
+            ( { model | selection = { active = model.selection.active, items = Set.empty, countMode = model.selection.countMode } }, Cmd.none )
 
         DragStart loc foodId ->
             ( { model | drag = Just (Drag loc foodId) }, Cmd.none )
@@ -571,7 +595,7 @@ update msg model =
                             , derived = derive newData
                             , seq = newSeq
                             , drag = Nothing
-                            , selection = { active = model.selection.active, items = Set.empty }
+                            , selection = { active = model.selection.active, items = Set.empty, countMode = model.selection.countMode }
                           }
                         , saveModel newData
                         )
@@ -862,7 +886,7 @@ commitAdd target model =
                                 pushFood gid (Food newId value "F" False False "") data
 
                             AddFood loc ->
-                                pushItemTo loc (Item newId value False) data
+                                pushItemTo loc (Item newId value False 1) data
 
                             AddRecipe category ->
                                 { data | recipes = data.recipes ++ [ Recipe newId (String.left recipeNameLimit value) category [] "" False [] ] }
@@ -951,7 +975,7 @@ commitPaste category model =
 
                     ( ingredients, seqAfter ) =
                         List.foldl
-                            (\nm ( acc, s ) -> ( acc ++ [ Item (nextId s) nm False ], s + 1 ))
+                            (\nm ( acc, s ) -> ( acc ++ [ Item (nextId s) nm False 1 ], s + 1 ))
                             ( [], model.seq )
                             parsed.ingredients
 
@@ -1085,7 +1109,7 @@ addRecipeToCart rid model =
                         ( newData, newSeq ) =
                             List.foldl
                                 (\ing ( d, s ) ->
-                                    ( pushItemTo (StoragePane cid) (Item (nextId s) ing.name ing.na) d
+                                    ( pushItemTo (StoragePane cid) (Item (nextId s) ing.name ing.na 1) d
                                     , s + 1
                                     )
                                 )
@@ -1124,7 +1148,7 @@ addStaplesToCart model =
                         ( newData, newSeq ) =
                             List.foldl
                                 (\item ( d, s ) ->
-                                    ( pushItemTo (StoragePane cid) (Item (nextId s) item.name item.na) d
+                                    ( pushItemTo (StoragePane cid) (Item (nextId s) item.name item.na 1) d
                                     , s + 1
                                     )
                                 )
@@ -1159,7 +1183,7 @@ autoPopulateStaples dietName model =
                 ( newData, newSeq ) =
                     List.foldl
                         (\name ( d, s ) ->
-                            ( pushItemTo (StoragePane staplesTrackerId) (Item (nextId s) name False) d
+                            ( pushItemTo (StoragePane staplesTrackerId) (Item (nextId s) name False 1) d
                             , s + 1
                             )
                         )
@@ -1539,7 +1563,7 @@ performDrop drag target seq data =
                     ( data, seq )
 
                 else
-                    ( pushItemTo target (Item (nextId seq) name na) data, seq + 1 )
+                    ( pushItemTo target (Item (nextId seq) name na 1) data, seq + 1 )
 
             else if listHasName target name data then
                 ( removeFood drag.from drag.foodId data, seq )
@@ -1696,7 +1720,7 @@ acceptAiRecipe model =
 
                 ( ingredients, seqAfter ) =
                     List.foldl
-                        (\ing ( acc, s ) -> ( acc ++ [ Item (nextId s) ing.name False ], s + 1 ))
+                        (\ing ( acc, s ) -> ( acc ++ [ Item (nextId s) ing.name False 1 ], s + 1 ))
                         ( [], model.seq )
                         generated.ingredients
 
@@ -1742,7 +1766,7 @@ addMissingToCart recipe seq data =
     case cartCardId data of
         Just cid ->
             List.foldl
-                (\ing ( d, s ) -> ( pushItemTo (StoragePane cid) (Item (nextId s) ing.name ing.na) d, s + 1 ))
+                (\ing ( d, s ) -> ( pushItemTo (StoragePane cid) (Item (nextId s) ing.name ing.na 1) d, s + 1 ))
                 ( data, seq )
                 toAdd
 
@@ -1816,7 +1840,7 @@ view model =
           -- both stay pinned on screen wherever the page itself scrolls.
           div [ class "app-header noprint" ]
             [ viewToolbar model.me
-            , viewSelectBar model.selection.active (Set.size model.selection.items)
+            , viewSelectBar model.selection.active (Set.size model.selection.items) model.selection.countMode
             ]
         , viewError model.error
         , case model.data of
@@ -1893,10 +1917,11 @@ on, marks every column's item badges with a tap-to-select circle so several
 can be moved at once — by dragging one, or with the ⬇ on a destination. A
 "Deselect all" appears once more than one item is picked.
 -}
-viewSelectBar : Bool -> Int -> Html Msg
-viewSelectBar active selectedCount =
+viewSelectBar : Bool -> Int -> Bool -> Html Msg
+viewSelectBar active selectedCount countMode =
     div [ class "noprint", class "select-bar" ]
         (selectToggle active selectedCount ToggleSelectMode
+            :: countToggle countMode ToggleCountMode
             :: (if selectedCount > 1 then
                     [ button [ type_ "button", class "deselect-all-btn", onClick DeselectAll ] [ text "Deselect all" ] ]
 

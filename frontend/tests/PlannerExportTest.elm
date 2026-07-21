@@ -20,7 +20,7 @@ sampleData =
         [ { id = "r1"
           , name = "Oatmeal"
           , category = "Breakfast"
-          , ingredients = [ { id = "i1", name = "Oats", na = False } ]
+          , ingredients = [ { id = "i1", name = "Oats", na = False, count = 1 } ]
           , instructions = "Cook the oats."
           , bookmarked = False
           , tags = []
@@ -28,7 +28,7 @@ sampleData =
         , { id = "r2"
           , name = "Big Salad"
           , category = "Salads"
-          , ingredients = [ { id = "i2", name = "Greens", na = False } ]
+          , ingredients = [ { id = "i2", name = "Greens", na = False, count = 1 } ]
           , instructions = "Toss."
           , bookmarked = False
           , tags = [ "Quick" ]

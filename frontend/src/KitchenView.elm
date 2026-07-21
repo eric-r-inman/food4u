@@ -48,6 +48,9 @@ viewKitchenBody adding addValue editingPane rawSearch toggled selection derived 
         selectMode =
             selection.active
 
+        countMode =
+            selection.countMode
+
         selected =
             selection.items
 
@@ -64,7 +67,7 @@ viewKitchenBody adding addValue editingPane rawSearch toggled selection derived 
             staples
                 |> List.filter (\c -> c.name == staplesTrackerName)
                 |> List.head
-                |> Maybe.map (viewStaplesTracker toggled kitchenSearch selectMode selected derived)
+                |> Maybe.map (viewStaplesTracker toggled kitchenSearch selectMode countMode selected derived)
                 |> Maybe.withDefault (text "")
     in
     div (class "kitchen-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
@@ -72,7 +75,7 @@ viewKitchenBody adding addValue editingPane rawSearch toggled selection derived 
         , div [ class "kitchen-body" ]
             (viewSearchField "Search Kitchen…" rawSearch (kitchenSearch /= "" && not anyMatch) KitchenSearchInput []
                 :: trackerView
-                :: List.map (\c -> viewPane toggled kitchenSearch selectMode selected derived (paneEditFor editingPane c) c) kitchenPanes
+                :: List.map (\c -> viewPane toggled kitchenSearch selectMode countMode selected derived (paneEditFor editingPane c) c) kitchenPanes
                 ++ [ viewAdder adding addValue AddPane "New pane name…" "+ Add pane" ]
             )
         ]
@@ -83,8 +86,8 @@ foods the user wants to keep on hand. A staple not on hand in any kitchen
 pane shows red, and the cart button sends every such missing staple to the
 Shopping List.
 -}
-viewStaplesTracker : Set String -> String -> Bool -> Set String -> Indices -> Card -> Html Msg
-viewStaplesTracker toggled search selectMode selected derived card =
+viewStaplesTracker : Set String -> String -> Bool -> Bool -> Set String -> Indices -> Card -> Html Msg
+viewStaplesTracker toggled search selectMode countMode selected derived card =
     let
         loc =
             StoragePane card.id
@@ -132,7 +135,7 @@ viewStaplesTracker toggled search selectMode selected derived card =
                         , p [ class "staples-note" ] [ text "Add staple foods here. Click the 🛒 button to add missing staples (not in your Kitchen, colored red) to your shopping list." ]
                         , Keyed.node "div"
                             [ class "staples-items" ]
-                            (List.map (\item -> ( item.id, viewItem selectMode selected (missing item) search derived.nameTierRail loc item )) sorted)
+                            (List.map (\item -> ( item.id, viewItem selectMode countMode selected (missing item) search derived.nameTierRail loc item )) sorted)
                         ]
                     ]
                )
@@ -182,8 +185,8 @@ paneEditFor editingPane card =
             )
 
 
-viewPane : Set String -> String -> Bool -> Set String -> Indices -> Maybe PaneEdit -> Card -> Html Msg
-viewPane toggled search selectMode selected derived edit card =
+viewPane : Set String -> String -> Bool -> Bool -> Set String -> Indices -> Maybe PaneEdit -> Card -> Html Msg
+viewPane toggled search selectMode countMode selected derived edit card =
     let
         editing =
             edit /= Nothing
@@ -302,7 +305,7 @@ viewPane toggled search selectMode selected derived edit card =
             else
                 [ Keyed.node "div"
                     (styles [ ( "padding", "14px 15px" ), ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "7px" ), ( "align-content", "flex-start" ), ( "min-height", "44px" ), ( "flex", "1" ) ])
-                    (List.map (\item -> ( item.id, viewItem selectMode selected False search derived.nameTierRail stockLoc item )) (sortItems card.items))
+                    (List.map (\item -> ( item.id, viewItem selectMode countMode selected False search derived.nameTierRail stockLoc item )) (sortItems card.items))
                 ]
     in
     div

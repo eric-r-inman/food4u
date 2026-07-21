@@ -52,6 +52,7 @@ fn sample() -> Model {
         id: "i1".into(),
         name: "Rice".into(),
         na: false,
+        count: 1,
       }],
     }],
     recipes: vec![],
@@ -93,6 +94,7 @@ async fn storage_items_add_remove_and_clear() {
       id: "i2".into(),
       name: "Oats".into(),
       na: false,
+      count: 1,
     },
   )
   .await
@@ -126,6 +128,7 @@ async fn recipes_add_and_delete() {
         id: "ri1".into(),
         name: "Kale".into(),
         na: false,
+        count: 1,
       }],
       instructions: "Toss.".into(),
       bookmarked: false,

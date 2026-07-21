@@ -192,6 +192,10 @@ type alias Item =
     { id : String
     , name : String
     , na : Bool
+
+    -- How many of this item the badge stands for; at least one. Absent in
+    -- documents saved before counts existed, where it decodes to 1.
+    , count : Int
     }
 
 
@@ -372,10 +376,16 @@ cardDecoder =
 
 itemDecoder : Decoder Item
 itemDecoder =
-    Decode.map3 Item
+    Decode.map4 Item
         (Decode.field "id" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.field "na" Decode.bool)
+        -- "count" is absent in older saved data; default to a single unit.
+        (Decode.oneOf
+            [ Decode.field "count" Decode.int
+            , Decode.succeed 1
+            ]
+        )
 
 
 encodeData : Data -> Encode.Value
@@ -469,6 +479,7 @@ encodeItem item =
         [ ( "id", Encode.string item.id )
         , ( "name", Encode.string item.name )
         , ( "na", Encode.bool item.na )
+        , ( "count", Encode.int item.count )
         ]
 
 
