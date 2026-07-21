@@ -43,7 +43,7 @@ axum = "0.8"
 tokio = { version = "1.41", features = ["full"] }
 tokio-listener = { version = "0.5", features = ["axum08"] }
 tower = "0.5"
-tower-http = { version = "0.6", features = ["trace", "cors", "fs", "set-header"] }
+tower-http = { version = "0.7", features = ["trace", "cors", "fs", "set-header"] }
 
 # Database access.  Async queries and migrations over SQLite (the verified
 # local backend) and PostgreSQL (the hosted backend); tls-rustls provides
