@@ -7,7 +7,7 @@ insert into tiers (id, no, name, freq, width, rail, tint, line, position) values
 insert into tiers (id, no, name, freq, width, rail, tint, line, position) values ('d241', '02', 'Daily', 'MOST DAYS', '82%', 'oklch(0.57 0.08 78)', 'oklch(0.965 0.022 84)', 'oklch(0.88 0.04 84)', 1);
 insert into tiers (id, no, name, freq, width, rail, tint, line, position) values ('d260', '03', 'Weekly', '2–3× PER WEEK', '64%', 'oklch(0.49 0.06 232)', 'oklch(0.965 0.015 232)', 'oklch(0.87 0.03 232)', 2);
 insert into tiers (id, no, name, freq, width, rail, tint, line, position) values ('d270', '04', 'Occasionally', 'A FEW ×/MONTH', '46%', 'oklch(0.52 0.1 42)', 'oklch(0.965 0.022 50)', 'oklch(0.88 0.045 50)', 3);
-insert into food_groups (id, tier_id, label, position) values ('d6', 'd166', 'Oils & healthy fats', 0);
+insert into food_groups (id, tier_id, label, position) values ('d6', 'd166', 'Plant-based Oils & Fats', 0);
 insert into food_groups (id, tier_id, label, position) values ('d29', 'd166', 'Leafy greens', 1);
 insert into food_groups (id, tier_id, label, position) values ('d94', 'd166', 'Vegetables', 2);
 insert into food_groups (id, tier_id, label, position) values ('d109', 'd166', 'Whole grains', 3);
@@ -23,7 +23,7 @@ insert into food_groups (id, tier_id, label, position) values ('d240', 'd241', '
 insert into food_groups (id, tier_id, label, position) values ('d255', 'd260', 'Oily & white fish', 0);
 insert into food_groups (id, tier_id, label, position) values ('d259', 'd260', 'Eggs & poultry', 1);
 insert into food_groups (id, tier_id, label, position) values ('d264', 'd270', 'Sweeteners & extras', 0);
-insert into food_groups (id, tier_id, label, position) values ('d269', 'd270', 'Limit', 1);
+insert into food_groups (id, tier_id, label, position) values ('d269', 'd270', 'Snacks', 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d95', 'd109', 'Oats', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d96', 'd109', 'Farro', 'P', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d97', 'd109', 'Barley', 'P', false, 2);

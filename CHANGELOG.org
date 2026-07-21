@@ -3,6 +3,10 @@
 
 * Upcoming
 ** Added
+1. The bundled default catalog renames two Longevity Foods categories: the
+   Foundation tier's "Oils & healthy fats" becomes "Plant-based Oils & Fats",
+   and the Occasionally tier's "Limit" becomes "Snacks". Existing kitchens keep
+   their own category names; the rename reaches only kitchens seeded afterward.
 ** Fixes
 1. A search in the Longevity Foods column now collapses every category that has
    no match, even ones you had opened, and expands only the categories whose
