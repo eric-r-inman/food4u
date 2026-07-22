@@ -3,15 +3,17 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.7.0
+** Added
 1. A "Pare" toggle beside "Count" gates every delete control. With it off — the
    default — no item badge or category shows a ✕, so badges stay clean and a
    stray click can never delete a food or category. Turning it on reveals the ✕
    on each item badge and category header for deliberate pruning. The ✕ now sits
    in the badge's flow rather than overlaying its right edge, so it never covers
    the name or count.
-** Fixes
-** Breaking
-** Maintenance
 * v0.6.0
 ** Maintenance
 1. Bump rust-template-foundation from `65f9706` to `86bbbcb`
