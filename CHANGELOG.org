@@ -6,6 +6,8 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+* v0.6.0
+** Maintenance
 1. Bump rust-template-foundation from `65f9706` to `86bbbcb` (https://github.com/eric-r-inman/food4u/pull/17)
 * v0.5.0
 ** Added
