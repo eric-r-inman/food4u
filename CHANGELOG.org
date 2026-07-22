@@ -3,12 +3,19 @@
 
 * Upcoming
 ** Added
+1. A "Pare" toggle beside "Count" gates every delete control. With it off — the
+   default — no item badge or category shows a ✕, so badges stay clean and a
+   stray click can never delete a food or category. Turning it on reveals the ✕
+   on each item badge and category header for deliberate pruning. The ✕ now sits
+   in the badge's flow rather than overlaying its right edge, so it never covers
+   the name or count.
 ** Fixes
 ** Breaking
 ** Maintenance
 * v0.6.0
 ** Maintenance
-1. Bump rust-template-foundation from `65f9706` to `86bbbcb` (https://github.com/eric-r-inman/food4u/pull/17)
+1. Bump rust-template-foundation from `65f9706` to `86bbbcb`
+   (https://github.com/eric-r-inman/food4u/pull/17)
 * v0.5.0
 ** Added
 1. The bundled default catalog renames two Longevity Foods categories: the
@@ -26,7 +33,8 @@
    open categories. Clearing the search restores your categories as they were.
 * v0.4.0
 ** Maintenance
-1. Bump clap from 4.6.0 to 4.6.3 (https://github.com/eric-r-inman/food4u/pull/12)
+1. Bump clap from 4.6.0 to 4.6.3
+   (https://github.com/eric-r-inman/food4u/pull/12)
 * v0.3.0
 ** Added
 1. Give an item a count: a "Count" toggle beside "Select" turns on an up/down

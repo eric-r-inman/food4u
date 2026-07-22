@@ -35,12 +35,18 @@ type alias Selection =
     -- up/down arrows to edit their count. Co-located here so both badge
     -- modes reach the lazy column views as one already-threaded value.
     , countMode : Bool
+
+    -- App-wide pare mode: when on, the delete ✕ on every item badge and
+    -- category header is rendered; when off they are omitted entirely, so
+    -- ordinary use cannot mis-click a delete. Threaded like countMode and
+    -- gated at each control's render site.
+    , pareMode : Bool
     }
 
 
 noSelection : Selection
 noSelection =
-    { active = False, items = Set.empty, countMode = False }
+    { active = False, items = Set.empty, countMode = False, pareMode = False }
 
 
 {-| The AI recipe assistant's state. `settings` and `prefs` persist across

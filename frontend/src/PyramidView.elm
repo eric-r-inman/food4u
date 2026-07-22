@@ -18,7 +18,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, foodChipStyle, searchHighlightStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..))
-import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnDragAttrs, columnTitleBar, moveHereButton, notepadButton, recipeDropZone, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (categoryDeleteControl, collapsedColumnBar, columnDragAttrs, columnTitleBar, moveHereButton, notepadButton, pareRemove, recipeDropZone, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 viewPyramidColumn : Model -> Data -> Html Msg
@@ -51,6 +51,9 @@ viewPyramidBody rawSearch toggled adding addValue confirmingDelete selection inS
         selectMode =
             selection.active
 
+        pareMode =
+            selection.pareMode
+
         anyMatch =
             search /= "" && List.any (\f -> String.contains search (String.toLower f.name)) (List.concatMap (\t -> List.concatMap .foods t.groups) tiers)
     in
@@ -59,13 +62,13 @@ viewPyramidBody rawSearch toggled adding addValue confirmingDelete selection inS
         , div [ class "pyramid-body" ]
             [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput []
             , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
-                (List.map (viewTier toggled adding addValue confirmingDelete selectMode selection.items inStock search) tiers)
+                (List.map (viewTier toggled adding addValue confirmingDelete selectMode pareMode selection.items inStock search) tiers)
             ]
         ]
 
 
-viewTier : Set String -> Maybe AddTarget -> String -> Maybe String -> Bool -> Set String -> Set String -> String -> Tier -> Html Msg
-viewTier toggled adding addValue confirmingDelete selectMode selected inStock search tier =
+viewTier : Set String -> Maybe AddTarget -> String -> Maybe String -> Bool -> Bool -> Set String -> Set String -> String -> Tier -> Html Msg
+viewTier toggled adding addValue confirmingDelete selectMode pareMode selected inStock search tier =
     let
         foods =
             List.concatMap .foods tier.groups
@@ -111,14 +114,14 @@ viewTier toggled adding addValue confirmingDelete selectMode selected inStock se
                 , ( "gap", "12px" )
                 ]
             )
-            (List.map (viewCategory toggled adding addValue confirmingDelete selectMode selected inStock search tier) tier.groups
+            (List.map (viewCategory toggled adding addValue confirmingDelete selectMode pareMode selected inStock search tier) tier.groups
                 ++ [ viewAdder adding addValue (AddCategory tier.id) "New category…" "+ Add category" ]
             )
         ]
 
 
-viewCategory : Set String -> Maybe AddTarget -> String -> Maybe String -> Bool -> Set String -> Set String -> String -> Tier -> Group -> Html Msg
-viewCategory toggled adding addValue confirmingDelete selectMode selected inStock search tier group =
+viewCategory : Set String -> Maybe AddTarget -> String -> Maybe String -> Bool -> Bool -> Set String -> Set String -> String -> Tier -> Group -> Html Msg
+viewCategory toggled adding addValue confirmingDelete selectMode pareMode selected inStock search tier group =
     let
         loc =
             PyramidGroup group.id
@@ -184,7 +187,12 @@ viewCategory toggled adding addValue confirmingDelete selectMode selected inStoc
              , span (styles [ ( "margin-left", "auto" ), ( "opacity", "0.55" ), ( "font-weight", "500" ) ]) [ text (String.fromInt (List.length group.foods)) ]
              ]
                 ++ moveControl
-                ++ [ categoryDeleteControl (confirmingDelete == Just group.id) (RequestDelete group.id) (RemoveCategory group.id) CancelDelete ]
+                ++ (if pareMode then
+                        [ categoryDeleteControl (confirmingDelete == Just group.id) (RequestDelete group.id) (RemoveCategory group.id) CancelDelete ]
+
+                    else
+                        []
+                   )
             )
             :: (if isCollapsed then
                     []
@@ -194,7 +202,7 @@ viewCategory toggled adding addValue confirmingDelete selectMode selected inStoc
                         (styles [ ( "display", "flex" ), ( "flex-wrap", "wrap" ), ( "gap", "6px" ) ])
                         (group.foods
                             |> List.sortBy (\f -> String.toLower f.name)
-                            |> List.map (\f -> ( f.id, viewFood selectMode selected bg inStock search loc f ))
+                            |> List.map (\f -> ( f.id, viewFood selectMode pareMode selected bg inStock search loc f ))
                         )
                     , viewAdder adding addValue (AddFood loc) "Add food…" "+ Add"
                     ]
@@ -202,8 +210,8 @@ viewCategory toggled adding addValue confirmingDelete selectMode selected inStoc
         )
 
 
-viewFood : Bool -> Set String -> String -> Set String -> String -> Loc -> Food -> Html Msg
-viewFood selectMode selected bg inStock search loc food =
+viewFood : Bool -> Bool -> Set String -> String -> Set String -> String -> Loc -> Food -> Html Msg
+viewFood selectMode pareMode selected bg inStock search loc food =
     let
         matches =
             search /= "" && String.contains search (String.toLower food.name)
@@ -224,5 +232,5 @@ viewFood selectMode selected bg inStock search loc food =
                 else
                     []
                )
-            ++ [ removeButton (RemoveFoodMsg loc food.id) ]
+            ++ pareRemove pareMode loc food.id
         )

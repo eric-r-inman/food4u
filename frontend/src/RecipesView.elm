@@ -19,7 +19,7 @@ import Msg exposing (Msg(..))
 import Set exposing (Set)
 import Style exposing (cardStyle, chipBase, foodChipStyle, styles, tierChipBg)
 import Types exposing (AddTarget(..), RecipeFilter(..))
-import Ui exposing (bookmarkButton, collapsedColumnBar, columnDragAttrs, countArrows, countSuffix, dropZone, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, removeButton, selectAttrs, selectLead, viewAdder, viewSearchField)
+import Ui exposing (bookmarkButton, collapsedColumnBar, columnDragAttrs, countArrows, countSuffix, dropZone, pareRemove, pasteInputId, recipeCartButton, recipeDeleteButton, recipeExportButton, selectAttrs, selectLead, viewAdder, viewSearchField)
 
 
 {-| The longest a recipe name may be: what fits on one line of the expanded
@@ -430,13 +430,13 @@ viewRecipeCategory model nameToTierRail inStock stockedNoCart recipeSearch data 
                          else
                             [ viewRecipeFooter model category ]
                         )
-                            ++ List.map (viewRecipe model.toggled model.selection.active model.selection.countMode model.selection.items nameToTierRail inStock stockedNoCart recipeSearch model.recipeDrag model.recipeDropBefore model.adding model.addValue) recipesInCat
+                            ++ List.map (viewRecipe model.toggled model.selection.active model.selection.countMode model.selection.pareMode model.selection.items nameToTierRail inStock stockedNoCart recipeSearch model.recipeDrag model.recipeDropBefore model.adding model.addValue) recipesInCat
                    )
             )
 
 
-viewRecipe : Set String -> Bool -> Bool -> Set String -> Dict String String -> Set String -> Set String -> String -> Maybe String -> Maybe String -> Maybe AddTarget -> String -> Recipe -> Html Msg
-viewRecipe toggled selectMode countMode selected nameToTierRail inStock stockedNoCart recipeSearch recipeDrag dropBefore adding addValue recipe =
+viewRecipe : Set String -> Bool -> Bool -> Bool -> Set String -> Dict String String -> Set String -> Set String -> String -> Maybe String -> Maybe String -> Maybe AddTarget -> String -> Recipe -> Html Msg
+viewRecipe toggled selectMode countMode pareMode selected nameToTierRail inStock stockedNoCart recipeSearch recipeDrag dropBefore adding addValue recipe =
     let
         loc =
             RecipeIngredients recipe.id
@@ -575,7 +575,7 @@ viewRecipe toggled selectMode countMode selected nameToTierRail inStock stockedN
                             [ span (styles [ ( "font-size", "12px" ), ( "color", "oklch(0.6 0.012 70)" ), ( "font-style", "italic" ) ]) [ text "Drag ingredients here." ] ]
 
                          else
-                            List.map (viewRecipeItem selectMode countMode selected nameToTierRail inStock loc) recipe.ingredients
+                            List.map (viewRecipeItem selectMode countMode pareMode selected nameToTierRail inStock loc) recipe.ingredients
                         )
                     , div [ class "recipe-section-label" ] [ text "Tags" ]
                     , div [ class "recipe-tags" ]
@@ -614,8 +614,8 @@ viewRecipe toggled selectMode countMode selected nameToTierRail inStock stockedN
 chips, but outlined in red when the ingredient is not stocked in any
 storage pane (a cue to add it to a shopping list).
 -}
-viewRecipeItem : Bool -> Bool -> Set String -> Dict String String -> Set String -> Loc -> Item -> Html Msg
-viewRecipeItem selectMode countMode selected nameToTierRail inStock loc item =
+viewRecipeItem : Bool -> Bool -> Bool -> Set String -> Dict String String -> Set String -> Loc -> Item -> Html Msg
+viewRecipeItem selectMode countMode pareMode selected nameToTierRail inStock loc item =
     let
         inPyramid =
             Dict.member (String.toLower item.name) nameToTierRail
@@ -661,5 +661,5 @@ viewRecipeItem selectMode countMode selected nameToTierRail inStock loc item =
                         [ text "!" ]
                     ]
                )
-            ++ [ removeButton (RemoveFoodMsg loc item.id) ]
+            ++ pareRemove pareMode loc item.id
         )

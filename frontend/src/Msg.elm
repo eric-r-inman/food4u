@@ -64,6 +64,7 @@ type Msg
     | ClearCart
     | ToggleSelectMode
     | ToggleCountMode
+    | TogglePareMode
     | ChangeItemCount Loc String Int
     | ToggleItemSelected String
     | MoveSelectedTo Loc

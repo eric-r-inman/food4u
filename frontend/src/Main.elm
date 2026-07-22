@@ -52,7 +52,7 @@ import Staples exposing (missingStaples)
 import Style exposing (styles)
 import Task
 import Types exposing (AddTarget(..), Me, RecipeFilter(..))
-import Ui exposing (addInputId, countToggle, editingPaneDomId, pasteInputId, selectToggle)
+import Ui exposing (addInputId, countToggle, editingPaneDomId, pareToggle, pasteInputId, selectToggle)
 
 
 {-| Persist the AI settings and preferences to the browser's localStorage.
@@ -511,13 +511,17 @@ update msg model =
 
         ToggleSelectMode ->
             -- Flipping select mode starts a fresh selection, so no stale
-            -- picks linger from a previous round; count mode is left as is.
-            ( { model | selection = { active = not model.selection.active, items = Set.empty, countMode = model.selection.countMode } }
+            -- picks linger from a previous round; the other badge modes are
+            -- left as they are.
+            ( { model | selection = (\s -> { s | active = not s.active, items = Set.empty }) model.selection }
             , Cmd.none
             )
 
         ToggleCountMode ->
             ( { model | selection = (\s -> { s | countMode = not s.countMode }) model.selection }, Cmd.none )
+
+        TogglePareMode ->
+            ( { model | selection = (\s -> { s | pareMode = not s.pareMode }) model.selection }, Cmd.none )
 
         ChangeItemCount loc itemId delta ->
             -- Count applies to stored and recipe items only; mapStorage is a
@@ -540,13 +544,7 @@ update msg model =
                 )
 
         ToggleItemSelected key ->
-            ( { model
-                | selection =
-                    { active = model.selection.active
-                    , items = toggleMember key model.selection.items
-                    , countMode = model.selection.countMode
-                    }
-              }
+            ( { model | selection = (\s -> { s | items = toggleMember key s.items }) model.selection }
             , Cmd.none
             )
 
@@ -564,14 +562,14 @@ update msg model =
                         | data = Just newData
                         , derived = derive newData
                         , seq = newSeq
-                        , selection = { active = model.selection.active, items = Set.fromList newKeys, countMode = model.selection.countMode }
+                        , selection = (\s -> { s | items = Set.fromList newKeys }) model.selection
                       }
                     , saveModel newData
                     )
                 )
 
         DeselectAll ->
-            ( { model | selection = { active = model.selection.active, items = Set.empty, countMode = model.selection.countMode } }, Cmd.none )
+            ( { model | selection = (\s -> { s | items = Set.empty }) model.selection }, Cmd.none )
 
         DragStart loc foodId ->
             ( { model | drag = Just (Drag loc foodId) }, Cmd.none )
@@ -595,7 +593,7 @@ update msg model =
                             , derived = derive newData
                             , seq = newSeq
                             , drag = Nothing
-                            , selection = { active = model.selection.active, items = Set.empty, countMode = model.selection.countMode }
+                            , selection = (\s -> { s | items = Set.empty }) model.selection
                           }
                         , saveModel newData
                         )
@@ -1840,7 +1838,7 @@ view model =
           -- both stay pinned on screen wherever the page itself scrolls.
           div [ class "app-header noprint" ]
             [ viewToolbar model.me
-            , viewSelectBar model.selection.active (Set.size model.selection.items) model.selection.countMode
+            , viewSelectBar model.selection.active (Set.size model.selection.items) model.selection.countMode model.selection.pareMode
             ]
         , viewError model.error
         , case model.data of
@@ -1917,11 +1915,12 @@ on, marks every column's item badges with a tap-to-select circle so several
 can be moved at once — by dragging one, or with the ⬇ on a destination. A
 "Deselect all" appears once more than one item is picked.
 -}
-viewSelectBar : Bool -> Int -> Bool -> Html Msg
-viewSelectBar active selectedCount countMode =
+viewSelectBar : Bool -> Int -> Bool -> Bool -> Html Msg
+viewSelectBar active selectedCount countMode pareMode =
     div [ class "noprint", class "select-bar" ]
         (selectToggle active selectedCount ToggleSelectMode
             :: countToggle countMode ToggleCountMode
+            :: pareToggle pareMode TogglePareMode
             :: (if selectedCount > 1 then
                     [ button [ type_ "button", class "deselect-all-btn", onClick DeselectAll ] [ text "Deselect all" ] ]
 

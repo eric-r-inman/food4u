@@ -890,7 +890,8 @@ button {
   color: var(--pane-fg);
 }
 
-/* The delete control shared by pyramid and Shopping List category headers.
+/* The delete control shared by pyramid and Shopping List category headers,
+   rendered only while Pare mode is on like the per-chip remove control.
    The ✕ inherits the header's text colour so it reads on both the light
    pyramid header and a coloured Shopping List header. */
 .cat-delete-btn {
@@ -1647,22 +1648,13 @@ button {
   cursor: pointer;
 }
 
-/* The per-chip remove control is hidden until the chip is hovered, so a
-   dense list of foods stays readable.  It overlays the chip's right edge
-   as a small pill instead of sitting in the flow: taking layout width on
-   hover used to widen the chip, and a chip flush against the pane edge
-   would wrap to the next row, out from under the cursor, making its ✕
-   unclickable. */
-.chip {
-  position: relative;
-}
-
+/* The per-chip remove control, rendered only while Pare mode is on (see
+   `pareMode`) so ordinary viewing keeps badges clean with no delete target
+   to mis-click.  It sits in the badge's flow at the end rather than
+   overlaying, so it never lands on the name or count. */
 .chip-x {
-  display: none;
-  position: absolute;
-  right: 2px;
-  top: 50%;
-  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
   font-family: var(--mono-font);
   font-size: 10px;
   font-weight: 700;
@@ -1673,10 +1665,6 @@ button {
   border: 1px solid var(--chip-x-border);
   background: var(--chip-x-bg);
   color: var(--chip-x-fg);
-}
-
-.chip:hover .chip-x {
-  display: inline-block;
 }
 
 @media print {

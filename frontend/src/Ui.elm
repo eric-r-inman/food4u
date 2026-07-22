@@ -20,6 +20,8 @@ module Ui exposing
     , paneEditButton
     , paneMetaInput
     , paneNameInput
+    , pareRemove
+    , pareToggle
     , pasteInputId
     , recipeCartButton
     , recipeDeleteButton
@@ -155,6 +157,30 @@ countToggle on msg =
         ]
         [ text
             ("Count: "
+                ++ (if on then
+                        "on"
+
+                    else
+                        "off"
+                   )
+            )
+        ]
+
+
+{-| The app-wide pare-mode toggle, beside the Count toggle. When on, the
+delete ✕ on every item badge and category header is revealed so foods and
+categories can be pruned; off, they are hidden so nothing can be
+mis-clicked.
+-}
+pareToggle : Bool -> Msg -> Html Msg
+pareToggle on msg =
+    button
+        [ type_ "button"
+        , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
+        , stopPropagationOn "click" (Decode.succeed ( msg, True ))
+        ]
+        [ text
+            ("Pare: "
                 ++ (if on then
                         "on"
 
@@ -594,8 +620,8 @@ the Kitchen panes and the Shopping List sections. A `missing` staple
 (tracked but not on hand) overrides the tint with the red missing style.
 The dictionary maps a food name to its tier's rail colour.
 -}
-viewItem : Bool -> Bool -> Set String -> Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
-viewItem selectMode countMode selected missing search nameToTierRail loc item =
+viewItem : Bool -> Bool -> Bool -> Set String -> Bool -> String -> Dict String String -> Loc -> Item -> Html Msg
+viewItem selectMode countMode pareMode selected missing search nameToTierRail loc item =
     let
         bg =
             Dict.get (String.toLower item.name) nameToTierRail
@@ -616,8 +642,20 @@ viewItem selectMode countMode selected missing search nameToTierRail loc item =
         (selectLead selectMode selected loc item.id
             ++ countArrows countMode loc item
             ++ (span [] [ text item.name ] :: countSuffix countMode item)
-            ++ [ removeButton (RemoveFoodMsg loc item.id) ]
+            ++ pareRemove pareMode loc item.id
         )
+
+
+{-| The delete ✕ for an item badge, present only while pare mode is on so
+foods cannot be deleted by a stray click during ordinary use.
+-}
+pareRemove : Bool -> Loc -> String -> List (Html Msg)
+pareRemove pareMode loc itemId =
+    if pareMode then
+        [ removeButton (RemoveFoodMsg loc itemId) ]
+
+    else
+        []
 
 
 {-| The up/down count controls at the left of an item badge, shown only
