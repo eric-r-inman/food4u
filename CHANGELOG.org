@@ -3,6 +3,18 @@
 
 * Upcoming
 ** Added
+1. The bundled default catalog is refined toward specific, shoppable whole
+   foods. Generic entries split into their grocery forms under the comma
+   convention — bell peppers into green, red, and yellow; chicken and turkey
+   into their cuts; potatoes into Russet, Yukon, and red; onions into red,
+   sweet, white, yellow, and green; parsley into Italian, curly, and dried — and
+   single forms are renamed to match ("Cheese, goat", "Yogurt, Greek", "Paprika,
+   smoked", "Sesame oil", "Rapeseed oil", "Artichoke"). New whole foods join —
+   coffee, lobster, roe, salami, broccoli and mustard sprouts, carrot, pea, and
+   radish greens, canola oil, wheatgrass, and skyr — while prepared snacks that
+   were never whole foods drop out (guacamole, hummus cups, dolmas,
+   dark-chocolate almonds). Existing kitchens keep their foods; the changes
+   reach only kitchens seeded afterward.
 ** Fixes
 ** Breaking
 ** Maintenance
