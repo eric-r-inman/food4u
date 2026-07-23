@@ -1791,6 +1791,73 @@ Instructions:
 2. Cook on low 7 hours (overnight), until thick and creamy.
 3. Stir well, loosen with a splash of milk if needed.
 4. Serve topped with walnuts and a thread of maple syrup.', false, 80);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u900', 'local', 'Walnut-Crusted Chicken Breast', 'Main Courses', 'Ingredients:
+- 2 boneless, skinless chicken breasts
+- 3/4 cup walnuts, finely chopped
+- 1/2 cup whole-grain breadcrumbs (about 1 slice, toasted and crumbled)
+- 2 tbsp Dijon mustard
+- 1 tbsp honey
+- 1 tbsp extra-virgin olive oil
+- 1 tsp dried thyme
+- 1/2 tsp garlic powder
+- Lemon wedges, to serve
+
+Instructions:
+1. Heat the oven to 400°F / 200°C and line a baking sheet.
+2. Toss the chopped walnuts with the breadcrumbs, thyme, garlic powder, and a pinch of salt and pepper.
+3. Stir the mustard, honey, and olive oil together and brush over both sides of the chicken.
+4. Press the walnut mixture onto the tops, transfer to the sheet, and bake 18-22 minutes, until cooked through and the crust is toasted.
+5. Rest 5 minutes and serve with lemon wedges and a leafy salad.', false, 81);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u910', 'local', 'Mujadara (Lentils & Rice with Crispy Onions)', 'Main Courses', 'Ingredients:
+- 1 cup brown lentils, rinsed
+- 3/4 cup brown rice
+- 3 large onions, thinly sliced
+- 1/4 cup extra-virgin olive oil
+- 1 1/2 tsp ground cumin
+- 2 bay leaves
+- Salt and black pepper
+- Greek yogurt, to serve
+
+Instructions:
+1. Warm the oil in a wide pot and cook the onions with a pinch of salt over medium heat, stirring now and then, 25-30 minutes, until deeply browned and starting to crisp. Lift out half for the topping.
+2. Stir the cumin into the onions left in the pot, then add the lentils, bay leaves, and 4 cups water. Simmer 10 minutes.
+3. Add the rice, cover, and cook gently 25-30 minutes more, until the rice and lentils are tender and the water is absorbed.
+4. Rest off the heat 10 minutes, discard the bay leaves, and season.
+5. Serve topped with the reserved crispy onions and a spoonful of yogurt.', false, 82);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u920', 'local', 'Strawberry-Spinach Salad with Walnuts', 'Salads', 'Ingredients:
+- 5 oz baby spinach
+- 2 cups strawberries, hulled and sliced
+- 1/2 cup walnuts, toasted
+- 1/4 cup crumbled feta
+- 1/4 small red onion, very thinly sliced
+- 2 tbsp balsamic vinegar
+- 3 tbsp extra-virgin olive oil
+- 1 tsp honey
+- Salt and black pepper
+
+Instructions:
+1. Whisk the vinegar, honey, a pinch of salt, and a few grinds of pepper; stream in the oil.
+2. Toss the spinach, strawberries, and onion with most of the dressing.
+3. Top with the walnuts and feta, drizzle with the rest, and serve at once.', false, 83);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u930', 'local', 'Blueberry-Walnut Oat Muffins', 'Snacks', 'Ingredients:
+- 1 cup rolled oats
+- 1 cup whole-wheat flour
+- 2 tsp baking powder
+- 1 tsp cinnamon
+- 1/4 tsp salt
+- 2 eggs
+- 1/3 cup maple syrup
+- 3/4 cup soy milk (or milk of choice)
+- 1/4 cup extra-virgin olive oil
+- 1 cup blueberries (fresh or frozen)
+- 1/2 cup walnuts, chopped
+
+Instructions:
+1. Heat the oven to 375°F / 190°C and line a 10-cup muffin tin.
+2. Stir the oats, flour, baking powder, cinnamon, and salt together.
+3. Whisk the eggs, maple syrup, milk, and oil in a second bowl, then fold into the dry mix until just combined.
+4. Fold in the blueberries and walnuts and divide among the cups.
+5. Bake 20-24 minutes, until a toothpick comes out clean. Cool in the tin 10 minutes.', false, 84);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('d279', 'd278', 'Whole-grain bread', false, 1, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('d280', 'd278', 'Cucumber', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('d281', 'd278', 'Hummus', false, 1, 2);
@@ -2382,6 +2449,30 @@ insert into recipe_ingredients (id, recipe_id, name, needs, count, position) val
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u90', 'u85', 'Buckwheat / soba', false, 1, 4);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u91', 'u85', 'Shiitake', false, 1, 5);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u92', 'u85', 'Ginger', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u901', 'u900', 'Chicken, breast', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u902', 'u900', 'Walnuts', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u903', 'u900', 'Whole-grain bread', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u904', 'u900', 'Dijon mustard', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u905', 'u900', 'Honey', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u906', 'u900', 'Extra-virgin olive oil', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u907', 'u900', 'Thyme', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u908', 'u900', 'Garlic powder', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u909', 'u900', 'Lemons', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u911', 'u910', 'Lentils', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u912', 'u910', 'Brown rice', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u913', 'u910', 'Onions', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u914', 'u910', 'Extra-virgin olive oil', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u915', 'u910', 'Cumin', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u916', 'u910', 'Bay leaves', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u917', 'u910', 'Yogurt, Greek', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u921', 'u920', 'Spinach', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u922', 'u920', 'Strawberries', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u923', 'u920', 'Walnuts', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u924', 'u920', 'Feta', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u925', 'u920', 'Onion, red', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u926', 'u920', 'Balsamic vinegar', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u927', 'u920', 'Extra-virgin olive oil', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u928', 'u920', 'Honey', false, 1, 7);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u94', 'u93', 'Whole-grain bread', false, 1, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u95', 'u93', 'Avocado', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u96', 'u93', 'Cannellini beans', false, 1, 2);
@@ -2389,6 +2480,15 @@ insert into recipe_ingredients (id, recipe_id, name, needs, count, position) val
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u98', 'u93', 'Cayenne', false, 1, 4);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u99', 'u93', 'Arugula', false, 1, 5);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u100', 'u93', 'Extra-virgin olive oil', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u931', 'u930', 'Oats', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u932', 'u930', 'Whole-wheat flour', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u933', 'u930', 'Blueberries', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u934', 'u930', 'Walnuts', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u935', 'u930', 'Eggs', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u936', 'u930', 'Maple syrup', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u937', 'u930', 'Soy milk', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u938', 'u930', 'Cinnamon', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u939', 'u930', 'Extra-virgin olive oil', false, 1, 8);
 insert into recipe_tags (recipe_id, tag, position) values ('d278', 'Lunch', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u10', 'MIND', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u10', 'Quick', 1);
@@ -2607,6 +2707,20 @@ insert into recipe_tags (recipe_id, tag, position) values ('u85', 'Blue Zone', 0
 insert into recipe_tags (recipe_id, tag, position) values ('u85', 'Quick', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u85', 'One-Pot', 2);
 insert into recipe_tags (recipe_id, tag, position) values ('u85', 'Lunch', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u900', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u900', 'Chicken', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u900', 'Quick', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u900', 'Dinner', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u910', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u910', 'Mediterranean', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u910', 'One-Pot', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u910', 'Dinner', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u920', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u920', 'Quick', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u920', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u920', 'Lunch', 3);
 insert into recipe_tags (recipe_id, tag, position) values ('u93', 'MIND', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u93', 'Quick', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u93', 'Lunch', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u930', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u930', 'Breakfast', 1);

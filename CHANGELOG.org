@@ -3,7 +3,19 @@
 
 * Upcoming
 ** Added
-1. The MIND diet — the brain-focused pattern — now leads the Staples Tracker's
+1. A MIND Diet page, linked from the toolbar beside About: a short account of
+   the diet and, in the pyramid's own tier colours, its full food lists — the
+   ten Eat groups with their weekly targets, the five scored Limit ceilings, and
+   an Avoid column for what the studies effectively scored at zero. The three
+   columns sit side by side on a wide screen and stack one above another on a
+   phone.
+2. Four MIND-compliant recipes join the bundled collection, each built on the
+   diet's signature foods and unlike anything already there: Walnut-Crusted
+   Chicken Breast, Mujadara (lentils and rice under crispy onions), a
+   Strawberry-Spinach Salad with Walnuts, and Blueberry-Walnut Oat Muffins. All
+   four carry the MIND tag, so the recipe filter and the diet speak the same
+   vocabulary.
+3. The MIND diet — the brain-focused pattern — now leads the Staples Tracker's
    Auto menu and stocks a fuller list. Following the MIND trial's food groups,
    it gains berry, nut, whole-grain, and bean variety (raspberries and
    blackberries; pecans, cashews, and pistachios; barley and bulgur; canned

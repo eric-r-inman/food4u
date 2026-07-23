@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIND Diet — Longevity Pantry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      /* This page is a standalone document; it draws every shared value
+         (fonts, ink, the kicker's rail accent) from style.css's palette
+         variables and keeps only its own layout rules here.  The three
+         column palettes follow the app's tier colours: Eat wears the
+         Foundation tier's green (the pyramid rail) and Limit the
+         Occasionally amber (the cart-category accent carries the same
+         hue), both referenced from style.css so a retune follows; Avoid
+         is this page's own red in the family the app uses for warnings.
+         The tint and line shades mirror the seeded tier palette, which
+         lives in the database rather than the stylesheet, so they are
+         declared here. */
+      :root {
+        --mind-eat-rail: var(--pyramid-rail);
+        --mind-eat-tint: oklch(0.965 0.018 122);
+        --mind-eat-line: oklch(0.88 0.035 122);
+        --mind-limit-rail: var(--cart-cat-accent);
+        --mind-limit-tint: oklch(0.965 0.022 50);
+        --mind-limit-line: oklch(0.88 0.045 50);
+        --mind-avoid-rail: oklch(0.5 0.14 25);
+        --mind-avoid-tint: oklch(0.965 0.018 25);
+        --mind-avoid-line: oklch(0.88 0.05 25);
+      }
+      .about-page {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+        font-family: var(--body-font);
+        color: var(--body-fg);
+        line-height: 1.6;
+      }
+      .about-title {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+        margin: 0 0 4px;
+      }
+      .about-kicker {
+        font-family: var(--mono-font);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--pyramid-rail);
+        margin-bottom: 28px;
+      }
+      .about-heading {
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        margin: 36px 0 10px;
+      }
+      .about-text {
+        max-width: 720px;
+        margin: 0 0 14px;
+      }
+      .about-back {
+        display: inline-block;
+        margin-bottom: 36px;
+        font-family: var(--mono-font);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--auth-link-fg);
+        text-decoration: none;
+        border: 1px solid var(--auth-link-border);
+        background: var(--auth-link-bg);
+        border-radius: var(--auth-radius);
+        padding: 5px 12px;
+      }
+      .mind-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin: 18px 0 8px;
+      }
+      @media (max-width: 760px) {
+        .mind-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .mind-col {
+        border-radius: 11px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid;
+      }
+      .mind-col-eat {
+        background: var(--mind-eat-tint);
+        border-color: var(--mind-eat-line);
+      }
+      .mind-col-limit {
+        background: var(--mind-limit-tint);
+        border-color: var(--mind-limit-line);
+      }
+      .mind-col-avoid {
+        background: var(--mind-avoid-tint);
+        border-color: var(--mind-avoid-line);
+      }
+      .mind-rail {
+        color: var(--pane-fg);
+        padding: 11px 16px;
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .mind-rail-eat {
+        background: var(--mind-eat-rail);
+      }
+      .mind-rail-limit {
+        background: var(--mind-limit-rail);
+      }
+      .mind-rail-avoid {
+        background: var(--mind-avoid-rail);
+      }
+      .mind-rail-title {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+      }
+      .mind-rail-freq {
+        font-family: var(--mono-font);
+        font-size: 10.5px;
+        font-weight: 500;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .mind-list {
+        list-style: none;
+        margin: 0;
+        padding: 8px 0 10px;
+      }
+      .mind-food {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 2px 10px;
+        padding: 7px 16px;
+      }
+      .mind-food-name {
+        font-weight: 600;
+        font-size: 14.5px;
+      }
+      .mind-food-amt {
+        font-family: var(--mono-font);
+        font-size: 11px;
+        font-weight: 500;
+        opacity: 0.75;
+        margin-left: auto;
+        text-align: right;
+      }
+      .mind-note {
+        max-width: 720px;
+        font-size: 13px;
+        opacity: 0.8;
+        margin: 10px 0 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="about-page">
+      <a class="about-back" href="/">← Back to the app</a>
+
+      <h1 class="about-title">The MIND Diet</h1>
+      <div class="about-kicker">Eating for the brain</div>
+
+      <p class="about-text">
+        MIND — the Mediterranean-DASH Intervention for Neurodegenerative
+        Delay — was developed in 2015 by Martha Clare Morris and colleagues
+        at Rush University Medical Center. It blends the two best-studied
+        healthy-eating patterns, Mediterranean and DASH, and keeps the food
+        groups most strongly tied to brain health, with simple weekly
+        targets for each.
+      </p>
+      <p class="about-text">
+        In the original cohort studies, close adherence was associated with
+        markedly slower cognitive decline and lower Alzheimer's risk — and
+        even moderate adherence showed benefit, which is unusual among
+        dietary patterns. Follow-up trials are still working out how much
+        is cause and how much is correlation, but the pattern itself is a
+        sensible, food-first way to eat by any standard.
+      </p>
+
+      <h2 class="about-heading">The food lists</h2>
+      <div class="mind-grid">
+        <section class="mind-col mind-col-eat">
+          <header class="mind-rail mind-rail-eat">
+            <span class="mind-rail-title">Eat</span>
+            <span class="mind-rail-freq">Ten brain-healthy groups</span>
+          </header>
+          <ul class="mind-list">
+            <li class="mind-food">
+              <span class="mind-food-name">Green leafy vegetables</span>
+              <span class="mind-food-amt">6+ servings / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Other vegetables</span>
+              <span class="mind-food-amt">1+ serving / day</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Berries</span>
+              <span class="mind-food-amt">2+ servings / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Nuts</span>
+              <span class="mind-food-amt">5+ servings / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Beans &amp; legumes</span>
+              <span class="mind-food-amt">4+ meals / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Whole grains</span>
+              <span class="mind-food-amt">3+ servings / day</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Fish, omega-3-rich</span>
+              <span class="mind-food-amt">1+ meal / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Poultry</span>
+              <span class="mind-food-amt">2+ meals / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Extra-virgin olive oil</span>
+              <span class="mind-food-amt">principal cooking fat</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Wine, optional</span>
+              <span class="mind-food-amt">≤ 1 glass / day, or none</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="mind-col mind-col-limit">
+          <header class="mind-rail mind-rail-limit">
+            <span class="mind-rail-title">Limit</span>
+            <span class="mind-rail-freq">Five scored ceilings</span>
+          </header>
+          <ul class="mind-list">
+            <li class="mind-food">
+              <span class="mind-food-name">Butter &amp; stick margarine</span>
+              <span class="mind-food-amt">&lt; 1 Tbsp / day</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Cheese</span>
+              <span class="mind-food-amt">≤ 1 serving / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Red meat</span>
+              <span class="mind-food-amt">≤ 3 meals / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Fried &amp; fast food</span>
+              <span class="mind-food-amt">&lt; 1 serving / week</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Pastries &amp; sweets</span>
+              <span class="mind-food-amt">≤ 4 servings / week</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="mind-col mind-col-avoid">
+          <header class="mind-rail mind-rail-avoid">
+            <span class="mind-rail-title">Avoid</span>
+            <span class="mind-rail-freq">Rare exceptions, not habits</span>
+          </header>
+          <ul class="mind-list">
+            <li class="mind-food">
+              <span class="mind-food-name">Partially hydrogenated oils</span>
+              <span class="mind-food-amt">trans fats</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Sugar-sweetened drinks</span>
+              <span class="mind-food-amt">sodas, sweet teas</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Processed meats</span>
+              <span class="mind-food-amt">bacon, hot dogs, deli</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Deep-fried snacks</span>
+              <span class="mind-food-amt">chips, doughnuts</span>
+            </li>
+            <li class="mind-food">
+              <span class="mind-food-name">Ultra-processed foods</span>
+              <span class="mind-food-amt">packaged snack aisle</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <p class="mind-note">
+        The Eat and Limit targets are the food groups the MIND studies
+        scored; the Avoid column is what those studies effectively scored at
+        zero. In the app, the Staples Tracker's Auto menu stocks the MIND
+        pantry with one press, and the Recipes column filters by the MIND
+        tag.
+      </p>
+    </main>
+  </body>
+</html>
