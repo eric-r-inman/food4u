@@ -20,7 +20,7 @@ suite =
         [ test "the menu offers exactly the diets the recipe tags use" <|
             \_ ->
                 List.map .name diets
-                    |> Expect.equal [ "Mediterranean", "Blue Zone", "MIND", "DASH", "Anti-Inflammatory" ]
+                    |> Expect.equal [ "MIND", "Mediterranean", "Blue Zone", "DASH", "Anti-Inflammatory" ]
         , test "every diet carries a full list with no internal duplicates" <|
             \_ ->
                 diets
@@ -36,7 +36,7 @@ suite =
             \_ ->
                 missingStaples [] "MIND"
                     |> List.length
-                    |> Expect.equal 25
+                    |> Expect.equal 39
         , test "a staple already present is skipped, case-insensitively" <|
             \_ ->
                 missingStaples [ "extra-virgin olive oil", "WALNUTS" ] "Mediterranean"

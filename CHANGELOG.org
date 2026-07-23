@@ -3,12 +3,26 @@
 
 * Upcoming
 ** Added
+1. The MIND diet — the brain-focused pattern — now leads the Staples Tracker's
+   Auto menu and stocks a fuller list. Following the MIND trial's food groups,
+   it gains berry, nut, whole-grain, and bean variety (raspberries and
+   blackberries; pecans, cashews, and pistachios; barley and bulgur; canned
+   kidney and cannellini beans and edamame), canned omega-3 fish (sardines,
+   mackerel, tuna) beside the salmon, and turkey alongside chicken. Its fresh
+   leafy greens stay off the list on purpose — those are weekly shopping, not
+   pantry stock.
 ** Fixes
+1. Several Auto staples had stopped matching the catalog after its recent
+   refinement renamed foods, so those chips no longer picked up their tier
+   colour, stock tracking, or shopping-list identity. Every diet's staples are
+   re-synced to the catalog's current spellings — "Yogurt, Greek", "Paprika,
+   smoked", "Sesame oil", and "Chicken, breast".
 ** Breaking
 ** Maintenance
 * v0.9.0
 ** Maintenance
-1. Bump clap from 4.6.3 to 4.6.4 (https://github.com/eric-r-inman/food4u/pull/18)
+1. Bump clap from 4.6.3 to 4.6.4
+   (https://github.com/eric-r-inman/food4u/pull/18)
 * v0.8.0
 ** Added
 1. The bundled default catalog is refined toward specific, shoppable whole

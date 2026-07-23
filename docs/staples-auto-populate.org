@@ -52,7 +52,13 @@ exact spellings for the same reason.
    entry exactly, so every staple is spelled precisely as the bundled catalog
    spells it ("Banana", "Sweet potato", "Extra-virgin olive oil").  A
    verification pass checks every staple against the seed, and that none sits in
-   the catalog's leafy-greens category.
+   the catalog's leafy-greens category.  Because the match is by exact name, the
+   pass must be re-run whenever the catalog is re-spelled: a rename there
+   silently strips a staple of its identity.  The catalog refinement toward
+   specific whole foods retired some generic entries, and the lists were
+   re-synced to follow — "Greek yogurt" to "Yogurt, Greek", "Smoked paprika" to
+   "Paprika, smoked", "Toasted sesame oil" to "Sesame oil", and the generic
+   "Chicken" to "Chicken, breast".
 4. /The recipes are the referee./ Each list is checked against the bundled
    recipe collection: for every diet tag, the ingredients its recipes reach for
    most often earn a place, in their shelf-stable form where one exists (canned
@@ -101,18 +107,30 @@ Extra-virgin olive oil, Green tea.
 
 *** MIND
 
-The MIND trial scores ten food groups; the shelf-stable ones map to staples
-directly: berries (blueberries and strawberries are the studied ones, stocked
-frozen), whole grains, beans, nuts, olive oil, fish from the can, and poultry
-from the freezer.  Its daily leafy greens are deliberately absent — that is
-fresh shopping, not stock.  The recipe check added the breakfast-and-broth
-pantry the collection's MIND dishes run on: cinnamon, dates, honey, maple syrup,
-soy milk, vegetable broth, thyme, and shiitake dried.
+MIND leads the Auto menu: it is the app's most brain-focused pattern and the one
+this project treats as primary, so it is offered first and stocked most fully.
+The MIND trial scores ten food groups, and the list carries the shelf-stable
+ones as completely as the catalog allows: berries (blueberries and strawberries
+are the studied ones, joined by raspberries and blackberries, all stocked
+frozen); the nut group in variety (walnuts and almonds with pecans, cashews, and
+pistachios, plus peanut butter); whole grains (oats, quinoa, farro, whole-wheat
+pasta, whole-grain bread, brown rice, barley, and bulgur); beans and soy
+(chickpeas, black beans, lentils, canned kidney and cannellini beans, and
+edamame); olive oil; omega-3 fish from the can (salmon, sardines, mackerel, and
+tuna); and poultry from the freezer (chicken and turkey breast).  Its daily
+leafy greens stay deliberately absent — that is fresh shopping, not stock — and
+the "other vegetables" group is left to the pyramid and the produce aisle for
+the same reason.  The recipe check keeps the breakfast-and-broth pantry the
+collection's MIND dishes run on: cinnamon, thyme, dates, honey, maple syrup, soy
+milk, vegetable broth, and dried shiitake.
 
-Blueberries, Strawberries, Chickpeas, Peanut butter, Whole-wheat pasta, Oats,
-Quinoa, Farro, Whole-grain bread, Brown rice, Black beans, Lentils, Walnuts,
-Almonds, Extra-virgin olive oil, Salmon canned, Chicken, Cinnamon, Thyme, Dates,
-Honey, Maple syrup, Soy milk, Vegetable broth, Dried shiitake.
+Blueberries, Strawberries, Raspberries, Blackberries, Walnuts, Almonds, Pecans,
+Cashews, Pistachios, Peanut butter, Oats, Quinoa, Farro, Whole-wheat pasta,
+Whole-grain bread, Brown rice, Barley, Bulgur, Chickpeas, Black beans, Lentils,
+Kidney beans canned, Cannellini beans canned, Edamame, Extra-virgin olive oil,
+Salmon canned, Sardines canned, Mackerel canned, Tuna canned, Chicken breast,
+Turkey breast, Cinnamon, Thyme, Dates, Honey, Maple syrup, Soy milk, Vegetable
+broth, Dried shiitake.
 
 *** DASH
 
