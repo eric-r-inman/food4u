@@ -6,6 +6,8 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+* v0.9.0
+** Maintenance
 1. Bump clap from 4.6.3 to 4.6.4 (https://github.com/eric-r-inman/food4u/pull/18)
 * v0.8.0
 ** Added
