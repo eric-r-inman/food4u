@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.10.0
+** Added
 1. A MIND Diet page, linked from the toolbar beside About: a short account of
    the diet and, in the pyramid's own tier colours, its full food lists — the
    ten Eat groups with their weekly targets, the five scored Limit ceilings, and
@@ -29,8 +34,6 @@
    colour, stock tracking, or shopping-list identity. Every diet's staples are
    re-synced to the catalog's current spellings — "Yogurt, Greek", "Paprika,
    smoked", "Sesame oil", and "Chicken, breast".
-** Breaking
-** Maintenance
 * v0.9.0
 ** Maintenance
 1. Bump clap from 4.6.3 to 4.6.4
