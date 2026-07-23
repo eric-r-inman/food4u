@@ -5,6 +5,10 @@
 ** Added
 ** Fixes
 ** Breaking
+1. The MIND Diet page is removed and its toolbar link with it. The MIND diet
+   still runs through the app the way the other patterns do — a recipe tag to
+   filter by and the Auto staples list that leads the tracker's menu — so the
+   standalone page was redundant.
 ** Maintenance
 * v0.10.0
 ** Added
