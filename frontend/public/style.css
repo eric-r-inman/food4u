@@ -1552,6 +1552,20 @@ button {
   gap: 8px;
   align-items: stretch;
   margin: 0 0 16px;
+
+  /* Pin the search bar under the column's title bar so it stays in place
+     while the foods, recipes, or panes below scroll past it.  It is the
+     first child of the scrolling body, so sticking it to the top of that
+     scroll port holds it under the title.  The column surface colour fills
+     behind it and the raised layer keeps scrolling content from showing
+     through; the negative top margin lets it cover the body's top padding
+     as it pins, leaving no gap for content to peek through. */
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin-top: -16px;
+  padding-top: 16px;
+  background: var(--card-bg);
 }
 
 .search-field-wrap {

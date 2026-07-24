@@ -4,6 +4,9 @@
 * Upcoming
 ** Added
 ** Fixes
+1. Each column's search bar now stays pinned under its title bar instead of
+   scrolling away with the foods, recipes, or panes below it — so the search
+   stays in reach no matter how far down the column you have scrolled.
 ** Breaking
 ** Maintenance
 * v0.11.0
