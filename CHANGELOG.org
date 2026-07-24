@@ -6,6 +6,7 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+1. Bump schemars from 0.9.0 to 1.2.1 (https://github.com/eric-r-inman/food4u/pull/4)
 * v0.13.0
 ** Maintenance
 1. Bump rust-template-foundation from `86bbbcb` to `8c7b32b` (https://github.com/eric-r-inman/food4u/pull/19)
