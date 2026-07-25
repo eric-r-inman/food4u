@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.15.0
+** Added
 1. The bundled default catalog splits more generics into their grocery forms
    under the comma convention — rice into brown, black, red, and wild; lentils
    into red, green, brown, and black; mushrooms into cremini, white, shiitake,
@@ -24,7 +29,6 @@
    and generic bell peppers, chicken, and turkey to the colour, cut, or form
    each recipe's own text calls for — so every ingredient again carries its tier
    colour, stock tracking, and shopping-list identity.
-** Breaking
 ** Maintenance
 1. Seed edits that break names are now caught at both ends: `just seed-save`
    audits the session right after saving and lists every recipe ingredient and
