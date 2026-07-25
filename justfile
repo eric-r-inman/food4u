@@ -46,9 +46,19 @@ seed-edit: build-elm
 # Bake the current state of a running `just seed-edit` session back into the
 # bundled seed by dumping its database to portable SQL.  The dump refuses to
 # write an empty database, so a run with no seed-editing session leaves the
-# seed untouched.
+# seed untouched.  After saving, the session is audited for names the edits
+# broke — a renamed or deleted food orphans any recipe ingredient or Auto
+# staple still spelled the old way — so the report arrives while the session
+# is still open to fix them.  The save itself always stands; the same audit
+# hard-gates `just test`.
 seed-save:
     tmp=$(mktemp) && dev/dump-seed.sh "{{seed_db}}" > "$tmp" && mv "$tmp" "{{seed_file}}" && echo "Saved the current defaults to {{seed_file}}" || { rm -f "$tmp"; echo "seed-save failed — run 'just seed-edit', make an edit, then try again" >&2; exit 1; }
+    dev/check-seed.sh "{{seed_db}}" || echo "The seed was saved, but the names above no longer line up. Fix the foods in the seed-edit session (or the staples in Staples.elm) and save again; 'just test' fails until they agree."
+
+# Audit the committed seed (or a given seed-editing database) for recipe
+# ingredients and Auto staples that no longer match any catalog food.
+seed-check db="":
+    dev/check-seed.sh {{db}}
 
 # Build both Rust and Elm.
 build: build-elm build-rust

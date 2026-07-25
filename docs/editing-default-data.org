@@ -54,6 +54,25 @@ the seed.  They take effect for any kitchen created from an empty database;
 rebuilding the server embeds them into the binary, and committing the seed ships
 them.
 
+* Names are load-bearing
+
+A recipe ingredient or an Auto staple earns its tier colour, stock tracking, and
+shopping-list identity only when its name matches a catalog food exactly.
+Renaming or deleting a food therefore silently orphans anything still spelled
+the old way.  Three guards keep that visible:
+
+- ~just seed-save~ audits the session right after saving and lists every
+  ingredient and staple the edits broke — while the session is still open, so
+  you can fix the names in the app and save again.  The save itself always
+  stands.
+- ~just seed-check~ runs the same audit any time: bare, against the committed
+  seed, or with a database path against a seed-editing session.
+- The server's seed-integrity tests enforce the same contract in ~just test~ and
+  CI, so a seed change that orphans a name cannot land unnoticed.
+
+A staple that breaks reports against ~frontend/src/Staples.elm~, which the
+seed-editing app cannot change; fix that one in the code, not the session.
+
 * Things worth knowing
 
 - *Save before you stop.* Restarting ~just seed-edit~ reloads the committed seed
