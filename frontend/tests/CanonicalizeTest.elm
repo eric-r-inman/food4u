@@ -8,7 +8,7 @@ merge would corrupt them.
 -}
 
 import Expect
-import RecipeParser exposing (parsePastedRecipe)
+import RecipeParser exposing (canonicalize, parsePastedRecipe)
 import Test exposing (Test, describe, test)
 
 
@@ -110,5 +110,13 @@ suite =
                     parsePastedRecipe catalog "Test\n\nIngredients:\n- 1 tomato\n- 2 cups tomatoes"
                         |> .ingredients
                         |> Expect.equal [ "Tomatoes" ]
+            ]
+        , describe "canonicalize resolves one typed name the same way"
+            [ test "a typed lowercase name adopts catalog casing" <|
+                \_ -> canonicalize catalog "tomatoes" |> Expect.equal "Tomatoes"
+            , test "a typed singular folds to the catalog plural" <|
+                \_ -> canonicalize catalog "carrot" |> Expect.equal "Carrots"
+            , test "an off-catalog name passes through as typed" <|
+                \_ -> canonicalize catalog "Birthday candles" |> Expect.equal "Birthday candles"
             ]
         ]

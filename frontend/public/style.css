@@ -105,6 +105,10 @@
   --cart-cat-border: oklch(0.86 0.04 42);
   --cart-empty-hint-fg: oklch(0.6 0.012 70);
 
+  /* The Shopping List's quick-add field: a plain white input so it reads
+     as typeable against the column's cream card surface. */
+  --quick-add-bg: #fff;
+
   /* The near-solid white pill of the Staples Tracker cart button, and the
      green it turns when it has staples to add to the Shopping List. */
   --staple-cart-border: rgba(255, 255, 255, 0.9);
@@ -995,6 +999,29 @@ button {
   font-size: 12px;
   font-style: italic;
   color: var(--cart-empty-hint-fg);
+}
+
+/* The reserved Shopping List card's quick-add field, a standing input
+   under its heading: type a food, press Enter, and its badge lands on
+   the list without a trip to the pyramid. */
+.cart-quick-add-row {
+  margin: 0 0 10px;
+}
+
+.cart-quick-add-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 11px;
+  border: 1px solid var(--card-border);
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--body-fg);
+  background: var(--quick-add-bg);
+  outline: none;
+}
+
+.cart-quick-add-input:focus {
+  border-color: var(--cart-cat-border);
 }
 
 /* The app-wide select-mode row under the page title bar, and its toggle. */

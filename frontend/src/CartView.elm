@@ -12,8 +12,9 @@ import Data exposing (Card, Data, Loc(..), isShoppingCard, shoppingCartName)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (on, onClick, onInput)
 import Html.Lazy as Lazy
+import Json.Decode as Decode
 import Model exposing (Indices, Model, Selection, isOpen)
 import Msg exposing (Msg(..))
 import Set exposing (Set)
@@ -41,13 +42,13 @@ viewCartColumn model data =
 
     else
         -- The cart reads only the derived tints and the storage list, plus
-        -- the collapse and add/confirm UI state, so it re-renders only when
-        -- those change — not on a keystroke in another column.
-        Lazy.lazy7 viewCartBody model.derived data.staples model.toggled model.adding model.addValue model.confirmingDelete model.selection
+        -- the collapse, add/confirm, and quick-add UI state, so it re-renders
+        -- only when those change — not on a keystroke in another column.
+        Lazy.lazy8 viewCartBody model.derived data.staples model.toggled model.adding model.addValue model.confirmingDelete model.selection model.cartQuickAdd
 
 
-viewCartBody : Indices -> List Card -> Set String -> Maybe AddTarget -> String -> Maybe String -> Selection -> Html Msg
-viewCartBody derived staples toggled adding addValue confirmingDelete selection =
+viewCartBody : Indices -> List Card -> Set String -> Maybe AddTarget -> String -> Maybe String -> Selection -> String -> Html Msg
+viewCartBody derived staples toggled adding addValue confirmingDelete selection quickAdd =
     let
         selectMode =
             selection.active
@@ -78,7 +79,7 @@ viewCartBody derived staples toggled adding addValue confirmingDelete selection 
                 [ text "🗑  Clear all" ]
             ]
         , div [ class "cart-body" ]
-            (List.map (viewCartCard derived.nameTierRail toggled selectMode countMode pareMode selection.items confirmingDelete) ordered
+            (List.map (viewCartCard derived.nameTierRail toggled selectMode countMode pareMode selection.items confirmingDelete quickAdd) ordered
                 ++ [ viewAdder adding addValue AddCartCategory "New category…" "+ Add category" ]
             )
         ]
@@ -89,9 +90,11 @@ collapsible underlined title row (with a delete control for user
 categories, but not the reserved bucket) over its item chips. The reserved
 bucket defaults open, since recipe and staple additions land there; the
 user categories default collapsed, showing just their counts until opened.
+The reserved bucket also carries the quick-add field under its heading,
+so foods can be typed straight onto the list.
 -}
-viewCartCard : Dict String String -> Set String -> Bool -> Bool -> Bool -> Set String -> Maybe String -> Card -> Html Msg
-viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confirmingDelete card =
+viewCartCard : Dict String String -> Set String -> Bool -> Bool -> Bool -> Set String -> Maybe String -> String -> Card -> Html Msg
+viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confirmingDelete quickAdd card =
     let
         loc =
             StoragePane card.id
@@ -116,6 +119,27 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
         moveControl =
             if selectMode && not (Set.isEmpty selected) then
                 [ moveHereButton (MoveSelectedTo loc) ]
+
+            else
+                []
+
+        -- The standing quick-add field, on the reserved bucket only: type a
+        -- food and press Enter to drop its badge on the list without
+        -- visiting the pyramid.  Escape clears the field.
+        quickAddField =
+            if reserved && not collapsed then
+                [ div [ class "cart-quick-add-row" ]
+                    [ input
+                        [ class "cart-quick-add-input"
+                        , type_ "text"
+                        , placeholder "Type a food, press Enter…"
+                        , value quickAdd
+                        , onInput CartQuickAddInput
+                        , on "keydown" quickAddKey
+                        ]
+                        []
+                    ]
+                ]
 
             else
                 []
@@ -150,5 +174,25 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
                 :: span [ class "cart-cat-count" ] [ text (String.fromInt (List.length card.items)) ]
                 :: (moveControl ++ controls)
             )
-            :: body
+            :: (quickAddField ++ body)
         )
+
+
+{-| The quick-add field's keyboard contract: Enter commits the typed
+name, Escape clears the field, and every other key is left to the input.
+-}
+quickAddKey : Decode.Decoder Msg
+quickAddKey =
+    Decode.field "key" Decode.string
+        |> Decode.andThen
+            (\key ->
+                case key of
+                    "Enter" ->
+                        Decode.succeed CartQuickAddSubmit
+
+                    "Escape" ->
+                        Decode.succeed (CartQuickAddInput "")
+
+                    _ ->
+                        Decode.fail "not a quick-add key"
+            )

@@ -1,4 +1,4 @@
-module RecipeParser exposing (ParsedRecipe, parsePastedRecipe)
+module RecipeParser exposing (ParsedRecipe, canonicalize, parsePastedRecipe)
 
 {-| A heuristic parser for a pasted recipe. The first non-empty line is
 the name; ingredient lines (under an "Ingredients" header, or bullet
@@ -53,6 +53,16 @@ parsePastedRecipe catalog raw =
     , ingredients = ingredients
     , instructions = String.trim (String.join "\n" (dropNameLine lines))
     }
+
+
+{-| Resolve one typed name against the catalog, with the same rules the
+paste parser applies to every ingredient. For a single name the index is
+built and used once, which is cheap at the scale of a keystroke-driven
+add.
+-}
+canonicalize : List String -> String -> String
+canonicalize catalog =
+    canonicalName (catalogIndex catalog)
 
 
 {-| The catalog's names, indexed for resolution: once by their exact

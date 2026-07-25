@@ -139,6 +139,11 @@ type alias Model =
     , search : String
     , recipeSearch : String
     , kitchenSearch : String
+
+    -- The Shopping List's quick-add field: a standing input under the
+    -- reserved card's heading, so foods can be typed straight onto the
+    -- list without visiting the pyramid.
+    , cartQuickAdd : String
     , recipeFilter : RecipeFilter
 
     -- The single recipe tag the list is filtered to, or Nothing for all

@@ -51,6 +51,8 @@ type Msg
     | SearchInput String
     | RecipeSearchInput String
     | KitchenSearchInput String
+    | CartQuickAddInput String
+    | CartQuickAddSubmit
     | SetRecipeFilter RecipeFilter
     | SetRecipeTagFilter String
     | RemoveRecipeTag String String

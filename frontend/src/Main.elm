@@ -44,7 +44,7 @@ import PlannerView exposing (viewPlannerColumn)
 import Process
 import PyramidView exposing (viewPyramidColumn)
 import RecipeExport exposing (recipeFileName, recipeText)
-import RecipeParser exposing (parsePastedRecipe)
+import RecipeParser exposing (canonicalize, parsePastedRecipe)
 import RecipesView exposing (recipeCardDomId, recipeCategories, recipeNameLimit, recipesBodyId, viewRecipes)
 import Set exposing (Set)
 import Shopping exposing (cartCardId, shoppingListText)
@@ -99,6 +99,7 @@ init flags =
       , search = ""
       , recipeSearch = ""
       , kitchenSearch = ""
+      , cartQuickAdd = ""
       , recipeFilter = AllRecipes
       , recipeTagFilter = Nothing
       , pasting = Nothing
@@ -427,6 +428,12 @@ update msg model =
 
         KitchenSearchInput value ->
             ( { model | kitchenSearch = value }, Cmd.none )
+
+        CartQuickAddInput value ->
+            ( { model | cartQuickAdd = value }, Cmd.none )
+
+        CartQuickAddSubmit ->
+            cartQuickAdd model
 
         SetRecipeFilter filter ->
             ( { model | recipeFilter = filter }, Cmd.none )
@@ -862,6 +869,61 @@ persistData model newData =
     ( { model | data = Just newData, derived = derive newData }, saveModel newData )
 
 
+{-| Commit the Shopping List's quick-add field: the typed name lands on
+the reserved cart card as a badge. The name resolves against the catalog
+the same way pasted ingredients do, so "kale" joins the "Kale" the
+kitchen already tracks while an off-catalog name passes through as a
+custom item. A name the list already holds is skipped, matching what a
+drop of the same food would do; the field clears either way, ready for
+the next entry.
+-}
+cartQuickAdd : Model -> ( Model, Cmd Msg )
+cartQuickAdd model =
+    let
+        typed =
+            String.trim model.cartQuickAdd
+
+        cleared =
+            { model | cartQuickAdd = "" }
+    in
+    case model.data of
+        Just data ->
+            if typed == "" then
+                ( cleared, Cmd.none )
+
+            else
+                let
+                    resolved =
+                        canonicalize (catalogNames data) typed
+                in
+                case cartCardId data of
+                    Just cid ->
+                        if listHasName (StoragePane cid) resolved data then
+                            ( cleared, Cmd.none )
+
+                        else
+                            persistData
+                                { cleared | seq = model.seq + 1 }
+                                (pushItemTo (StoragePane cid) (Item (nextId model.seq) resolved False 1) data)
+
+                    Nothing ->
+                        ( cleared, Cmd.none )
+
+        Nothing ->
+            ( cleared, Cmd.none )
+
+
+{-| Parsed and typed names resolve against this list of every food name
+in the catalog.
+-}
+catalogNames : Data -> List String
+catalogNames data =
+    data.tiers
+        |> List.concatMap .groups
+        |> List.concatMap .foods
+        |> List.map .name
+
+
 commitAdd : AddTarget -> Model -> ( Model, Cmd Msg )
 commitAdd target model =
     let
@@ -962,14 +1024,8 @@ commitPaste category model =
         case model.data of
             Just data ->
                 let
-                    catalogNames =
-                        data.tiers
-                            |> List.concatMap .groups
-                            |> List.concatMap .foods
-                            |> List.map .name
-
                     parsed =
-                        parsePastedRecipe catalogNames model.pasteValue
+                        parsePastedRecipe (catalogNames data) model.pasteValue
 
                     ( ingredients, seqAfter ) =
                         List.foldl
