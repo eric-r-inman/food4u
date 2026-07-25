@@ -25,23 +25,23 @@ diets : List Diet
 diets =
     [ { name = "MIND"
       , staples =
-            [ "Blueberries", "Strawberries", "Raspberries", "Blackberries", "Walnuts", "Almonds", "Pecans", "Cashews", "Pistachios", "Peanut butter", "Oats", "Quinoa", "Farro", "Whole-wheat pasta", "Whole-grain bread", "Brown rice", "Barley", "Bulgur", "Chickpeas", "Black beans", "Lentils", "Kidney beans, canned", "Cannellini beans, canned", "Edamame", "Extra-virgin olive oil", "Salmon, canned", "Sardines, canned", "Mackerel, canned", "Tuna, canned", "Chicken, breast", "Turkey, breast", "Cinnamon", "Thyme", "Dates", "Honey", "Maple syrup", "Soy milk", "Vegetable broth", "Shiitake, dried" ]
+            [ "Blueberries", "Strawberries", "Raspberries", "Blackberries", "Walnuts", "Almonds", "Pecans", "Cashews", "Pistachios", "Peanut butter", "Oats", "Quinoa", "Farro", "Whole-wheat pasta", "Whole-grain bread", "Rice, brown", "Barley", "Bulgur", "Chickpeas", "Black beans", "Lentils", "Kidney beans, canned", "Cannellini beans, canned", "Edamame", "Extra-virgin olive oil", "Salmon, canned", "Sardines, canned", "Mackerel, canned", "Tuna, canned", "Chicken, breast", "Turkey, breast", "Cinnamon", "Thyme", "Dates", "Honey", "Maple syrup", "Soy milk", "Vegetable broth", "Shiitake, dried" ]
       }
     , { name = "Mediterranean"
       , staples =
-            [ "Extra-virgin olive oil", "Chickpeas", "Lentils", "Farro", "Whole-wheat pasta", "Tomato paste", "Tomatoes, canned, diced", "Garlic", "Onions", "Capers", "Lemons", "Lemon juice", "Olives", "Almonds", "Walnuts", "Pine nuts", "Pistachios", "Tahini", "Yogurt, Greek", "Feta", "Sardines, canned", "Red wine vinegar", "Balsamic vinegar", "Apple cider vinegar", "Honey", "Oregano", "Basil", "Mint", "Parsley", "Cumin", "Paprika, smoked" ]
+            [ "Extra-virgin olive oil", "Chickpeas", "Lentils", "Farro", "Whole-wheat pasta", "Tomato paste", "Tomatoes, canned, diced", "Garlic clove", "Onions", "Capers", "Lemons", "Lemon juice", "Olives", "Almonds", "Walnuts", "Pine nuts", "Pistachios", "Tahini", "Yogurt, Greek", "Feta", "Sardines, canned", "Red wine vinegar", "Balsamic vinegar", "Apple cider vinegar", "Honey", "Oregano", "Basil", "Mint", "Parsley, dried", "Cumin", "Paprika, smoked" ]
       }
     , { name = "Blue Zone"
       , staples =
-            [ "Black beans", "Chickpeas", "Fava beans", "Brown rice", "Oats", "Whole-grain corn tortillas", "Sweet potato", "Cabbage", "Carrots", "Edamame", "Garlic", "Onions", "Ginger", "Tofu", "Miso", "Tamari / soy sauce", "Sesame oil", "Sesame seeds", "Rice vinegar", "Kimchi", "Nori", "Wakame", "Tomatoes, canned, diced", "Honey", "Bay leaves", "Walnuts", "Extra-virgin olive oil", "Green tea" ]
+            [ "Black beans", "Chickpeas", "Fava beans", "Rice, brown", "Oats", "Whole-grain corn tortillas", "Sweet potato", "Cabbage", "Carrot", "Edamame", "Garlic clove", "Onions", "Ginger, fresh", "Tofu", "Miso", "Tamari / soy sauce", "Sesame oil", "Sesame seeds", "Rice vinegar", "Kimchi", "Nori", "Wakame", "Tomatoes, canned, diced", "Honey", "Bay leaves", "Walnuts", "Extra-virgin olive oil", "Green tea" ]
       }
     , { name = "DASH"
       , staples =
-            [ "Oats", "Brown rice", "Quinoa", "Whole-grain bread", "Black beans", "Kidney beans", "Lentils", "Banana", "Oranges", "Apples", "Limes", "Garlic", "Onions", "Broccoli", "Carrots", "Sweet potato", "Tomatoes, canned, diced", "Yogurt, Greek", "Almonds", "Pistachios", "Chicken, breast", "Honey", "Cinnamon", "Cumin" ]
+            [ "Oats", "Rice, brown", "Quinoa", "Whole-grain bread", "Black beans", "Kidney beans", "Lentils", "Banana", "Oranges", "Apples", "Limes", "Garlic clove", "Onions", "Broccoli", "Carrot", "Sweet potato", "Tomatoes, canned, diced", "Yogurt, Greek", "Almonds", "Pistachios", "Chicken, breast", "Honey", "Cinnamon", "Cumin" ]
       }
     , { name = "Anti-Inflammatory"
       , staples =
-            [ "Turmeric", "Ginger", "Cinnamon", "Cumin", "Garam masala", "Paprika, smoked", "Garlic", "Black pepper", "Extra-virgin olive oil", "Coconut milk", "Lemon juice", "Salmon", "Sardines, canned", "Blueberries", "Tart cherries", "Onions", "Carrots", "Broccoli", "Brown rice", "Red lentils", "Tomatoes, canned, diced", "Walnuts", "Flaxseed", "Chia seeds", "Green tea" ]
+            [ "Turmeric", "Ginger, fresh", "Cinnamon", "Cumin", "Garam masala", "Paprika, smoked", "Garlic clove", "Black pepper", "Extra-virgin olive oil", "Coconut milk", "Lemon juice", "Salmon", "Sardines, canned", "Blueberries", "Tart cherries", "Onions", "Carrot", "Broccoli", "Rice, brown", "Lentils, red", "Tomatoes, canned, diced", "Walnuts", "Flaxseed, ground", "Chia seeds", "Green tea" ]
       }
     ]
 

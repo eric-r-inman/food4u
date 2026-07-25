@@ -3,15 +3,37 @@
 
 * Upcoming
 ** Added
+1. The bundled default catalog splits more generics into their grocery forms
+   under the comma convention — rice into brown, black, red, and wild; lentils
+   into red, green, brown, and black; mushrooms into cremini, white, shiitake,
+   oyster, enoki, trumpet, and portobello; tomatoes into cherry, Roma, and
+   heirloom; olives into green, black, and Kalamata; mustard into Dijon and
+   brown; flaxseed into whole and ground; eggplant into Chinese and Indian — and
+   gains chili powder, coriander, onion powder, ground turkey, sprouted-grain
+   bread, bean sprouts, slivered almonds, peas, more canned beans, and fresh
+   pepper varieties (Anaheim, poblano, habanero). Existing kitchens keep their
+   foods; the changes reach only kitchens seeded afterward.
 ** Fixes
+1. The Auto staples and the bundled recipes' ingredient chips follow the
+   catalog's renames, so their chips keep their tier colour, stock tracking, and
+   shopping-list identity, and "Lemons" — dropped by accident amid the renames
+   while seven recipes still call for it — is restored to the catalog.
+2. Every bundled recipe ingredient that had quietly stopped matching the catalog
+   after the earlier whole-foods refinement is re-pointed at its current entry —
+   fifty-two chips across a dozen names, from "Greek yogurt" to "Yogurt, Greek"
+   and generic bell peppers, chicken, and turkey to the colour, cut, or form
+   each recipe's own text calls for — so every ingredient again carries its tier
+   colour, stock tracking, and shopping-list identity.
 ** Breaking
 ** Maintenance
 * v0.14.0
 ** Maintenance
-1. Bump schemars from 0.9.0 to 1.2.1 (https://github.com/eric-r-inman/food4u/pull/4)
+1. Bump schemars from 0.9.0 to 1.2.1
+   (https://github.com/eric-r-inman/food4u/pull/4)
 * v0.13.0
 ** Maintenance
-1. Bump rust-template-foundation from `86bbbcb` to `8c7b32b` (https://github.com/eric-r-inman/food4u/pull/19)
+1. Bump rust-template-foundation from `86bbbcb` to `8c7b32b`
+   (https://github.com/eric-r-inman/food4u/pull/19)
 * v0.12.0
 ** Fixes
 1. Each column's search bar now stays pinned under its title bar instead of
