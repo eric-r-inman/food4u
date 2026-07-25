@@ -1003,8 +1003,10 @@ button {
 
 /* The reserved Shopping List card's quick-add field, a standing input
    under its heading: type a food, press Enter, and its badge lands on
-   the list without a trip to the pyramid. */
+   the list without a trip to the pyramid.  It anchors the autocomplete
+   dropdown, which overlays the chips below rather than shifting them. */
 .cart-quick-add-row {
+  position: relative;
   margin: 0 0 10px;
 }
 
@@ -1022,6 +1024,41 @@ button {
 
 .cart-quick-add-input:focus {
   border-color: var(--cart-cat-border);
+}
+
+/* The autocomplete dropdown of matching catalog foods, floating over the
+   list below the field so it never pushes the chips around. */
+.cart-quick-add-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 5;
+  margin-top: 3px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  background: var(--quick-add-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 7px;
+  box-shadow: var(--card-shadow);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.cart-quick-add-suggestion {
+  text-align: left;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  font-size: 13px;
+  color: var(--body-fg);
+  cursor: pointer;
+}
+
+.cart-quick-add-suggestion:hover {
+  background: var(--staples-option-hover-bg);
 }
 
 /* The app-wide select-mode row under the page title bar, and its toggle. */

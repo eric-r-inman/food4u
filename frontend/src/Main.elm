@@ -433,7 +433,15 @@ update msg model =
             ( { model | cartQuickAdd = value }, Cmd.none )
 
         CartQuickAddSubmit ->
-            cartQuickAdd model
+            -- The typed name resolves against the catalog the way pasted
+            -- ingredients do, so a lowercase or singular form joins the food
+            -- the kitchen tracks; an off-catalog name passes through as a
+            -- custom item.
+            addToCart (canonicalize (model.data |> Maybe.map catalogNames |> Maybe.withDefault []) (String.trim model.cartQuickAdd)) model
+
+        CartQuickAddPick name ->
+            -- A picked suggestion is already an exact catalog name.
+            addToCart name model
 
         SetRecipeFilter filter ->
             ( { model | recipeFilter = filter }, Cmd.none )
@@ -869,45 +877,27 @@ persistData model newData =
     ( { model | data = Just newData, derived = derive newData }, saveModel newData )
 
 
-{-| Commit the Shopping List's quick-add field: the typed name lands on
-the reserved cart card as a badge. The name resolves against the catalog
-the same way pasted ingredients do, so "kale" joins the "Kale" the
-kitchen already tracks while an off-catalog name passes through as a
-custom item. A name the list already holds is skipped, matching what a
-drop of the same food would do; the field clears either way, ready for
-the next entry.
+{-| Add a resolved name to the Shopping List's reserved card as a badge,
+clearing the quick-add field either way. A name the list already holds is
+skipped, matching what a drop of the same food would do. An empty name (a
+blank submit) is a no-op. Both the typed submit and a picked autocomplete
+suggestion route through here; the caller resolves the name first.
 -}
-cartQuickAdd : Model -> ( Model, Cmd Msg )
-cartQuickAdd model =
+addToCart : String -> Model -> ( Model, Cmd Msg )
+addToCart name model =
     let
-        typed =
-            String.trim model.cartQuickAdd
-
         cleared =
             { model | cartQuickAdd = "" }
     in
-    case model.data of
-        Just data ->
-            if typed == "" then
+    case model.data |> Maybe.andThen (\data -> Maybe.map (Tuple.pair data) (cartCardId data)) of
+        Just ( data, cid ) ->
+            if name == "" || listHasName (StoragePane cid) name data then
                 ( cleared, Cmd.none )
 
             else
-                let
-                    resolved =
-                        canonicalize (catalogNames data) typed
-                in
-                case cartCardId data of
-                    Just cid ->
-                        if listHasName (StoragePane cid) resolved data then
-                            ( cleared, Cmd.none )
-
-                        else
-                            persistData
-                                { cleared | seq = model.seq + 1 }
-                                (pushItemTo (StoragePane cid) (Item (nextId model.seq) resolved False 1) data)
-
-                    Nothing ->
-                        ( cleared, Cmd.none )
+                persistData
+                    { cleared | seq = model.seq + 1 }
+                    (pushItemTo (StoragePane cid) (Item (nextId model.seq) name False 1) data)
 
         Nothing ->
             ( cleared, Cmd.none )

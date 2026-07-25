@@ -194,6 +194,7 @@ type alias Indices =
     , categoryRanks : Dict String Int
     , inStock : Set String
     , stockedNoCart : Set String
+    , catalogNames : List String
     }
 
 
@@ -204,6 +205,7 @@ emptyDerived =
     , categoryRanks = Dict.empty
     , inStock = Set.empty
     , stockedNoCart = Set.empty
+    , catalogNames = []
     }
 
 
@@ -214,6 +216,7 @@ derive data =
     , categoryRanks = Derived.categoryRanks data
     , inStock = Derived.inStockNames data
     , stockedNoCart = Derived.stockedExcludingCart data
+    , catalogNames = Derived.catalogNames data
     }
 
 

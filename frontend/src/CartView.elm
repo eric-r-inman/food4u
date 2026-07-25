@@ -67,6 +67,17 @@ viewCartBody derived staples toggled adding addValue confirmingDelete selection 
         ordered =
             List.filter (\c -> c.name == shoppingCartName) shoppingCards
                 ++ List.filter (\c -> c.name /= shoppingCartName) shoppingCards
+
+        -- The names already on the reserved list, so the quick-add
+        -- autocomplete never suggests a food the list already holds.
+        onList =
+            ordered
+                |> List.filter (\c -> c.name == shoppingCartName)
+                |> List.concatMap (\c -> List.map (\i -> String.toLower i.name) c.items)
+                |> Set.fromList
+
+        suggestions =
+            quickAddSuggestions derived.catalogNames onList quickAdd
     in
     div (class "cart-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
         [ columnTitleBar (Just "oklch(0.52 0.1 42)") "Shopping List" ToggleCart (columnDragAttrs "cart")
@@ -79,10 +90,37 @@ viewCartBody derived staples toggled adding addValue confirmingDelete selection 
                 [ text "🗑  Clear all" ]
             ]
         , div [ class "cart-body" ]
-            (List.map (viewCartCard derived.nameTierRail toggled selectMode countMode pareMode selection.items confirmingDelete quickAdd) ordered
+            (List.map (viewCartCard derived.nameTierRail toggled selectMode countMode pareMode selection.items confirmingDelete quickAdd suggestions) ordered
                 ++ [ viewAdder adding addValue AddCartCategory "New category…" "+ Add category" ]
             )
         ]
+
+
+{-| The autocomplete matches for the quick-add field: catalog foods
+whose name contains the typed text, ones that begin with it first, and
+never a food already on the list. Empty while nothing is typed, and
+capped so the dropdown stays short.
+-}
+quickAddSuggestions : List String -> Set String -> String -> List String
+quickAddSuggestions catalog onList quickAdd =
+    let
+        query =
+            String.toLower (String.trim quickAdd)
+    in
+    if query == "" then
+        []
+
+    else
+        let
+            candidates =
+                catalog
+                    |> List.filter (\n -> not (Set.member (String.toLower n) onList))
+                    |> List.filter (\n -> String.contains query (String.toLower n))
+
+            ( prefix, rest ) =
+                List.partition (\n -> String.startsWith query (String.toLower n)) candidates
+        in
+        List.take 8 (prefix ++ rest)
 
 
 {-| One Shopping List card, styled like a Recipes-column category: a
@@ -93,8 +131,8 @@ user categories default collapsed, showing just their counts until opened.
 The reserved bucket also carries the quick-add field under its heading,
 so foods can be typed straight onto the list.
 -}
-viewCartCard : Dict String String -> Set String -> Bool -> Bool -> Bool -> Set String -> Maybe String -> String -> Card -> Html Msg
-viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confirmingDelete quickAdd card =
+viewCartCard : Dict String String -> Set String -> Bool -> Bool -> Bool -> Set String -> Maybe String -> String -> List String -> Card -> Html Msg
+viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confirmingDelete quickAdd suggestions card =
     let
         loc =
             StoragePane card.id
@@ -125,11 +163,13 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
 
         -- The standing quick-add field, on the reserved bucket only: type a
         -- food and press Enter to drop its badge on the list without
-        -- visiting the pyramid.  Escape clears the field.
+        -- visiting the pyramid.  Escape clears the field.  As the user
+        -- types, matching catalog foods appear below it; clicking one adds
+        -- it straight away.
         quickAddField =
             if reserved && not collapsed then
                 [ div [ class "cart-quick-add-row" ]
-                    [ input
+                    (input
                         [ class "cart-quick-add-input"
                         , type_ "text"
                         , placeholder "Type a food, press Enter…"
@@ -138,7 +178,8 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
                         , on "keydown" quickAddKey
                         ]
                         []
-                    ]
+                        :: quickAddSuggestionList suggestions
+                    )
                 ]
 
             else
@@ -176,6 +217,31 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
             )
             :: (quickAddField ++ body)
         )
+
+
+{-| The autocomplete dropdown under the quick-add field: one button per
+matching food, each adding that food to the list on click. Empty (so
+nothing renders) until the user types something that matches.
+-}
+quickAddSuggestionList : List String -> List (Html Msg)
+quickAddSuggestionList suggestions =
+    if List.isEmpty suggestions then
+        []
+
+    else
+        [ div [ class "cart-quick-add-suggestions" ]
+            (List.map
+                (\name ->
+                    button
+                        [ type_ "button"
+                        , class "cart-quick-add-suggestion"
+                        , onClick (CartQuickAddPick name)
+                        ]
+                        [ text name ]
+                )
+                suggestions
+            )
+        ]
 
 
 {-| The quick-add field's keyboard contract: Enter commits the typed

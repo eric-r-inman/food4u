@@ -1,5 +1,6 @@
 module Derived exposing
-    ( categoryRanks
+    ( catalogNames
+    , categoryRanks
     , inStockNames
     , itemRank
     , nameCategory
@@ -17,6 +18,19 @@ result rather than rescanning every food and storage item on each render.
 import Data exposing (Data, Item, Recipe, isShoppingCard, staplesTrackerName)
 import Dict exposing (Dict)
 import Set exposing (Set)
+
+
+{-| Every catalog food name, sorted case-insensitively. The Shopping
+List's quick-add field filters this for its autocomplete suggestions, so
+it is computed once per data change rather than on each keystroke.
+-}
+catalogNames : Data -> List String
+catalogNames data =
+    data.tiers
+        |> List.concatMap .groups
+        |> List.concatMap .foods
+        |> List.map .name
+        |> List.sortBy String.toLower
 
 
 {-| Map each pyramid food name (lowercased) to the category it belongs

@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+1. The Shopping List's quick-add field now autocompletes. As you type, matching
+   catalog foods drop down beneath the field — the ones that begin with what you
+   typed first — and clicking one adds it straight to the list. Foods already on
+   the list are left out of the suggestions, and typing a name the catalog does
+   not know still adds it as a custom item on Enter.
 ** Fixes
 ** Breaking
 ** Maintenance

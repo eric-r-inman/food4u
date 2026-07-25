@@ -53,6 +53,7 @@ type Msg
     | KitchenSearchInput String
     | CartQuickAddInput String
     | CartQuickAddSubmit
+    | CartQuickAddPick String
     | SetRecipeFilter RecipeFilter
     | SetRecipeTagFilter String
     | RemoveRecipeTag String String
