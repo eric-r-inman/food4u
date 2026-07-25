@@ -11,6 +11,11 @@
    item, so the list can hold things the pyramid does not teach. A name the list
    already holds is skipped, and the field clears after each entry, ready for
    the next.
+2. The bundled default catalog gains chili paste, salsa roja, vegetable stock,
+   and garlic paste among the condiments, alfalfa sprouts among the leafy
+   greens, and Malabar spinach joins the comma convention as "Spinach, Malabar".
+   Existing kitchens keep their foods; the changes reach only kitchens seeded
+   afterward.
 ** Fixes
 ** Breaking
 ** Maintenance
