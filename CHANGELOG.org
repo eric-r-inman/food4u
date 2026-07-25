@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.16.0
+** Added
 1. Type foods straight onto the Shopping List: a standing field under the
    reserved card's heading adds a badge on Enter, so the list fills without a
    trip to the pyramid. A typed name resolves against the catalog the way pasted
@@ -16,9 +21,6 @@
    greens, and Malabar spinach joins the comma convention as "Spinach, Malabar".
    Existing kitchens keep their foods; the changes reach only kitchens seeded
    afterward.
-** Fixes
-** Breaking
-** Maintenance
 * v0.15.0
 ** Added
 1. The bundled default catalog splits more generics into their grocery forms
