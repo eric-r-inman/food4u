@@ -14,6 +14,9 @@
    top of the scrolling area. It rides closer to the title, and the foods,
    recipes, or panes below scroll cleanly beneath the band instead of showing
    through it — the band does not scroll, so nothing passes under the field.
+2. In select mode, hovering an item badge's selection circle now shows the
+   pointer cursor, so it reads as a click target for toggling the selection
+   rather than carrying the badge's drag cursor.
 ** Breaking
 ** Maintenance
 * v0.16.0

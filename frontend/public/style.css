@@ -1204,6 +1204,10 @@ button {
   border-radius: 50%;
   border: 1.6px solid currentColor;
   opacity: 0.5;
+
+  /* The badge itself carries a grab cursor for dragging; over the circle a
+     pointer signals that a click toggles the selection instead. */
+  cursor: pointer;
 }
 
 .sel-circle-on {
