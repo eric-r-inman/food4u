@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.17.0
+** Added
 1. The Shopping List's quick-add field now autocompletes. As you type, matching
    catalog foods drop down beneath the field — the ones that begin with what you
    typed first — and clicking one adds it straight to the list. Foods already on
@@ -17,8 +22,6 @@
 2. In select mode, hovering an item badge's selection circle now shows the
    pointer cursor, so it reads as a click target for toggling the selection
    rather than carrying the badge's drag cursor.
-** Breaking
-** Maintenance
 * v0.16.0
 ** Added
 1. Type foods straight onto the Shopping List: a standing field under the
