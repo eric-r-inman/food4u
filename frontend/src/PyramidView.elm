@@ -59,9 +59,10 @@ viewPyramidBody rawSearch toggled adding addValue confirmingDelete selection inS
     in
     div (class "pyramid-col-open" :: cardStyle ++ styles [ ( "overflow", "hidden" ), ( "display", "flex" ), ( "flex-direction", "column" ) ])
         [ columnTitleBar (Just "oklch(0.5 0.07 128)") "Longevity Foods" TogglePyramid (columnDragAttrs "pyramid")
+        , div [ class "pyramid-search" ]
+            [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput [] ]
         , div [ class "pyramid-body" ]
-            [ viewSearchField "Search foods…" rawSearch (search /= "" && not anyMatch) SearchInput []
-            , div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
+            [ div (styles [ ( "display", "flex" ), ( "flex-direction", "column" ), ( "gap", "10px" ) ])
                 (List.map (viewTier toggled adding addValue confirmingDelete selectMode pareMode selection.items inStock search) tiers)
             ]
         ]

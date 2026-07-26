@@ -9,6 +9,11 @@
    the list are left out of the suggestions, and typing a name the catalog does
    not know still adds it as a custom item on Enter.
 ** Fixes
+1. The search field in the Longevity Foods, Kitchen, and Recipes columns now
+   sits in a fixed band directly under the column's title bar rather than at the
+   top of the scrolling area. It rides closer to the title, and the foods,
+   recipes, or panes below scroll cleanly beneath the band instead of showing
+   through it — the band does not scroll, so nothing passes under the field.
 ** Breaking
 ** Maintenance
 * v0.16.0

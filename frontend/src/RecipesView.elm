@@ -320,9 +320,10 @@ viewRecipes model data =
                 , span (styles [ ( "font-size", "18px" ), ( "font-weight", "700" ), ( "letter-spacing", "-0.3px" ) ]) [ text "Recipes" ]
                 , span (styles [ ( "font-family", "'IBM Plex Mono',monospace" ), ( "font-size", "11px" ), ( "opacity", "0.82" ), ( "margin-left", "auto" ) ]) [ text (String.fromInt (List.length data.recipes) ++ " RECIPES") ]
                 ]
+            , div [ class "recipes-search" ]
+                [ viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput [ viewTagFilter model.recipeTagFilter data ] ]
             , div [ class "recipes-body", id recipesBodyId ]
-                (viewSearchField "Search recipes…" model.recipeSearch (recipeSearch /= "" && not anyRecipeMatch) RecipeSearchInput [ viewTagFilter model.recipeTagFilter data ]
-                    :: viewRecipeFilterBar model.recipeFilter
+                (viewRecipeFilterBar model.recipeFilter
                     :: List.map (viewRecipeCategory model model.derived.nameTierRail model.derived.inStock model.derived.stockedNoCart recipeSearch data) recipeCategories
                 )
             ]

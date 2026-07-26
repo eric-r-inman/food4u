@@ -135,6 +135,12 @@
   --card-radius: 14px;
   --card-shadow: 0 18px 50px -28px rgba(60, 45, 20, 0.35);
 
+  /* A column's horizontal content inset, shared by its scrolling body and
+     its search band so the field lines up with the content below it. The
+     Longevity Foods column insets deeper than the others. */
+  --pyramid-inset: 24px;
+  --column-inset: 16px;
+
   /* The app's body font stack, shared with standalone pages. */
   --body-font: "Archivo", system-ui, sans-serif;
 
@@ -533,15 +539,15 @@ button {
 }
 
 .pyramid-body {
-  padding: 16px 24px 24px;
+  padding: 4px var(--pyramid-inset) 24px;
 }
 
 .recipes-body {
-  padding: 16px;
+  padding: 4px var(--column-inset) 16px;
 }
 
 .kitchen-body {
-  padding: 16px;
+  padding: 4px var(--column-inset) 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1615,21 +1621,25 @@ button {
   display: flex;
   gap: 8px;
   align-items: stretch;
-  margin: 0 0 16px;
+}
 
-  /* Pin the search bar under the column's title bar so it stays in place
-     while the foods, recipes, or panes below scroll past it.  It is the
-     first child of the scrolling body, so sticking it to the top of that
-     scroll port holds it under the title.  The column surface colour fills
-     behind it and the raised layer keeps scrolling content from showing
-     through; the negative top margin lets it cover the body's top padding
-     as it pins, leaving no gap for content to peek through. */
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  margin-top: -16px;
-  padding-top: 16px;
+/* A column's search field sits in its own non-scrolling band directly
+   under the title bar, between it and the scrolling body.  Because the
+   band does not scroll, the field stays put and the foods, recipes, or
+   panes below can never slide under it — the peek a sticky field left.
+   The band carries the column surface colour and aligns the field with
+   the content below (the pyramid insets deeper than the others). */
+.pyramid-search,
+.kitchen-search,
+.recipes-search {
+  flex: 0 0 auto;
   background: var(--card-bg);
+  padding: 8px var(--column-inset) 12px;
+}
+
+.pyramid-search {
+  padding-left: var(--pyramid-inset);
+  padding-right: var(--pyramid-inset);
 }
 
 .search-field-wrap {
