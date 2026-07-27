@@ -16,6 +16,15 @@
    category and into the chosen one — keeping its stock and recipe links.
 ** Breaking
 ** Maintenance
+1. Re-sync the CI and Dependabot auto-merge workflows with the project template
+   after it reworked its reusable auto-merge into a single-flight queue. The
+   template's CI now carries a workflow_dispatch trigger, since the auto-merge
+   flow re-dispatches CI against the changelog commit it writes, and the
+   auto-merge wrapper gains issues: write and drops the job gate that moved into
+   the reusable workflow. Because the wrapper pins the reusable workflow at the
+   template's main, the drift had started failing the auto-merge run at startup
+   on every CI completion — the "no jobs were run" notifications — and left
+   Dependabot bumps unmerged.
 * v0.17.0
 ** Added
 1. The Shopping List's quick-add field now autocompletes. As you type, matching
