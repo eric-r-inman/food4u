@@ -9,6 +9,11 @@
    down-arrow. Sitting a bare arrow next to a category's food count made it look
    as though every food in the category was selected; the label reads plainly as
    an action.
+2. "Move here" now works between Longevity Foods categories. Selecting a food in
+   one category and moving it to another did nothing, because the food already
+   lived in the pyramid and the add guard rejected it as a duplicate. A move
+   within the pyramid now relocates the food's own entry — out of its old
+   category and into the chosen one — keeping its stock and recipe links.
 ** Breaking
 ** Maintenance
 * v0.17.0

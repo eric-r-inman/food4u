@@ -1628,8 +1628,39 @@ the item's own location is a no-op.
 -}
 dropOneHere : Loc -> String -> Loc -> Int -> Data -> ( Data, Int )
 dropOneHere from foodId target seq data =
-    case target of
-        PyramidGroup gid ->
+    case ( target, from ) of
+        ( PyramidGroup gid, PyramidGroup fromGid ) ->
+            -- A move within the pyramid: relocate the food's own record from
+            -- its source category to this one, preserving its id and fields.
+            -- The plain add guard below cannot serve this — the food already
+            -- lives in the pyramid, so it would always be rejected as a
+            -- duplicate.
+            if fromGid == gid then
+                ( data, seq )
+
+            else
+                case foodInGroup fromGid foodId data of
+                    Just food ->
+                        let
+                            removed =
+                                removeFood from foodId data
+                        in
+                        if pyramidHasName food.name removed then
+                            -- The food also appears in another category;
+                            -- moving it here would duplicate the name, so just
+                            -- drop it from its old category.
+                            ( removed, seq )
+
+                        else
+                            ( pushFood gid food removed, seq )
+
+                    Nothing ->
+                        ( data, seq )
+
+        ( PyramidGroup gid, _ ) ->
+            -- Adding a food to the pyramid from elsewhere (a kitchen pane or
+            -- the Shopping List): a copy, skipped when the pyramid already
+            -- teaches that food.
             draggedNameNa (Drag from foodId) data
                 |> Maybe.map
                     (\( name, na ) ->
