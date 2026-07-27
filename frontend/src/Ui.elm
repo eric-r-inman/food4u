@@ -199,9 +199,11 @@ selectionCircle selected =
     span [ classList [ ( "sel-circle", True ), ( "sel-circle-on", selected ) ] ] []
 
 
-{-| The fat green down-arrow shown on a pane or category header while items
-are selected: pressing it moves the whole selection into that area. It sits
-in a header that is itself a collapse or edit toggle, so its click must not
+{-| The green "move here" button shown on a pane or category header while
+items are selected: pressing it moves the whole selection into that area.
+It carries a label, not a bare arrow, so it reads as an action rather than
+being mistaken for a count beside the header's food tally. It sits in a
+header that is itself a collapse or edit toggle, so its click must not
 propagate.
 -}
 moveHereButton : Msg -> Html Msg
@@ -211,7 +213,7 @@ moveHereButton msg =
         , class "move-here-btn"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
-        [ text "⬇" ]
+        [ text "⬇ Move here" ]
 
 
 {-| The slim vertical bar a column collapses to. The rail class names the

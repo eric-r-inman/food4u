@@ -1177,15 +1177,19 @@ button {
   letter-spacing: 0;
 }
 
-/* The fat green "Move selected here" arrow on a pane or category header. */
+/* The green "Move here" button on a pane or category header, labelled so it
+   is not mistaken for a count beside the header's food tally. */
 .move-here-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
   line-height: 1;
-  padding: 3px 9px;
+  padding: 4px 8px;
   background: var(--move-here-bg);
   color: var(--move-here-fg);
 }

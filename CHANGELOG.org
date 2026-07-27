@@ -4,6 +4,11 @@
 * Upcoming
 ** Added
 ** Fixes
+1. In select mode, the green control that moves the selection onto a category,
+   pane, or Shopping List section now reads "⬇ Move here" instead of a bare
+   down-arrow. Sitting a bare arrow next to a category's food count made it look
+   as though every food in the category was selected; the label reads plainly as
+   an action.
 ** Breaking
 ** Maintenance
 * v0.17.0

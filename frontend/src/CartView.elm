@@ -152,8 +152,8 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
             else
                 [ categoryDeleteControl (confirmingDelete == Just card.id) (RequestDelete card.id) (RemovePane card.id) CancelDelete ]
 
-        -- While items are selected, a green arrow moves the whole selection
-        -- into this list.
+        -- While items are selected, a green "Move here" button moves the
+        -- whole selection into this list.
         moveControl =
             if selectMode && not (Set.isEmpty selected) then
                 [ moveHereButton (MoveSelectedTo loc) ]

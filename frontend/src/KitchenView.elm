@@ -234,7 +234,7 @@ viewPane toggled search selectMode countMode pareMode selected derived edit card
                     ]
 
         -- While items are selected (and the pane is not being edited), a
-        -- green arrow moves the whole selection into this pane.
+        -- green "Move here" button moves the whole selection into this pane.
         moveControl =
             if selectMode && not (Set.isEmpty selected) && edit == Nothing then
                 [ moveHereButton (MoveSelectedTo stockLoc) ]

@@ -147,8 +147,8 @@ viewCategory toggled adding addValue confirmingDelete selectMode pareMode select
         bg =
             tierChipBg tier.rail
 
-        -- While items are selected, a green arrow adds the whole selection
-        -- to this category as pyramid foods.
+        -- While items are selected, a green "Move here" button adds the
+        -- whole selection to this category as pyramid foods.
         moveControl =
             if selectMode && not (Set.isEmpty selected) then
                 [ moveHereButton (MoveSelectedTo loc) ]
