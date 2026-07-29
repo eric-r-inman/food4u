@@ -1,0 +1,689 @@
+#+title:     food4u optimization, refactor, and hosting plan
+#+language:  en
+#+options:   toc:2 num:t
+
+* Purpose and status
+
+This document is a plan for review, not a record of completed work.  It folds
+three threads into one program of work:
+
+- The pure-optimization findings from the earlier review (frontend structure,
+  rendering, persistence, bundle, binary).
+- A structural refactor from a single opaque JSON model to a relational data
+  model backed by PostgreSQL (hosted) and SQLite (local).
+- Turning food4u from a single-user local tool into a hosted, multi-user,
+  publicly-available service with a complete sign-in and account experience,
+  while remaining a first-class local single-user app for the author.
+
+Nothing here is implemented yet.  Each phase in [[*Phased roadmap]] is meant to be
+lifted into ~tasks.org~ as a ~TODO~ once approved, cross-linked back to the
+relevant section here.
+
+The guiding bias, per the request, is /optimality over practicality/: where a
+maximally-correct structure costs more than a single-user local tool would ever
+justify, it is still recommended and marked as such.
+
+* Goals and non-goals
+
+** Goals
+
+- One codebase, two deployment shapes: a local single-user binary (SQLite,
+  unauthenticated) and a hosted multi-user service (PostgreSQL, OIDC sign-in).
+- Durable per-user persistence on the server: a user's foods, kitchen stock,
+  recipes, and shopping list survive across sessions and devices.
+- A complete authentication and account experience: sign in, sign out, identity
+  display, account data export, and account deletion.
+- Relational storage replacing the opaque JSON blob, with server-side validation
+  and typed access.
+- The performance and structural optimizations from the earlier review, carried
+  forward and reconciled with the new architecture.
+
+** Non-goals
+
+- Rewriting the application's domain behaviour or visual design.  The
+  four-column UX stays; only its implementation and backing store change.
+- Leaving the template.  Everything is built on ~rust-template-foundation~
+  (config, logging, health, metrics, OIDC, systemd integration, graceful
+  shutdown) rather than standing up parallel infrastructure.  The server crate
+  remains the single long-running process.
+- Real-time collaboration or multi-user sharing of a single kitchen.  Each
+  account owns its own data; sharing is explicitly out of scope for this plan.
+
+* Current-state assessment
+
+** What exists today
+
+The server is a thin axum application on the foundation.  It exposes two
+application routes — ~GET~ and ~PUT~ on ~/api/model~ — that read and write a
+single ~serde_json::Value~ document.  The document holds the whole app: the
+longevity pyramid (tiers → groups → foods), the kitchen storage cards and their
+items, and the recipes.  The store reads the entire file on every ~GET~,
+re-serializes and rewrites the entire file on every ~PUT~, and re-parses the
+~505~-food embedded seed from a string on every default lookup.  There is no
+in-memory state, no validation, and no concept of a user.  The frontend is a
+single ~2,972~-line Elm module compiled to an unminified ~276 KB~ ~elm.js~.
+
+** Findings carried forward from the optimization review
+
+These stand on their own merits and are folded into the phases below.
+
+*** Frontend: a single monolithic module
+
+All types, messages, update branches, the recipe parser, and every view live in
+one file.  This is the largest structural liability and the first refactor.
+Decompose into a module tree (data types with opaque id newtypes; model;
+messages; update; per-column views; the parser; the persistence client; drag
+handling; a derived-index module).
+
+*** Frontend: linear scans recomputed every render
+
+Derived facts — the cart card lookup, name→category mapping, the "is every
+ingredient of this recipe in stock" check, department grouping, and
+category-order sorting — are all recomputed inside ~view~ on every keystroke and
+drag.  The stock check is O(recipes × ingredients × kitchen-items) per frame.
+Precompute indices once on model update: a dictionary of foods by id, a
+name→category dictionary, and a set of stocked (lowercased) names, reducing
+membership to O(1).
+
+*** Frontend: no render memoization
+
+A keystroke in one search box re-diffs all four columns, including the
+~505~-item pyramid.  Apply ~Html.Lazy~ to columns and sections keyed on minimal
+primitive inputs, ~Html.Keyed~ on reorderable lists, and debounce the search
+inputs.  Virtualizing the pyramid (render only rows in the viewport) is the
+maximal move and is recommended under the optimality-over-practicality bias,
+with the caveat that Elm has no built-in windowing.
+
+*** Frontend: unoptimized bundle
+
+The dev build runs a plain ~elm make~ with no ~--optimize~; only the Nix package
+build optimizes, and nothing minifies or precompresses.  Add a production build
+that runs ~--optimize~, minifies (terser with Elm's recommended pure-function
+set), precompresses to brotli and gzip, and content-hashes the asset names for
+immutable caching.  Typical result: ~276 KB~ → ~50–70 KB~ minified → ~15–20 KB~
+brotli.
+
+*** Server: no in-memory state, non-atomic writes
+
+Every read hits the disk and re-parses; every write truncates and rewrites the
+whole file with a real corruption window.  This finding is /superseded/ by the
+move to a database: connection-pooled queries replace the read path, and
+transactional writes replace the rewrite.  The parse of the embedded seed on
+every default lookup is likewise superseded by a one-time seed load at
+migration/startup.
+
+*** Server: opaque, unvalidated model
+
+The model is an untyped ~serde_json::Value~.  A malformed ~PUT~ silently
+overwrites good data.  This is superseded by the relational model and typed
+request bodies, which validate at the edge.
+
+*** Binary profile
+
+~[profile.release]~ in the workspace manifest is effectively empty.  Set ~lto =
+"fat"~, ~codegen-units = 1~, ~opt-level = 3~, ~strip = "symbols"~, and ~panic =
+"abort"~ (coherent with the project-wide ban on the panicking ~Result~/~Option~
+variants).  A static musl build is the maximal artifact move for the hosted
+binary.
+
+** New findings from the hosting requirement
+
+*** Authentication already exists in the foundation
+
+The foundation ships a complete OIDC stack: an ~AuthUser~ carrying ~name~ and
+~email~, login/callback/logout handlers, a ~require_auth~ middleware, a
+~current_user(session)~ accessor, a ~/me~ endpoint that already falls back to an
+anonymous/admin identity when OIDC is unconfigured, and JWT support for service
+tokens.  Sessions run through ~tower-sessions~.  The implication is decisive:
+/do not build a custom account system/.  Wire the frontend and the data model to
+the foundation's OIDC and sessions.  Custom passwords would duplicate foundation
+infrastructure and violate the project's own guidance.
+
+*** AuthUser lacks a stable subject
+
+~AuthUser~ exposes only ~name~ and ~email~ — no OIDC ~sub~.  Email is a mutable
+identifier at most providers, so keying user-owned rows directly on email is
+fragile.  This is an [[*Decisions]] item: either treat email as the natural key and
+accept the constraint, or propose a foundation enhancement to carry the ~sub~
+claim into ~AuthUser~ and key on ~(issuer, sub)~.  The recommended path is the
+foundation enhancement, with email retained as a display/contact attribute.
+
+*** Session store is not shared
+
+The default ~tower-sessions~ memory store is per-process and non-durable.  A
+hosted deployment behind more than one instance, or one that restarts, loses
+sessions.  Adopt a persistent, shared session store backed by the same
+PostgreSQL instance.
+
+*** Data model conflates global catalog with per-user state
+
+Today a "food" carries both catalog attributes (name, prep, tier/group, hero
+flag) and per-user state (~na~ = in stock, ~recipeId~ = link).  In a multi-user
+world the catalog is shared and the per-user state is not.  The schema must
+separate the seed catalog from a per-user overlay.  This is the central
+data-modelling refactor.
+
+*** Going public raises a new surface
+
+Request-size limits, per-user authorization scoping on every query, rate
+limiting, secret handling, CSRF posture for cookie-authenticated mutations,
+backups, and account data export/deletion all become mandatory.  Covered in
+[[*Security and privacy]] and [[*Hosting and operations]].
+
+* Target architecture
+
+** One codebase, two shapes
+
+A single ~food4u-server~ binary selects its backing store from configuration.  A
+~database_url~ whose scheme is ~sqlite:~ selects the local embedded backend; a
+~postgres:~ scheme selects the hosted backend.  Authentication is likewise
+configuration-driven: with no OIDC configured, the server runs unauthenticated
+and every request resolves to a single fixed local user (mirroring the
+foundation's existing anonymous fallback); with OIDC configured, requests
+resolve to the signed-in user.
+
+The result is that "local mode" and "hosted mode" are the same program under
+different configuration, not two codebases.  This matches the author's
+requirement to keep using it locally while a hosted version serves the public.
+
+** Layered structure
+
+The server crate gains a clear internal layering: an HTTP layer (route handlers,
+request/response types, auth extraction), a service layer (domain operations
+expressed against a repository trait), and a persistence layer (the repository
+trait with a PostgreSQL implementation and a SQLite implementation, plus
+migrations).  The opaque-blob ~Store~ is retired.  ~main.rs~ stays an
+orchestrator, delegating store construction and route assembly to sibling
+modules, per the project's structure guidance.
+
+** Data-flow shift
+
+The full-document ~PUT~ on every edit is replaced by fine-grained, per-entity
+operations scoped to the current user.  A user toggling one item's stock status
+issues one small authorized mutation, not a rewrite of the entire model.  This
+removes the largest inefficiency in the current design and is the natural
+consequence of relational storage.
+
+* Data model redesign
+
+** Principle
+
+Separate three concerns that the JSON blob merges: the /shared catalog/ (the
+longevity pyramid and its seeded foods), the /per-user overlay/ (which foods a
+user has added or stocked, their kitchen placement, their shopping list), and
+/per-user recipes/.  Model each explicitly, with per-user rows scoped by a user
+key and never by client-supplied identity.
+
+** Entities
+
+The catalog is global and seeded: tiers, food groups within tiers, and foods
+within groups (name, preparation, hero flag, ordering).  A user owns an account
+row, a set of custom foods they have added beyond the catalog, per-food stock
+and placement state, kitchen storage locations and their items, a shopping list,
+recipes, recipe ingredients, and the links from a recipe to catalog foods.
+
+The following is an illustrative PostgreSQL schema sketch; the SQLite schema is
+the same shape with dialect-appropriate types (~TEXT~ ids, ~INTEGER~ booleans).
+Identifiers use surrogate keys; per-user tables carry a ~user_id~ foreign key
+and are indexed on it.
+
+#+begin_src sql :exports code
+-- Shared catalog (seeded, read-mostly).
+create table tiers (
+  id           uuid primary key,
+  label        text not null,
+  position     int  not null
+);
+
+create table food_groups (
+  id           uuid primary key,
+  tier_id      uuid not null references tiers(id),
+  label        text not null,
+  position     int  not null
+);
+
+create table foods (
+  id           uuid primary key,
+  group_id     uuid not null references food_groups(id),
+  name         text not null,
+  prep         text not null,
+  hero         boolean not null default false,
+  position     int  not null
+);
+
+-- Accounts.  Keyed on the OIDC subject where available; see
+-- "Decisions" (identity key) regarding subject vs email.
+create table users (
+  id           uuid primary key,
+  issuer       text,
+  subject      text,
+  email        text not null,
+  display_name text not null,
+  created_at   timestamptz not null default now(),
+  unique (issuer, subject)
+);
+
+-- Per-user overlay of catalog foods: stock status and recipe linkage.
+create table user_food_state (
+  user_id      uuid not null references users(id) on delete cascade,
+  food_id      uuid not null references foods(id),
+  in_stock     boolean not null default false,
+  primary key (user_id, food_id)
+);
+
+-- Foods a user added that are not in the shared catalog.
+create table user_custom_foods (
+  id           uuid primary key,
+  user_id      uuid not null references users(id) on delete cascade,
+  group_id     uuid references food_groups(id),
+  name         text not null,
+  prep         text not null,
+  in_stock     boolean not null default false
+);
+
+-- Kitchen storage panes and their contents.
+create table storage_locations (
+  id           uuid primary key,
+  user_id      uuid not null references users(id) on delete cascade,
+  name         text not null,      -- Pantry, Refrigerator, ...
+  position     int  not null
+);
+
+create table storage_items (
+  id           uuid primary key,
+  location_id  uuid not null references storage_locations(id) on delete cascade,
+  name         text not null,
+  needs        boolean not null default false,
+  position     int  not null
+);
+
+-- Shopping list.
+create table shopping_items (
+  id           uuid primary key,
+  user_id      uuid not null references users(id) on delete cascade,
+  name         text not null,
+  department   text,
+  position     int  not null
+);
+
+-- Recipes.
+create table recipes (
+  id           uuid primary key,
+  user_id      uuid not null references users(id) on delete cascade,
+  name         text not null,
+  category     text not null
+);
+
+create table recipe_ingredients (
+  id           uuid primary key,
+  recipe_id    uuid not null references recipes(id) on delete cascade,
+  name         text not null,
+  position     int  not null
+);
+
+create table recipe_instructions (
+  id           uuid primary key,
+  recipe_id    uuid not null references recipes(id) on delete cascade,
+  step         text not null,
+  position     int  not null
+);
+
+create table recipe_food_links (
+  recipe_id    uuid not null references recipes(id) on delete cascade,
+  food_id      uuid not null references foods(id),
+  primary key (recipe_id, food_id)
+);
+#+end_src
+
+** Ordering
+
+The frontend cares about display order within groups and panes.  Positions are
+stored explicitly as integers rather than relying on insertion order, so
+reordering is a cheap position update and reads are deterministic.
+
+** Migrations
+
+Schema lives in a versioned migrations directory applied at startup via
+~sqlx::migrate!~.  The same migration set runs against both backends; where a
+statement must differ by dialect, keep parallel migration files selected by
+backend.  The shared catalog is seeded by a data migration that reads the
+existing embedded seed once and inserts the tiers, groups, and foods — the one
+place the current JSON seed survives, as a build-time import rather than a
+runtime artifact.
+
+* Persistence layer refactor
+
+** Library choice
+
+Use ~sqlx~: async, compile-time-checked queries, first-class PostgreSQL and
+SQLite support, and migrations.  It fits the project's explicit-SQL,
+semantic-error, no-unwrap culture better than a heavy ORM.  Errors map to
+semantic ~thiserror~ variants (for example a recipe-not-found lookup failure is
+distinct from a connection failure), never a generic "database error".
+
+** Backend abstraction
+
+Define a repository trait expressing the domain operations — load a user's full
+model, toggle a food's stock, add a recipe, clear the shopping list, and so on —
+with two implementations.  The trade-off is explicit and is an [[*Decisions]] item:
+
+- A repository trait with a PostgreSQL implementation and a SQLite
+  implementation gives per-backend compile-time-checked queries at the cost of
+  near-duplicate SQL.  This is the rigorous choice and the recommendation under
+  the optimality bias.
+- The ~sqlx::Any~ driver gives one set of queries over both backends but
+  forfeits compile-time checking and some type fidelity.  Lower effort, weaker
+  guarantees.
+
+#+begin_src rust :exports code
+// Illustrative shape; real signatures return semantic errors and take a
+// user key resolved from the session, never from the request body.
+#[async_trait]
+pub trait FoodRepository: Send + Sync {
+  async fn model_for(&self, user: UserId) -> Result<UserModel, RepoError>;
+  async fn set_food_stock(
+    &self, user: UserId, food: FoodId, in_stock: bool,
+  ) -> Result<(), RepoError>;
+  async fn add_recipe(
+    &self, user: UserId, recipe: NewRecipe,
+  ) -> Result<RecipeId, RepoError>;
+  async fn clear_shopping_list(&self, user: UserId) -> Result<(), RepoError>;
+  // ... one method per domain mutation.
+}
+#+end_src
+
+** Connection pooling and state
+
+A pooled connection is held in the application state (constructed in ~main.rs~
+and threaded through ~AppState~ alongside the foundation's base state).
+Transactions wrap multi-statement mutations so a partial write cannot corrupt a
+user's model — replacing the file-rewrite corruption window entirely.
+
+** Session store
+
+Replace the memory session store with a PostgreSQL-backed ~tower-sessions~ store
+in hosted mode so sessions are durable and shared across instances.  Local mode
+can keep the memory store, since there is a single process and a single implicit
+user.
+
+* Authentication and accounts
+
+** Wire, do not build
+
+The complete flow already exists in the foundation.  The work is:
+
+- Mount the foundation's login, callback, and logout handlers and its ~/me~
+  endpoint (the latter is already present).
+- Put the ~require_auth~ middleware in front of the ~/api/*~ routes in hosted
+  mode, so every model operation runs as an authenticated user.
+- Resolve the current ~AuthUser~ from the session in each handler and map it to
+  a ~users~ row, provisioning the row on first sign-in (just-in-time account
+  creation).
+- In local mode, skip the middleware and resolve every request to a single fixed
+  local user, matching the foundation's existing anonymous fallback.
+
+** Provisioning
+
+On first authenticated request for a subject not yet in ~users~, insert the
+account and seed its overlay: create the default storage locations (Pantry,
+Refrigerator, Freezer, Counter, Spice Cupboard, Apothecary) and leave stock
+empty, matching today's "default starts with empty storage" behaviour.  The
+catalog itself is shared, so no per-user food copy is made.
+
+** Account experience in the frontend
+
+The Elm app gains an identity-aware shell: it queries ~/me~ on load, shows the
+signed-in name with a sign-out control, and shows a sign-in control when
+anonymous.  A ~401~ from an ~/api/*~ call drives a redirect to the login route.
+Two account actions round out the experience: export (download the account's
+full data) and delete (remove the account and all its rows via the schema's
+cascading deletes, after an explicit confirmation).  Local mode hides the
+sign-in affordances, since there is no provider.
+
+** Identity provider
+
+The public deployment needs an OIDC provider.  The foundation is
+provider-agnostic; the deployment points ~oidc_issuer~, ~oidc_client_id~, and a
+secret file at a chosen provider (a self-hosted Authentik/Keycloak, or a managed
+IdP).  Registration and password reset are the provider's responsibility, which
+is precisely why no custom account system is warranted.
+
+* API redesign
+
+** From one blob to scoped operations
+
+Retire the full-document ~GET~/~PUT~.  Replace it with a read endpoint that
+assembles the current user's model from the relational tables, and a set of
+small, authorized mutation endpoints — toggle stock, add or remove a storage
+item, add or remove a shopping item, clear the shopping list, create or edit or
+delete a recipe, link or unlink a recipe and a food.  Each derives the user from
+the session; none accepts a user identifier from the client.
+
+** Validation and limits
+
+Request bodies are typed and validated at the edge (a recipe must have a name
+and a category; a food reference must resolve).  A body-size limit guards every
+mutation.  A read endpoint returns an ~ETag~ so an unchanged model reloads as a
+~304~.
+
+** Compatibility for the local app
+
+The local single-user app uses the same endpoints; the only difference is that
+its user is fixed and its auth middleware is absent.  This keeps one API surface
+for both shapes.
+
+* Frontend refactor and optimization
+
+This section reconciles the earlier optimization findings with the new
+client/server contract.
+
+** Module decomposition and typed ids
+
+Break the monolith into the module tree described in
+[[*Findings carried forward from the optimization review]].  Introduce opaque id
+newtypes (~FoodId~, ~RecipeId~, ~CardId~) so ids cannot be confused or
+fabricated, and replace stringly-typed domain values (preparation, category,
+department) with custom types the compiler checks exhaustively.
+
+** Derived-state memoization and rendering
+
+Build the food-by-id, name→category, and stocked-name indices once when the
+model changes, not in ~view~.  Apply ~Html.Lazy~ to columns and sections and
+~Html.Keyed~ to reorderable lists, and debounce search.  Pyramid virtualization
+remains the maximal option.
+
+** Client/server model
+
+The client no longer owns a monolithic model it PUTs wholesale.  It issues the
+scoped mutations above and applies optimistic updates, reconciling against
+server responses.  This is a larger change than the pure optimization pass
+envisioned, and is the point at which the frontend and backend refactors meet.
+
+** Offline and local parity
+
+The local app can continue to feel instantaneous because its server is on
+localhost; no offline cache is required for the author's use.  A hosted offline
+mode (service worker, local mutation queue) is a possible later enhancement, out
+of scope here.
+
+* Build and delivery optimization
+
+Add a production frontend build that runs ~elm make --optimize~, minifies with
+terser using Elm's recommended pure-function configuration, precompresses to
+brotli and gzip, and content-hashes asset filenames.  Serve the precompressed
+assets with immutable cache headers on the hashed names.  Fill in the release
+profile (~lto~, ~codegen-units = 1~, ~opt-level = 3~, ~strip~, ~panic =
+"abort"~), and consider a static musl build for the hosted binary.  These are
+low-effort, high-ratio wins and are independent of the data-model work, so they
+can land early.
+
+* Hosting and operations
+
+** Deployment
+
+The foundation already provides systemd socket activation, watchdog integration,
+and graceful shutdown, and the repository already carries NixOS and Darwin
+server modules and a server package.  The hosted service is a NixOS deployment
+of the existing module with PostgreSQL provisioned alongside (either the NixOS
+~postgresql~ service or a managed database), the OIDC secret delivered via
+systemd ~LoadCredential~ (the config layer already supports a credential path),
+and a TLS-terminating reverse proxy in front, with ~base_url~ set to the public
+origin.
+
+** Configuration additions
+
+The config gains a ~database_url~ (scheme selects the backend) and, in hosted
+mode, session-store settings.  These follow the foundation's staged precedence
+(CLI, then ~food4u_*~ environment, then TOML, then defaults), consistent with
+the existing knobs.
+
+** Observability, backups, scaling
+
+Metrics and structured logging are already present; add database health to the
+existing health checks and per-operation metrics.  Back up PostgreSQL on a
+schedule and test restores.  The application is stateless between requests once
+sessions are externalized, so horizontal scaling is a matter of running more
+instances behind the proxy against the shared database and session store.
+
+* Security and privacy
+
+Going public makes the following mandatory rather than optional:
+
+- Authorization scoping on every query by the session-derived user; never trust
+  a client-supplied identity.  Row-level security in PostgreSQL is the maximal
+  defense-in-depth option and is recommended under the optimality bias, layered
+  on top of query scoping rather than instead of it.
+- A request body-size limit and per-user quotas (a ceiling on recipes, custom
+  foods, and list sizes) to bound abuse.
+- Rate limiting at the proxy and/or the application.
+- CSRF posture for cookie-authenticated mutations: same-site cookies and, where
+  appropriate, a token check; the OIDC ~state~ parameter is already handled by
+  the foundation callback.
+- Secret hygiene: the OIDC client secret via ~LoadCredential~, never in the
+  repository; database credentials via the environment or credential files.
+- Account data export and deletion to satisfy privacy expectations and
+  regulation; deletion relies on the schema's cascading foreign keys so a single
+  account removal takes all owned rows with it.
+- A security review of the public surface before launch, using the repository's
+  existing review tooling.
+
+* Migration path
+
+** The author's existing local data
+
+The author's live ~food4u-model.json~ is migrated once into the local SQLite
+database by a one-shot importer that reads the JSON model and writes the catalog
+overlay, storage, shopping list, and recipes for the single local user.  The
+importer is idempotent and is retained for anyone else migrating a legacy file.
+
+** The embedded seed
+
+The ~505~-food embedded seed becomes a data migration that populates the shared
+catalog tables.  After the cutover the JSON seed is no longer a runtime
+artifact; it is consumed at build/migration time only.
+
+** Cutover
+
+The JSON ~Store~ and the ~/api/model~ blob endpoints are removed only once the
+relational read/write endpoints and the importer are in place and the frontend
+speaks the new API, so there is no window where the app is without a working
+store.
+
+* Phased roadmap
+
+Ordered by dependency, each phase independently shippable and verifiable.  Early
+phases (0–1) are low-risk optimizations that do not depend on the data-model
+work and can land immediately.
+
+** Phase 0 — quick optimizations (no architectural change)
+
+Production frontend build (optimize, minify, precompress, hashed assets) and the
+release-profile flags.  Independent of everything else; deliver first.
+
+** Phase 1 — frontend structural refactor
+
+Module decomposition, opaque id newtypes, typed domain values, derived indices,
+and ~Html.Lazy~/~Html.Keyed~ memoization.  Still against the existing JSON blob
+API, so it carries no backend risk.
+
+** Phase 2 — persistence foundation
+
+Add ~sqlx~, the migrations, the shared-catalog seed migration, the repository
+trait, and the SQLite implementation.  Wire it behind the existing ~/api/model~
+contract (assemble the blob from tables on read, decompose it on write) so the
+frontend is unchanged.  Add the local-data importer.
+
+** Phase 3 — scoped API and PostgreSQL
+
+Add the PostgreSQL implementation and the fine-grained, user-scoped mutation
+endpoints.  Move the frontend onto the new API with optimistic updates.  Retire
+the JSON ~Store~ and the blob endpoints.
+
+** Phase 4 — accounts and hosting
+
+Wire the foundation OIDC (login, callback, logout, ~/me~, ~require_auth~),
+just-in-time user provisioning, the PostgreSQL session store, and the frontend
+account experience (identity shell, sign-in/out, export, delete).  Stand up the
+hosted NixOS deployment with PostgreSQL, an OIDC provider, TLS, and secrets.
+
+** Phase 5 — hardening for the public
+
+Authorization scoping audit and optional row-level security, body-size limits
+and per-user quotas, rate limiting, CSRF posture, backups and restore drills,
+database health and metrics, and a full security review before launch.
+
+* Risks and trade-offs
+
+- /Schema lockstep./ Typed relational storage means the Elm and Rust schemas
+  must move together — the very coupling the current opaque blob avoids.  This
+  is the deliberate cost of validation and is accepted.
+- /Two backends./ Supporting SQLite and PostgreSQL doubles some SQL (under the
+  trait approach) or weakens type guarantees (under ~Any~).  The [[*Decisions]] item
+  resolves which cost to pay.
+- /Identity keying./ Keying on email is fragile; the recommended foundation
+  enhancement to carry the OIDC subject is a small upstream change but a change
+  nonetheless.
+- /Scope growth./ This is a substantial expansion from a local tool to a hosted
+  service; phases 0–1 deliver value with none of that risk, and the later phases
+  are gated on approval.
+
+* Decisions
+
+Resolved with recommended defaults.  Each is a default, not a commitment; any
+can be revisited before its dependent phase begins.
+
+- /Backend abstraction:/ *repository trait with per-backend,
+  compile-time-checked SQL.* Under the optimality bias, the type guarantees of
+  ~sqlx~'s checked queries outweigh the near-duplicate SQL; the two dialects
+  diverge little, and the SQLite and PostgreSQL statements will mostly be
+  copies.
+- /Identity key:/ *carry the OIDC subject into ~AuthUser~ and key on ~(issuer,
+  subject)~*, with email retained as a display/contact attribute.  This is a
+  small upstream enhancement to the foundation, and it is the correct fix: email
+  is mutable at the provider and must not be a primary key.  Until that
+  enhancement lands, provisioning may fall back to email, but the schema is
+  designed for the subject key from the start.
+- /OIDC provider:/ *self-hosted Authentik* for the public deployment.  It is
+  open-source, self-hostable alongside the NixOS deployment, keeps identity
+  under our control (consistent with the project's self-hosting and AGPL
+  posture), and provides registration and password reset so no custom account
+  system is needed.
+- /Database hosting:/ *NixOS-provisioned PostgreSQL on the same host* to start.
+  It fits the existing Nix deployment story and keeps operations in one place;
+  migrating to a managed database later is a configuration change, not a code
+  change, since access is already abstracted behind the repository.
+- /Row-level security:/ *adopt PostgreSQL RLS as defense-in-depth*, layered on
+  top of — not instead of — session-derived query scoping.  Under the optimality
+  bias this is the correct belt-and-suspenders posture for a public multi-tenant
+  service.
+
+* Template-compliance notes
+
+The plan stays inside the template: the server crate remains the single
+long-running process and gains database and auth responsibilities rather than
+spawning a second service; authentication reuses the foundation's OIDC rather
+than a parallel system; errors are semantic ~thiserror~ variants; no panicking
+~Result~/~Option~ variants are introduced; combinators are preferred over
+imperative control flow; and this document is org-mode with no file-manifest
+lists.  Once approved, the phases move into ~tasks.org~ as cross-linked ~TODO~
+entries.
