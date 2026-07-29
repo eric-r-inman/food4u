@@ -6,6 +6,9 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+1. The About page copy is rewritten to read tighter and clearer, and its
+   redundant "philosophy" section — which only restated the foods-first idea
+   already described above it — is dropped.
 * v0.18.0
 ** Fixes
 1. In select mode, the green control that moves the selection onto a category,
