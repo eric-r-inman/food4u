@@ -6,6 +6,8 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+* v0.21.0
+** Maintenance
 1. Git works inside the development shell on macOS again. The shell now supplies
    its own, because the Apple SDK it exports left the system one unusable there.
    No action is required.
