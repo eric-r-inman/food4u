@@ -27,9 +27,12 @@
     forAllSystems =
       nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed;
     perSystem = forAllSystems (system: let
+      # Hoisted so the quarantined `pkgsUnfreeFor` instance below (used only
+      # when this project links Apple frameworks) stays overlay-consistent with
+      # this build `pkgs` — both see the same overlay set.
+      overlays = [(import rust-overlay)];
       pkgs = import nixpkgs {
-        inherit system;
-        overlays = [(import rust-overlay)];
+        inherit system overlays;
       };
       craneLib =
         (crane.mkLib pkgs).overrideToolchain
@@ -92,10 +95,24 @@
       };
       # The x86_64-linux build cross-compiles macOS `<key>-<arch>-darwin`
       # variants via zig so a release needs no macOS runner; empty on other
-      # systems.  The server links no Apple frameworks, so no `appleSdk` is
-      # passed.
+      # systems.  The server enables the foundation `auth` feature, whose TLS
+      # stack links the Security, SystemConfiguration, and CoreFoundation
+      # frameworks, so this cross-build does need the Apple SDK's headers and
+      # link stubs.  That is opt-in: `"apple-frameworks": true` in
+      # rust-template.json.  When set, `appleSdk` is taken from a quarantined
+      # unfree nixpkgs (`foundation.lib.pkgsUnfreeFor`) that accepts the
+      # darwin-gated Apple SDK licence; evaluating it accepts that licence in
+      # this project's own flake — the visible consent — while leaving this
+      # build `pkgs` graph free.  See CONTRIBUTING.org.
+      appleFrameworksEnabled =
+        (builtins.fromJSON (builtins.readFile ./rust-template.json)).apple-frameworks
+        or false;
       darwinCrossPackages = foundation.lib.mkDarwinCrossPackages {
         inherit self pkgs system crates crane commonArgs;
+        appleSdk =
+          if appleFrameworksEnabled
+          then (foundation.lib.pkgsUnfreeFor {inherit nixpkgs system overlays;}).apple-sdk.src
+          else null;
       };
       # This server is a hosted Linux service and ships no Windows build, so
       # the flake cross-compiles no Windows PE variants.  The foundation's
@@ -219,10 +236,10 @@
             echo "    elm2nix snapshot"
             echo "    git add elm-srcs.nix registry.dat && git commit"
           '';
-          # A runtime marker identifying this as rust-template's default dev
-          # shell.  A compliance check reads it back with `nix eval` to
-          # confirm this shell evaluates and carries the marker; the `ci`
-          # shell carries the same marker with the value "ci".
+          # A runtime marker identifying this as food4u's default dev shell.
+          # A compliance check reads it back with `nix eval` to confirm this
+          # shell evaluates and carries the marker; the `ci` shell carries the
+          # same marker with the value "ci".
           RUST_TEMPLATE_SHELL = "default";
         };
         # Minimal shell for the reusable CI workflow: the Rust toolchain plus

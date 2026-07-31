@@ -6,6 +6,11 @@
 #
 # Please justify all ignore entries with comments.
 
+# The Nix dev shell cache direnv builds from the checked-in .envrc.  It
+# holds absolute /nix/store paths and a machine-local profile symlink, so it
+# is portable to no other checkout.
+/.direnv/
+
 # Ignore cargo generated build artifacts.
 target/
 

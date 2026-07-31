@@ -2,8 +2,10 @@
   "template_sync_hashes": [
     "2e4cdac079954e9e6b6fd817379c9cbfd2291485",
     "ad92be1e8285ce75e6b65eff15198f7377c66d9e",
-    "65f9706d19e13c908438b112be318f9bf0f90125"
+    "65f9706d19e13c908438b112be318f9bf0f90125",
+    "466488777506edca66dae3abe4e382a5217b72db"
   ],
+  "apple-frameworks": true,
   "compliance-ignores": [
     {
       "id": "flake-windows-x86-package",

@@ -6,6 +6,14 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+1. A checkout that loads its dev shell through direnv no longer reports a dirty
+   working tree — the cache direnv builds from the checked-in .envrc is now
+   ignored. No action is required.
+2. The project is synced up to the project template's v0.72.0 release, which
+   realigns the shared foundation and the macOS cross-build. No action is
+   required.
+3. Rust changes are now gated on clippy before review, using the same command CI
+   enforces. Expect the gate to block a change until its warnings are cleared.
 * v0.19.0
 ** Maintenance
 1. The About page copy is rewritten to read tighter and clearer, and its

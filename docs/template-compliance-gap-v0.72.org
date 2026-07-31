@@ -1,0 +1,301 @@
+#+title:     Template compliance gap review — template v0.54.0 → v0.72.0
+#+language:  en
+#+options:   toc:2 num:t
+
+* Purpose and status
+
+*Applied.* Every phase in [[*Refactor plan]] has landed, and the backlog entry
+tracking them is marked ~DONE~.  The structural checker now reports no failures
+against this project.  The review below is kept as the record of what the gaps
+were and why each was closed the way it was; read it in the past tense.
+
+One check — the one asserting both foundation pins match the template's current
+~HEAD~ — still /errors/ rather than reports, for the environment reason given in
+[[*A caveat on reproducing the checker run][the caveat below]].  Its verdict was confirmed by hand instead: the Cargo pin, the
+Nix pin, and the template ~HEAD~ are all the same revision.
+
+It supersedes the remediation list in [[file:template-compliance-plan.org][=template-compliance-plan.org=]] for the
+current window.  That document's analysis of the Windows exception remains live
+and is reconfirmed below; its other remediation items have since landed.
+
+* How this review was conducted
+
+The authority for what compliance means is the template's own
+=docs/compliance.org=, not this document.  Two things drive the findings:
+
+1. *The structural checker*, run against this project from the template
+   checkout.  It is the mandated first step and covers the codified, mechanical
+   subset of compliance.
+2. *The template diff* across the sync window, which bounds everything the
+   checker cannot express as a static rule.  A green checker run is necessary,
+   not sufficient.
+
+** Process selection
+
+Provenance selects the process.  ~template_sync_hashes~ is non-empty and its
+last entry is ~65f9706~, so this is a /diff-based/ pass rather than a
+fresh-emission one.  That hash is exactly the template's ~HEAD~ before the
+recent update, so the window is clean and the diff bounds the work precisely.
+
+| Anchor                       | Value                        |
+|------------------------------+------------------------------|
+| Last recorded sync           | ~65f9706~ (template v0.54.0) |
+| Template ~HEAD~ now          | ~4664887~ (template v0.72.0) |
+| Commits in window            | 36                           |
+| Files touched in window      | 32 (+1998 / −412)            |
+
+** A caveat on reproducing the checker run
+
+The checker resolves each project through the template's spawn registry, whose
+recorded directory for this project points at a home directory that does not
+exist on this machine — as it does for most registered spawns.  The run behind
+this report used an override registry rather than editing the template.  Two
+checks also need ~nix~ and ~git~ on ~PATH~ inside the dev shell, which the shell
+does not itself provide; without them they error rather than report.  Neither
+caveat changes a verdict, but both must be reproduced to get the same output.
+
+* Summary
+
+The project is broadly compliant.  Of 159 applicable checks, 136 pass and 8
+fail; 12 are skipped as inapplicable (this is a ~server~-role spawn with no
+~cli~ crate) and 3 are deliberate, still-justified opt-outs.
+
+| Category                                    | Count | Risk        |
+|---------------------------------------------+-------+-------------|
+| Checker failures — documentation only       |     3 | None        |
+| Checker failures — agent configuration      |     1 | None        |
+| Checker failures — cosmetic                 |     1 | None        |
+| Checker failures — build-affecting          |     3 | Moderate    |
+| Diff-only gaps the checker cannot see       |     5 | Low         |
+| Already satisfied by the last sync          |     2 | —           |
+| Flows in automatically                      |     — | —           |
+| Standing opt-outs, reconfirmed              |     3 | —           |
+
+The headline is that no gap touches application behaviour.  Every finding is
+plumbing: convention prose, agent configuration, dependency pins, and the
+cross-build's Apple SDK wiring.
+
+* Gaps the checker flags
+
+Eight checks fail.  One of them errored locally on an unrelated ~git~ warning
+rather than reporting; its verdict was determined by hand and is stated as a
+failure because neither recorded pin matches the template's current ~HEAD~.
+
+| Check id                                           | Concern       | What is missing                                                |
+|----------------------------------------------------+---------------+----------------------------------------------------------------|
+| ~foundation-pins-agree~                            | Pins          | The two lockfiles name different foundation revisions          |
+| ~foundation-pins-current~                          | Pins          | Neither recorded revision is the template's current ~HEAD~     |
+| ~flake-wires-apple-sdk~                            | Cross-build   | The flake carries no ~pkgsUnfreeFor~ Apple-SDK wiring          |
+| ~auth-spawn-wires-apple-frameworks~                | Cross-build   | No ~apple-frameworks~ opt-in, though the server enables ~auth~ |
+| ~contributing-control-flow-section~                | Documentation | The expression-over-early-return convention is undocumented    |
+| ~contributing-control-flow-question-mark-carveout~ | Documentation | Same section; the ~?~ carve-out is undocumented                |
+| ~settings-disables-auto-memory~                    | Agent config  | Auto-memory is not turned off                                  |
+| ~no-stale-rust-template-literals~                  | Cosmetic      | A dev-shell comment still names the template, not this project |
+
+** The two pin failures are one problem
+
+The lockfiles disagree with each other and both trail the template.  The Cargo
+side names a later revision than the Nix side, so a Rust build and a Nix build
+currently compile against different foundation versions.  Bringing both to the
+template's current ~HEAD~ resolves both checks at once.
+
+** The Apple-SDK failures are blocked on the pins
+
+This is the one real ordering constraint in the plan, and it is easy to miss.
+
+The template now wires the Apple SDK through a ~foundation.lib.pkgsUnfreeFor~
+helper, gated behind an ~apple-frameworks~ flag in the provenance file.  That
+helper *did not exist* at the revision this project's Nix input pins — it
+arrived partway through the sync window.  Wiring the flake before bumping the
+Nix input therefore cannot work: the attribute is simply absent.
+
+The wiring is genuinely required rather than optional here, because the server
+enables the foundation ~auth~ feature, whose TLS stack links the ~Security~,
+~SystemConfiguration~, and ~CoreFoundation~ frameworks.  The flake's present
+comment — asserting that the server links no Apple frameworks — is stale on that
+point and should be corrected as part of the same change.
+
+** The cosmetic failure is a hand-port artifact
+
+Emission rewrites the template's name throughout, so a freshly emitted project
+would name itself in the dev-shell marker comment.  This project's copy still
+names the template, which means the comment arrived through an earlier manual
+port that bypassed the substitution.  Rewording the comment clears it.
+
+* Gaps the checker does not flag
+
+The diff surfaces five further changes the project has not adopted.  The checker
+is silent on all of them, so a checker-only pass would miss every one.
+
+| Concern                        | What the template added                                             |
+|--------------------------------+---------------------------------------------------------------------|
+| Stop-hook clippy gate          | The review hook gained a deterministic clippy gate for Rust changes |
+| Clippy convention              | ~llms.org~ gained a section requiring clippy before review          |
+| Auto-memory rationale          | ~llms.org~ gained the paragraph explaining the disabled auto-memory |
+| Apple-frameworks documentation | ~CONTRIBUTING.org~ reworked the section around the new opt-in flag  |
+| Changelog conventions          | ~CONTRIBUTING.org~ split them into subheadings and added examples   |
+
+Two of these pair with a checker failure and should travel with it: the
+auto-memory paragraph explains the setting that ~settings-disables-auto-memory~
+demands, and the Apple-frameworks prose documents the wiring the two cross-build
+checks demand.  Splitting a pair across phases would land a setting with no
+stated rationale.
+
+* Already satisfied — no action
+
+The previous sync already ported the continuous-integration dispatch trigger and
+the auto-merge permission and job-gate changes.  Both were verified directly
+against the current working tree rather than assumed from the commit subject.
+
+* Flows in automatically — no action
+
+Most of the window needs no porting at all.  The reusable workflows are
+referenced at ~@main~, so their changes — including the substantially reworked
+auto-merge queue — reach this project on their next run without a local edit.
+The foundation library's own changes arrive with the pin bump.  The remainder is
+template-internal machinery: its checker crates and manifest, its emission and
+crate-add scripts, its own backlog and changelog, and its cross-build fixture.
+
+* Standing opt-outs — reconfirmed
+
+Three Windows-related checks are deliberately ignored, on the grounds that the
+foundation's cross helper re-filters sources in a way that drops the SQL seed
+the server embeds at compile time, and that a hosted Linux service ships no
+Windows binary regardless.
+
+That reasoning was re-verified against the updated template and *still holds*:
+the Windows cross helper continues to rebuild its source set through crane's
+default Cargo filter rather than honouring the caller's, so the embedded seed
+would still be dropped.  The opt-outs should stay, and the note pointing at the
+prior plan document remains accurate.
+
+* Upstream observations
+
+These belong against the template, not this project, and are recorded here only
+so they are not rediscovered.
+
+1. *Two propagated changes ship without a check.* The template's own compliance
+   documentation states that a change existing projects should adopt is not
+   finished until a check covers it, because a sync is driven by what the
+   checker flags.  The Stop-hook clippy gate and its ~llms.org~ counterpart have
+   no check, so they reach only newly emitted projects.  This review caught them
+   from the diff; a checker-driven sync would not have.
+2. *The pins-current check is brittle off-Linux.* It shells out to ~git~ and
+   treats a warning on standard error as failure, so it errors rather than
+   reports on a machine whose ~git~ emits one.
+3. *The spawn registry has drifted from reality.* Most recorded project
+   directories, including this one's, point at a home directory that no longer
+   exists, so the checker cannot resolve them without an override.
+
+* Refactor plan
+
+Six phases, ordered so that nothing depends on work that has not landed.  Each
+is one pull request carrying its own changelog entry, per the project's
+conventions.  Phases 1, 2, and 5 are independent and may land in any order or in
+parallel; phase 4 must follow phase 3; phase 6 must come last.
+
+** Phase 1 — Convention documentation
+
+Adopt the control-flow convention with its ~?~ carve-out, the clippy-before-
+review instruction, and the restructured changelog conventions with their
+examples.  Clears two checker failures and three diff-only gaps.
+
+Pure prose, no build surface, no risk.  Largest phase by volume and the safest
+to do first.  Take the template's wording rather than paraphrasing, so future
+diffs stay clean.
+
+** Phase 2 — Agent configuration
+
+Turn off auto-memory, add the paragraph explaining why, and port the Stop hook's
+clippy gate.  Clears one checker failure and two diff-only gaps.
+
+The hook change is the only executable code in the phase.  It carries its own
+round-bounding escape valve and steps aside when no toolchain is reachable, so
+port it verbatim rather than adapting it.  Worth exercising deliberately: it
+will gate subsequent phases' own Rust work, and phase 3 is the first to test
+that.
+
+** Phase 3 — Foundation pin realignment
+
+Bring both lockfiles to the template's current ~HEAD~.  Clears two checker
+failures and unblocks phase 4.
+
+This is the highest-risk phase and the one to schedule attention for.  It moves
+the foundation across eighteen releases, so it is the phase most likely to
+require code changes rather than only lockfile edits.  The two pins currently
+disagree, so this reconciles a real inconsistency rather than merely advancing a
+version.  Do not fold any other phase into it — an unrelated failure here should
+not be entangled with a prose change.
+
+** Phase 4 — Apple frameworks wiring
+
+Hoist the overlay set so the quarantined package instance stays
+overlay-consistent, read the ~apple-frameworks~ opt-in from the provenance file,
+pass the resulting SDK into the darwin cross helper, set the flag true, correct
+the stale comment claiming the server links no Apple frameworks, and adopt the
+reworked documentation.  Clears two checker failures and one diff-only gap.
+
+*Blocked on phase 3* — the helper this depends on does not exist at the
+currently pinned revision.
+
+** Phase 5 — Cosmetic literal
+
+Reword the dev-shell marker comment to name this project.  Clears one checker
+failure.  Trivial and independent.
+
+** Phase 6 — Provenance
+
+Append the template's current ~HEAD~ to ~template_sync_hashes~ so the next pass
+has a clean baseline, and re-examine whether the three Windows opt-out reasons
+still need their pointer to the prior plan document.
+
+Last, and only once every other phase has landed — recording the sync before the
+work is complete would make the next diff-based pass silently skip whatever was
+left.
+
+** Effort and sequencing at a glance
+
+| Phase | Scope                  | Risk     | Blocked by |
+|-------+------------------------+----------+------------|
+|     1 | Convention prose       | None     | —          |
+|     2 | Agent configuration    | Low      | —          |
+|     3 | Foundation pins        | Moderate | —          |
+|     4 | Apple frameworks       | Low      | Phase 3    |
+|     5 | Cosmetic literal       | None     | —          |
+|     6 | Provenance record      | None     | 1–5        |
+
+* Verification
+
+Each phase ends with the workspace build and test suite passing through the dev
+shell, and with a re-run of the structural checker showing that phase's checks
+cleared and nothing regressed.  Phase 3 additionally warrants a deliberate
+cross-build check, since a foundation move of that size is where a packaging
+regression would surface.
+
+Reproducing the checker needs the two workarounds described [[*A caveat on reproducing the checker run][in the caveat above]];
+without them, four checks error instead of reporting and the run looks worse
+than it is.
+
+** Outcome
+
+The checker went from eight failures to none: 143 pass, 0 fail, 12 skipped as
+inapplicable, and the 3 standing opt-outs.  The workspace builds, the full suite
+passes, and clippy is clean under the same ~--deny warnings~ gate CI enforces.
+The darwin cross-build reports its Apple SDK genuinely wired rather than merely
+flagged, which is the marker the template added to tell those two states apart.
+
+One environmental snag surfaced during verification and is worth knowing,
+because it looks like a code failure and is not.  Building dev-dependencies —
+which a plain build skips but the test suite and clippy do not — failed until
+the tracked executables were restored to the mode git records for them.  A
+checkout had narrowed them so only the owner kept the execute bit, and the
+pre-commit hook's installer requires the full triad.  Nothing in the repository
+was wrong; the working copy's file modes were.
+
+* What this review deliberately leaves alone
+
+Compliance is plumbing.  Application behaviour, domain types, route handlers,
+the relational store's schema, and this project's own configuration fields are
+not compliance items and are untouched by every phase above.  Where the project
+diverges from the template because it is a real application rather than a
+skeleton, that divergence is correct and is not recorded as a gap.
