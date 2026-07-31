@@ -2652,8 +2652,8 @@ dependencies = [
 
 [[package]]
 name = "rust-template-foundation"
-version = "0.60.0"
-source = "git+https://github.com/LoganBarnett/rust-template.git#8c7b32b8b7eac3cd6663a101501f676f6f1c1cf4"
+version = "0.72.0"
+source = "git+https://github.com/LoganBarnett/rust-template.git#466488777506edca66dae3abe4e382a5217b72db"
 dependencies = [
  "aide",
  "axum",
@@ -2686,8 +2686,8 @@ dependencies = [
 
 [[package]]
 name = "rust-template-foundation-derive"
-version = "0.60.0"
-source = "git+https://github.com/LoganBarnett/rust-template.git#8c7b32b8b7eac3cd6663a101501f676f6f1c1cf4"
+version = "0.72.0"
+source = "git+https://github.com/LoganBarnett/rust-template.git#466488777506edca66dae3abe4e382a5217b72db"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -187,3 +187,31 @@ each add a pane would collide on ~storage_locations.id~.  Provisioning sidesteps
 this by deriving pane ids from the user id, but user-created entities do not.
 The hosted multi-user path needs either composite ~(user_id, id)~ keys or
 server-side id minting before more than one account writes concurrently.
+
+* DONE sync the project up to template v0.72.0
+:PROPERTIES:
+:PLAN: docs/template-compliance-gap-v0.72.org
+:END:
+
+The template moved eighteen releases while this project stayed on the revision
+it last recorded, so a compliance pass is owed.  The gap review found the
+project broadly compliant — every gap is plumbing, and none touches application
+behaviour — but eight structural checks fail and five further changes are
+invisible to the checker and only surfaced from the template diff.
+
+The plan runs in six phases, each landing as its own pull request.  Convention
+prose, agent configuration, and one cosmetic comment are independent and
+risk-free.  The foundation pin realignment is the phase to schedule real
+attention for: the two lockfiles currently name different revisions, so it
+reconciles a genuine inconsistency rather than merely advancing a version, and
+it is the phase most likely to need code changes rather than lockfile edits
+alone.
+
+Two ordering constraints matter.  The Apple frameworks wiring must follow the
+pin realignment, because the helper it depends on does not exist at the
+currently pinned revision — wiring it first cannot work.  Recording the new
+provenance hash must come last, since recording a sync before the work lands
+would make the next diff-based pass silently skip whatever was left.
+
+The three standing Windows opt-outs were re-verified against the updated
+template and still hold, so they stay as they are.
