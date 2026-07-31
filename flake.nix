@@ -170,6 +170,17 @@
           buildInputs = [
             # Rust toolchain (compiler, cargo, rustfmt, rust-analyzer).
             rust
+            # Git, vendored deliberately rather than relied on from the host.
+            # On macOS this shell exports DEVELOPER_DIR pointing at the Nix
+            # Apple SDK, and /usr/bin/git is the Xcode shim, which resolves the
+            # real binary underneath DEVELOPER_DIR and finds none there — so
+            # every git call from inside the shell fails with "tool 'git' not
+            # found".  That breaks the shellHook's own hook install, the
+            # compliance checker's pin comparison, and the `nix develop
+            # --command git commit` flow this project documents.  A Nix git
+            # sidesteps the shim entirely.  Upstream:
+            # https://github.com/LoganBarnett/rust-template/issues/69
+            pkgs.git
             # Prunes stale per-profile artifacts from target/ to reclaim disk.
             pkgs.cargo-sweep
             # JSON parsing for the shellHook's cargo-package listing and ad-hoc
