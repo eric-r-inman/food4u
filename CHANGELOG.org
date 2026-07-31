@@ -6,6 +6,8 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+* v0.20.0
+** Maintenance
 1. A checkout that loads its dev shell through direnv no longer reports a dirty
    working tree — the cache direnv builds from the checked-in .envrc is now
    ignored. No action is required.
