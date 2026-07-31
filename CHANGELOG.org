@@ -14,6 +14,9 @@
    required.
 3. Rust changes are now gated on clippy before review, using the same command CI
    enforces. Expect the gate to block a change until its warnings are cleared.
+4. Git works inside the development shell on macOS again. The shell now supplies
+   its own, because the Apple SDK it exports left the system one unusable there.
+   No action is required.
 * v0.19.0
 ** Maintenance
 1. The About page copy is rewritten to read tighter and clearer, and its
