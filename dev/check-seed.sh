@@ -2,13 +2,13 @@
 # Audit the seed's load-bearing names: every recipe ingredient and every
 # Auto staple must match a catalog food exactly (a mismatch silently costs
 # the chip its tier tint, stock tracking, and shopping-list identity), and
-# no staple may sit in the leafy-greens category (staples are pantry
-# stock; leafy greens are weekly fresh shopping).  Runs against the given
-# seed-editing database, or, with no argument, against a scratch database
-# built from the committed migrations and seed.  Exits non-zero when any
-# name is out of line, listing each one.  The same contract is enforced at
-# test time by the server's seed-integrity tests; this script exists to
-# say so at editing time, before a dump is baked in.
+# no staple may sit in the leafy-greens category unless it is one the lists
+# stock frozen on purpose (staples are pantry stock; salad greens are weekly
+# fresh shopping).  Runs against the given seed-editing database, or, with no
+# argument, against a scratch database built from the committed migrations and
+# seed.  Exits non-zero when any name is out of line, listing each one.  The
+# same contract is enforced at test time by the server's seed-integrity tests;
+# this script exists to say so at editing time, before a dump is baked in.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -63,10 +63,20 @@ if [ -s "$work/orphan-staples" ]; then
   fail=1
 fi
 
+# Leafy greens the staples lists carry on purpose: they stock frozen, and
+# the tracker's Freezer location is where a user records that, so the
+# catalog name need not.  Entries must be lowercase — the comparison below
+# lowercases the staple but not this list, so a capitalised entry here
+# silently allows nothing.  Mirrored in the server's seed-integrity tests.
+printf 'spinach\n' > "$work/freezer-greens"
+
 awk 'NR==FNR { leafy[$0] = 1; next } (tolower($0) in leafy)' \
-  "$work/leafy" "$work/staples" > "$work/leafy-staples"
+  "$work/leafy" "$work/staples" \
+  | awk 'NR==FNR { allowed[$0] = 1; next } !(tolower($0) in allowed)' \
+      "$work/freezer-greens" - > "$work/leafy-staples"
 if [ -s "$work/leafy-staples" ]; then
-  echo "Auto staples filed under leafy greens (staples are pantry stock):"
+  echo "Auto staples filed under leafy greens (staples are pantry stock;" \
+    "allow one by adding it to freezer-greens in this script):"
   sed 's/^/  /' "$work/leafy-staples"
   fail=1
 fi

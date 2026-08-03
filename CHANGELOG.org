@@ -3,6 +3,22 @@
 
 * Upcoming
 ** Added
+1. The Staples Tracker's Auto button now stocks only shelf-stable proteins.
+   Fresh cuts have given way to the canned fish a pantry actually keeps, so an
+   auto-filled tracker no longer suggests meat you would buy for the week's
+   cooking. No action is required.
+2. Auto-stocking MIND now adds spinach, so the diet's most heavily weighted food
+   group is represented for the first time. Drag it to the Freezer if that is
+   how you keep it. No action is required.
+3. The bundled default catalog absorbs a round of curation from daily use: a
+   refreshed supplements shelf (powders, everyday vitamins, and extracts in; a
+   few exotics out), pantry basics (salt, white flour, chicken broth, chili
+   sauce, cranberry juice, canned herring), singular spellings for lemon,
+   jalapeno, and radish, and the retirement of the generic onions entry and a
+   duplicate parsley in favor of the specific forms already present. The bundled
+   recipes and Auto staples follow the renames, so their chips keep their tier
+   colour, stock tracking, and shopping-list identity. Existing kitchens keep
+   their foods; the changes reach only kitchens seeded afterward.
 ** Fixes
 ** Breaking
 ** Maintenance

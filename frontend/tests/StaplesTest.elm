@@ -36,7 +36,7 @@ suite =
             \_ ->
                 missingStaples [] "MIND"
                     |> List.length
-                    |> Expect.equal 39
+                    |> Expect.equal 38
         , test "a staple already present is skipped, case-insensitively" <|
             \_ ->
                 missingStaples [ "extra-virgin olive oil", "WALNUTS" ] "Mediterranean"
