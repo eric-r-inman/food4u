@@ -106,6 +106,14 @@ async fn every_auto_staple_matches_a_catalog_food() {
   );
 }
 
+/// Leafy greens the staples lists carry on purpose, lowercase.  They earn
+/// the place by stocking frozen, which the catalog name does not say and
+/// does not need to — the tracker's Freezer location is where a user
+/// records the form they keep.  Every other leafy green stays out, so the
+/// guard still catches the salad greens that are genuinely weekly
+/// shopping.  Mirrored in `dev/check-seed.sh`.
+const FREEZER_GREENS: [&str; 1] = ["spinach"];
+
 #[tokio::test]
 async fn no_auto_staple_is_a_leafy_green() {
   let model = seeded_model().await;
@@ -126,12 +134,16 @@ async fn no_auto_staple_is_a_leafy_green() {
 
   let offenders: Vec<String> = staples_from_elm()
     .into_iter()
-    .filter(|s| leafy.contains(&s.to_lowercase()))
+    .filter(|s| {
+      let lower = s.to_lowercase();
+      leafy.contains(&lower) && !FREEZER_GREENS.contains(&lower.as_str())
+    })
     .collect();
 
   assert!(
     offenders.is_empty(),
     "staples are pantry stock, and leafy greens are weekly fresh \
-     shopping (see docs/staples-auto-populate.org): {offenders:#?}"
+     shopping unless they stock frozen — add one to FREEZER_GREENS to \
+     allow it (see docs/staples-auto-populate.org): {offenders:#?}"
   );
 }

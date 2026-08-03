@@ -41,24 +41,30 @@ exact spellings for the same reason.
    diet reaches for weekly — not produce variety, which the pyramid itself
    teaches.
 2. /Keeps, or it is not a staple./ Staples favour dry goods, jars, cans, the
-   freezer, and the spice cupboard.  Leafy greens are excluded outright — they
-   are weekly fresh shopping, not stock — and vegetables make the list only when
-   they keep for weeks (alliums, carrots, cabbage, winter roots).  Perishable
-   forms give way to pantry forms: tomato paste over fresh tomatoes, canned
-   salmon over fresh.  Berries stay because the freezer stocks them as well as
-   the produce aisle does.
+   freezer, and the spice cupboard.  Salad greens are excluded — they are weekly
+   fresh shopping, not stock — but a leafy green that stocks frozen earns its
+   place, and spinach does.  The catalog does not spell out the frozen form and
+   does not need to: the tracker has a Freezer location, so a user who keeps it
+   there records the form themselves.  Vegetables otherwise make the list only
+   when they keep for weeks (alliums, carrots, cabbage, winter roots).
+   Perishable forms give way to pantry forms: tomato paste over fresh tomatoes,
+   canned salmon over fresh.  Meat and fish earn a place only in their canned
+   form — fresh and frozen cuts are shopped for the week's cooking, not stocked
+   — so a diet whose pattern scores poultry or lean meat simply goes
+   unrepresented here when the catalog offers no canned equivalent.  Berries
+   stay because the freezer stocks them as well as the produce aisle does.
 3. /Every name is a catalog name./ A tracker chip only gets its tier tint, stock
    tracking, and shopping-list identity when its name matches a Longevity Foods
    entry exactly, so every staple is spelled precisely as the bundled catalog
    spells it ("Banana", "Sweet potato", "Extra-virgin olive oil").  A
-   verification pass checks every staple against the seed, and that none sits in
-   the catalog's leafy-greens category.  Because the match is by exact name, the
-   pass must be re-run whenever the catalog is re-spelled: a rename there
-   silently strips a staple of its identity.  The catalog refinement toward
-   specific whole foods retired some generic entries, and the lists were
-   re-synced to follow — "Greek yogurt" to "Yogurt, Greek", "Smoked paprika" to
-   "Paprika, smoked", "Toasted sesame oil" to "Sesame oil", and the generic
-   "Chicken" to "Chicken, breast".
+   verification pass checks every staple against the seed, and that no staple
+   sits in the catalog's leafy-greens category beyond the frozen-stocking
+   exceptions the pass names.  Because the match is by exact name, the pass must
+   be re-run whenever the catalog is re-spelled: a rename there silently strips
+   a staple of its identity.  The catalog refinement toward specific whole foods
+   retired some generic entries, and the lists were re-synced to follow — "Greek
+   yogurt" to "Yogurt, Greek", "Smoked paprika" to "Paprika, smoked", and
+   "Toasted sesame oil" to "Sesame oil".
 4. /The recipes are the referee./ Each list is checked against the bundled
    recipe collection: for every diet tag, the ingredients its recipes reach for
    most often earn a place, in their shelf-stable form where one exists (canned
@@ -71,8 +77,8 @@ exact spellings for the same reason.
    collection's recipes from, small enough to read and prune by hand.
 6. /Distinctive over generic./ Where diets overlap (they all like beans), each
    list leans into what distinguishes the diet — corn tortillas and miso for
-   Blue Zone, berries and poultry for MIND, low-fat dairy and potassium fruit
-   for DASH, the spice rack for Anti-Inflammatory.
+   Blue Zone, berries and the breadth of the nut group for MIND, low-fat dairy
+   and potassium fruit for DASH, the spice rack for Anti-Inflammatory.
 
 ** The lists and their reasoning
 
@@ -85,10 +91,10 @@ oily fish as the signature proteins; and the herbs its recipes lean on —
 oregano, basil, mint, parsley — from the spice rack.
 
 Extra-virgin olive oil, Chickpeas, Lentils, Farro, Whole-wheat pasta, Tomato
-paste, Tomatoes canned and diced, Garlic, Onions, Capers, Lemons, Lemon juice,
-Olives, Almonds, Walnuts, Pine nuts, Pistachios, Tahini, Greek yogurt, Feta,
-Sardines canned, Red wine vinegar, Balsamic vinegar, Apple cider vinegar, Honey,
-Oregano, Basil, Mint, Parsley, Cumin, Smoked paprika.
+paste, Tomatoes canned and diced, Garlic, Yellow onions, Capers, Lemon, Lemon
+juice, Olives, Almonds, Walnuts, Pine nuts, Pistachios, Tahini, Greek yogurt,
+Feta, Sardines canned, Red wine vinegar, Balsamic vinegar, Apple cider vinegar,
+Honey, Oregano, Basil, Mint, Parsley, Cumin, Smoked paprika.
 
 *** Blue Zone
 
@@ -100,49 +106,54 @@ surfaced the East Asian pantry the collection actually cooks from — tamari,
 sesame two ways, rice vinegar, ginger, kimchi, and the dried seaweeds.
 
 Black beans, Chickpeas, Fava beans, Brown rice, Oats, Whole-grain corn
-tortillas, Sweet potato, Cabbage, Carrots, Edamame, Garlic, Onions, Ginger,
-Tofu, Miso, Tamari / soy sauce, Toasted sesame oil, Sesame seeds, Rice vinegar,
-Kimchi, Nori, Wakame, Tomatoes canned and diced, Honey, Bay leaves, Walnuts,
-Extra-virgin olive oil, Green tea.
+tortillas, Sweet potato, Cabbage, Carrots, Edamame, Garlic, Yellow onions,
+Ginger, Tofu, Miso, Tamari / soy sauce, Toasted sesame oil, Sesame seeds, Rice
+vinegar, Kimchi, Nori, Wakame, Tomatoes canned and diced, Honey, Bay leaves,
+Walnuts, Extra-virgin olive oil, Green tea.
 
 *** MIND
 
 MIND leads the Auto menu: it is the app's most brain-focused pattern and the one
 this project treats as primary, so it is offered first and stocked most fully.
 The MIND trial scores ten food groups, and the list carries the shelf-stable
-ones as completely as the catalog allows: berries (blueberries and strawberries
-are the studied ones, joined by raspberries and blackberries, all stocked
-frozen); the nut group in variety (walnuts and almonds with pecans, cashews, and
-pistachios, plus peanut butter); whole grains (oats, quinoa, farro, whole-wheat
-pasta, whole-grain bread, brown rice, barley, and bulgur); beans and soy
-(chickpeas, black beans, lentils, canned kidney and cannellini beans, and
-edamame); olive oil; omega-3 fish from the can (salmon, sardines, mackerel, and
-tuna); and poultry from the freezer (chicken and turkey breast).  Its daily
-leafy greens stay deliberately absent — that is fresh shopping, not stock — and
-the "other vegetables" group is left to the pyramid and the produce aisle for
-the same reason.  The recipe check keeps the breakfast-and-broth pantry the
-collection's MIND dishes run on: cinnamon, thyme, dates, honey, maple syrup, soy
-milk, vegetable broth, and dried shiitake.
+ones as completely as the catalog allows: green leafy vegetables, the pattern's
+most heavily weighted group, as spinach, which stocks frozen; berries
+(blueberries and strawberries are the studied ones, joined by raspberries and
+blackberries, all stocked frozen); the nut group in variety (walnuts and almonds
+with pecans, cashews, and pistachios, plus peanut butter); whole grains (oats,
+quinoa, farro, whole-wheat pasta, whole-grain bread, brown rice, barley, and
+bulgur); beans and soy (chickpeas, black beans, lentils, canned kidney and
+cannellini beans, and edamame); olive oil; omega-3 fish from the can (salmon,
+sardines, mackerel, and tuna).  The three it leaves out are left out for three
+different reasons.  The "other vegetables" group is fresh shopping rather than
+stock, so the pyramid and the produce aisle carry it.  Poultry is shelf-stable
+only as jerky, which is no way to meet a group scored for lean protein, so it
+goes unrepresented rather than badly represented.  Wine the catalog does stock,
+and it would keep — it is omitted as a judgment call, because a staples list
+that auto-fills a kitchen is the wrong place to put alcohol in front of someone
+who has not asked for it.  The recipe check keeps the breakfast-and-broth pantry
+the collection's MIND dishes run on: cinnamon, thyme, dates, honey, maple syrup,
+soy milk, vegetable broth, and dried shiitake.
 
-Blueberries, Strawberries, Raspberries, Blackberries, Walnuts, Almonds, Pecans,
-Cashews, Pistachios, Peanut butter, Oats, Quinoa, Farro, Whole-wheat pasta,
-Whole-grain bread, Brown rice, Barley, Bulgur, Chickpeas, Black beans, Lentils,
-Kidney beans canned, Cannellini beans canned, Edamame, Extra-virgin olive oil,
-Salmon canned, Sardines canned, Mackerel canned, Tuna canned, Chicken breast,
-Turkey breast, Cinnamon, Thyme, Dates, Honey, Maple syrup, Soy milk, Vegetable
-broth, Dried shiitake.
+Spinach, Blueberries, Strawberries, Raspberries, Blackberries, Walnuts, Almonds,
+Pecans, Cashews, Pistachios, Peanut butter, Oats, Quinoa, Farro, Whole-wheat
+pasta, Whole-grain bread, Brown rice, Barley, Bulgur, Chickpeas, Black beans,
+Lentils, Kidney beans canned, Cannellini beans canned, Edamame, Extra-virgin
+olive oil, Salmon canned, Sardines canned, Mackerel canned, Tuna canned,
+Cinnamon, Thyme, Dates, Honey, Maple syrup, Soy milk, Vegetable broth, Dried
+shiitake.
 
 *** DASH
 
 Built around potassium, magnesium, calcium, and fibre: fruit and long-keeping
-vegetables in volume, whole grains, legumes, low-fat dairy, lean protein,
-unsalted nuts.  The recipe check added the quiet workhorses of the DASH dishes:
-garlic, limes, quinoa, canned tomatoes, pistachios, honey, and the
-cumin-and-cinnamon end of the spice rack.
+vegetables in volume, whole grains, legumes, low-fat dairy, unsalted nuts.  The
+recipe check added the quiet workhorses of the DASH dishes: garlic, limes,
+quinoa, canned tomatoes, pistachios, honey, and the cumin-and-cinnamon end of
+the spice rack.
 
 Oats, Brown rice, Quinoa, Whole-grain bread, Black beans, Kidney beans, Lentils,
-Banana, Oranges, Apples, Limes, Garlic, Onions, Broccoli, Carrots, Sweet potato,
-Tomatoes canned and diced, Greek yogurt, Almonds, Pistachios, Chicken, Honey,
+Banana, Oranges, Apples, Limes, Garlic, Yellow onions, Broccoli, Carrots, Sweet
+potato, Tomatoes canned and diced, Greek yogurt, Almonds, Pistachios, Honey,
 Cinnamon, Cumin.
 
 *** Anti-Inflammatory
@@ -156,9 +167,10 @@ added the curry base the collection's anti-inflammatory dishes are built on:
 coconut milk, red lentils, brown rice, canned tomatoes, and bottled lemon juice.
 
 Turmeric, Ginger, Cinnamon, Cumin, Garam masala, Smoked paprika, Garlic, Black
-pepper, Extra-virgin olive oil, Coconut milk, Lemon juice, Salmon, Sardines
-canned, Blueberries, Tart cherries, Onions, Carrots, Broccoli, Brown rice, Red
-lentils, Tomatoes canned and diced, Walnuts, Flaxseed, Chia seeds, Green tea.
+pepper, Extra-virgin olive oil, Coconut milk, Lemon juice, Salmon canned,
+Sardines canned, Blueberries, Tart cherries, Yellow onions, Carrots, Broccoli,
+Brown rice, Red lentils, Tomatoes canned and diced, Walnuts, Flaxseed, Chia
+seeds, Green tea.
 
 * Behaviour decisions
 
