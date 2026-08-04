@@ -187,6 +187,7 @@ insert into foods (id, group_id, name, prep, hero, position) values ('u998', 'd1
 insert into foods (id, group_id, name, prep, hero, position) values ('u1007', 'd159', 'Onion powder', 'F', false, 53);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex248', 'd159', 'Salt', 'F', false, 54);
 insert into foods (id, group_id, name, prep, hero, position) values ('d118', 'd159', 'Lemon', 'F', false, 55);
+insert into foods (id, group_id, name, prep, hero, position) values ('ex252', 'd159', 'Curry powder', 'P', false, 56);
 insert into foods (id, group_id, name, prep, hero, position) values ('d160', 'd165', 'Green tea', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d161', 'd165', 'Matcha', 'P', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d162', 'd165', 'Sencha', 'P', false, 2);
@@ -246,6 +247,7 @@ insert into foods (id, group_id, name, prep, hero, position) values ('u1023', 'd
 insert into foods (id, group_id, name, prep, hero, position) values ('u1024', 'd183', 'Garlic paste', 'F', false, 34);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex242', 'd183', 'Chili sauce', 'F', false, 35);
 insert into foods (id, group_id, name, prep, hero, position) values ('ex241', 'd183', 'Chicken broth', 'F', false, 36);
+insert into foods (id, group_id, name, prep, hero, position) values ('ex251', 'd183', 'Curry paste, red', 'P', false, 37);
 insert into foods (id, group_id, name, prep, hero, position) values ('d184', 'd203', 'Lentils', 'P', true, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d185', 'd203', 'Chickpeas', 'P', true, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d186', 'd203', 'White beans', 'P', false, 2);
@@ -1899,6 +1901,603 @@ Instructions:
 3. Whisk the eggs, maple syrup, milk, and oil in a second bowl, then fold into the dry mix until just combined.
 4. Fold in the blueberries and walnuts and divide among the cups.
 5. Bake 20-24 minutes, until a toothpick comes out clean. Cool in the tin 10 minutes.', false, 84);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1043', 'local', 'Baked Cod with Jammy Cherry Tomatoes & Fennel', 'Main Courses', 'Ingredients:
+- 1 pint cherry tomatoes, halved
+- 1 small fennel bulb, thinly sliced
+- 3 cloves garlic, thinly sliced
+- 1 tbsp capers
+- 5 tbsp extra-virgin olive oil, divided
+- 1 tbsp red wine vinegar
+- 1 tsp honey
+- 4 cod fillets (about 1 1/4 lb)
+- 4 thin lemon slices
+- Fresh basil, to serve
+- Salt and black pepper
+
+Instructions:
+1. Heat the oven to 400°F. Toss the tomatoes, fennel, garlic, and capers with 3 tbsp of the oil, the vinegar, honey, and a pinch of salt in a baking dish.
+2. Roast 20-25 minutes, until the tomatoes collapse and turn jammy.
+3. Brush the cod with the remaining oil and season with salt and pepper.
+4. Nestle the fillets into the hot vegetables and top each with a lemon slice.
+5. Bake 10-15 minutes more, until the fish flakes. Scatter with basil and spoon the pan juices over.', false, 85);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1054', 'local', 'One-Pot Rosemary Chicken with Quinoa, Mushrooms & Spinach', 'Main Courses', 'Ingredients:
+- 6 boneless, skinless chicken thighs
+- 3/4 tsp dried rosemary, crushed
+- 1/2 tsp smoked paprika
+- 2 tsp extra-virgin olive oil, divided
+- 1/2 yellow onion, chopped
+- 8 oz cremini mushrooms, sliced
+- 3 cloves garlic, minced
+- 1 cup quinoa
+- 2 cups chicken broth
+- 1 1/2 cups spinach, sliced
+- Salt and black pepper
+
+Instructions:
+1. Rub the chicken with rosemary, paprika, salt, and pepper, then brown it in half the oil in a deep skillet; set aside.
+2. Cook the onion and mushrooms in the remaining oil until their liquid cooks off, then stir in the garlic for a minute.
+3. Add the quinoa and broth, scraping up the browned bits, and bring to a boil.
+4. Return the chicken, cover, and simmer about 20 minutes, until the quinoa is fluffy and the chicken cooked through.
+5. Stir the spinach through the hot quinoa until it wilts, season, and serve.', false, 86);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1065', 'local', 'Whole-Grain Penne with Sardines, Garlic & Kale', 'Main Courses', 'Ingredients:
+- 8 oz whole-wheat pasta (penne)
+- 8 kale leaves, stemmed and torn
+- 1 1/2 tsp extra-virgin olive oil
+- 4 cloves garlic, minced
+- 1/4 tsp red pepper flakes
+- 2 cans sardines in tomato sauce
+- 4 tbsp grated Parmesan
+- Salt and black pepper
+
+Instructions:
+1. Cook the penne in salted boiling water until al dente; drain.
+2. Steam the kale in a shallow layer of water until just tender and drain it well.
+3. Warm the oil in a large skillet, bloom the garlic and pepper flakes briefly, then toss in the kale.
+4. Add the pasta and toss everything together over the heat, seasoning to taste.
+5. Top each plate with sardines and their tomato sauce and a dusting of Parmesan.', false, 87);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1072', 'local', 'Strawberry-Spinach Salad with Toasted Walnuts', 'Salads', 'Ingredients:
+- 5 oz baby spinach
+- 8 oz strawberries, quartered, plus 1 cup for the dressing
+- 2 oz walnuts, toasted and chopped
+- 3 oz feta, crumbled
+- 1/4 cup red wine vinegar
+- 1 small shallot, chopped
+- 1 tbsp honey
+- 1/3 cup extra-virgin olive oil
+- Salt and black pepper
+
+Instructions:
+1. Blend the vinegar, shallot, 1 cup of strawberries, and the honey until smooth.
+2. Stream in the olive oil with the blender running until the dressing emulsifies; season it.
+3. Toss the spinach with just enough dressing to coat the leaves.
+4. Top with the quartered strawberries, walnuts, and feta, drizzle with a little more dressing, and serve at once.', false, 88);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1081', 'local', 'Blueberry-Banana Walnut Overnight Oats', 'Snacks', 'Ingredients:
+- 1/2 cup frozen blueberries
+- 1/2 banana
+- 1/3 cup Greek yogurt
+- 1/3 cup soy milk
+- 1/4 cup walnuts, chopped, divided
+- 1 tsp honey
+- 1/8 tsp vanilla extract
+- 1/3 cup oats
+- 1 tbsp chia seeds
+
+Instructions:
+1. Blend the blueberries, banana, yogurt, milk, most of the walnuts, the honey, and vanilla until smooth.
+2. Stir the mixture into the oats and chia seeds until evenly combined.
+3. Spoon into a jar and scatter the remaining walnuts on top.
+4. Refrigerate at least 4 hours or overnight, and eat it cold.', false, 89);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1091', 'local', 'Crispy Olive Oil Roasted Chickpeas', 'Snacks', 'Ingredients:
+- 1 1/2 cups cooked chickpeas, drained
+- Extra-virgin olive oil, for drizzling
+- Sea salt
+- Paprika, smoked or sweet, to taste
+
+Instructions:
+1. Heat the oven to 425°F and line a baking sheet with parchment.
+2. Pat the chickpeas completely dry on a kitchen towel, discarding loose skins — damp chickpeas never crisp.
+3. Spread them on the sheet, drizzle with oil, sprinkle with salt, and roast 20-30 minutes until golden and crunchy.
+4. Toss with paprika while still warm and eat within two days.', false, 90);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1096', 'local', 'Blueberry-Kale Smoothie with Walnuts', 'Beverages', 'Ingredients:
+- 1 cup frozen blueberries
+- 1 large handful kale, stemmed
+- 1/2 banana
+- 2 tbsp walnuts
+- 1 tbsp ground flaxseed
+- 1 cup soy milk
+- 1 tsp honey, optional
+
+Instructions:
+1. Put everything in a blender, kale at the bottom so it pulls down first.
+2. Blend on high until completely smooth, about a minute.
+3. Thin with a splash more milk if you like, taste for sweetness, and pour.', false, 91);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1104', 'local', 'Walnut-Lentil Stuffed Portobellos', 'Main Courses', 'Ingredients:
+- 4 portobello mushrooms, stemmed
+- 1 cup cooked green lentils
+- 1/2 cup walnuts, finely chopped
+- 1 small yellow onion, diced
+- 2 cloves garlic, minced
+- 2 tbsp extra-virgin olive oil, divided
+- 1 tsp thyme
+- 2 tbsp tomato paste
+- 2 slices whole-grain bread, blitzed to crumbs
+- Salt and black pepper
+
+Instructions:
+1. Heat the oven to 400°F. Brush the portobellos with half the oil and roast, gill side up, 10 minutes.
+2. Soften the onion in the remaining oil, then stir in the garlic, thyme, and tomato paste for a minute.
+3. Fold in the lentils, walnuts, and half the crumbs; season well.
+4. Mound the filling into the caps, top with the remaining crumbs, and bake 15 minutes until browned.', false, 92);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1114', 'local', 'Lemon-Blueberry Overnight Oats', 'Snacks', 'Ingredients:
+- 1 3/4 cups blueberries
+- 1 tbsp grated lemon zest
+- 2 1/4 cups oats
+- 1 cup Greek yogurt
+- 2 cups almond milk
+- 2 1/2 tbsp maple syrup
+- 1 tbsp lemon juice
+
+Instructions:
+1. Toss the blueberries with the lemon zest, lightly crushing a few.
+2. Stir the oats, yogurt, almond milk, maple syrup, and lemon juice together.
+3. Layer the oat mixture and berries in jars, finishing with berries.
+4. Refrigerate overnight and eat cold, stirred once.', false, 93);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1122', 'local', 'Herby Lemon-Crusted Baked Cod', 'Main Courses', 'Ingredients:
+- 2 thick cod fillets (5 oz each)
+- 2 slices whole-grain bread, blitzed to crumbs and toasted
+- 1 small clove garlic, crushed
+- 1 tsp grated lemon zest
+- 1 tsp dried oregano
+- 2 tsp lemon juice
+- 2 tsp extra-virgin olive oil
+- Black pepper
+
+Instructions:
+1. Heat the oven to 425°F and lightly oil a shallow baking dish.
+2. Moisten the crumbs with the garlic, lemon zest, oregano, lemon juice, oil, and plenty of pepper.
+3. Pack the crumb mixture over the cod fillets in the dish.
+4. Bake 12-15 minutes until the crust is golden and the fish flakes; season at the table with lemon, not salt.', false, 94);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1131', 'local', 'Grilled Lemon-Garlic Chicken with Charred Okra', 'Main Courses', 'Ingredients:
+- 1 1/2 lb chicken breast, thinly sliced
+- 1/2 cup lemon juice (from 3-4 lemons)
+- 6 cloves garlic, minced
+- 2 tbsp fresh rosemary, minced
+- 2 tbsp extra-virgin olive oil, divided
+- 3 lb okra
+- Salt and black pepper
+
+Instructions:
+1. Whisk the lemon juice, garlic, rosemary, and half the oil; marinate the chicken in it, refrigerated, 2-12 hours.
+2. Heat a grill to high. Drain the chicken, pat dry, and season lightly.
+3. Grill the chicken 7-10 minutes until cooked through and no longer pink.
+4. Toss the okra with the remaining oil and grill alongside until blistered and tender, then serve together.', false, 95);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1138', 'local', 'Quinoa & Black Bean Stuffed Bell Peppers', 'Main Courses', 'Ingredients:
+- 1/2 cup quinoa
+- 4 bell peppers, halved and cored
+- 2 cloves garlic, minced
+- 1 can (15 oz) no-salt-added diced tomatoes
+- 1 can (15 oz) no-salt-added black beans, rinsed
+- 1 cup sweet corn kernels
+- 2 tsp ground cumin
+- 1 tsp onion powder
+- 1 tsp paprika
+- 1 cup shredded mozzarella
+
+Instructions:
+1. Simmer the quinoa in 3/4 cup water, covered, about 15 minutes; fluff.
+2. Heat the oven to 375°F and set the pepper halves cut side up in a baking dish.
+3. Stir the garlic, tomatoes, beans, corn, cumin, onion powder, and paprika into the quinoa and warm through.
+4. Fill the peppers, top with mozzarella, and bake uncovered 30-35 minutes until tender and browned.', false, 96);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1149', 'local', 'Thai Red Curry with Rainbow Vegetables & Brown Rice', 'Main Courses', 'Ingredients:
+- 1 1/4 cups brown rice, rinsed
+- 1 tbsp extra-virgin olive oil
+- 1 small white onion, chopped
+- 1 tbsp fresh ginger, grated
+- 2 cloves garlic, minced
+- 1 red bell pepper, sliced thin
+- 1 yellow bell pepper, sliced thin
+- 3 carrots, sliced on the diagonal
+- 2 tbsp red curry paste
+- 1 can (14 oz) coconut milk
+- 1 1/2 cups kale, thinly sliced
+- 1 tbsp tamari
+- 2 tsp rice vinegar
+- Fresh basil or cilantro, to serve
+
+Instructions:
+1. Boil the rice in plenty of water about 30 minutes, drain, and let it steam off the heat, covered.
+2. Soften the onion in the oil, then stir in the ginger and garlic for 30 seconds.
+3. Add the bell peppers and carrots for a few minutes, then the curry paste for two more.
+4. Pour in the coconut milk and 1/2 cup water, add the kale, and simmer gently until the vegetables are tender.
+5. Season off the heat with tamari and vinegar, and serve over the rice with fresh herbs.', false, 97);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1164', 'local', 'Pantry Three-Bean Chili with Yogurt', 'Soups & Stews', 'Ingredients:
+- 1 can (28 oz) no-salt-added diced tomatoes, undrained
+- 1 can (15 oz) no-salt-added kidney beans, rinsed
+- 1 can (15 oz) no-salt-added pinto beans, rinsed
+- 1 can (15 oz) no-salt-added chickpeas, rinsed
+- 1 1/2 cups vegetable broth
+- 2 tbsp chili powder
+- 2 tsp ground cumin
+- 1/2 cup plain yogurt, to top
+- Fresh cilantro, to top
+
+Instructions:
+1. Combine the tomatoes with their juice, all three beans, the broth, chili powder, and cumin in a large saucepan.
+2. Bring to a boil, then simmer 10-15 minutes until it thickens to your liking.
+3. Ladle into bowls and top each with a spoonful of yogurt and a scatter of cilantro.', false, 98);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1174', 'local', 'Cucumber-Dill Tzatziki', 'Sauces & Condiments', 'Ingredients:
+- 1 cucumber, peeled and grated
+- 1 1/2 cups Greek yogurt
+- 2 tbsp fresh dill, chopped
+- 2 cloves garlic, minced
+- 2 tbsp extra-virgin olive oil
+- 1 tbsp lemon juice
+
+Instructions:
+1. Squeeze the grated cucumber in a sieve or towel until it stops dripping.
+2. Stir it with the yogurt, dill, garlic, oil, and lemon juice until creamy.
+3. Rest a few minutes so the flavors knit, then serve chilled with vegetables or warm pita.', false, 99);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1181', 'local', 'White Bean, Cucumber & Tomato Salad with Dill', 'Salads', 'Ingredients:
+- 1 can (15 oz) no-salt-added white beans, rinsed
+- 1 cucumber, diced
+- 2 tomatoes, diced
+- 1/4 red onion, thinly sliced
+- 2 tbsp fresh dill, chopped
+- 2 tbsp extra-virgin olive oil
+- 1 tbsp lemon juice
+- Black pepper
+
+Instructions:
+1. Toss the beans, cucumber, tomatoes, and onion together in a bowl.
+2. Whisk the oil and lemon juice, pour over, and fold in the dill.
+3. Season with plenty of black pepper and let it sit ten minutes before serving.', false, 100);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1190', 'local', 'Walnut-Rosemary Crusted Salmon', 'Main Courses', 'Ingredients:
+- 1 lb skinless salmon fillet
+- 2 tsp Dijon mustard
+- 1 clove garlic, minced
+- 1 tsp lemon juice, plus zest
+- 1 tsp fresh rosemary, chopped
+- 1/2 tsp honey
+- 1 slice whole-grain bread, blitzed to crumbs
+- 3 tbsp walnuts, finely chopped
+- 1 tsp extra-virgin olive oil
+- Salt and black pepper
+
+Instructions:
+1. Heat the oven to 425°F and line a rimmed baking sheet.
+2. Stir the mustard, garlic, lemon juice and zest, rosemary, honey, and a pinch of salt together.
+3. Toss the crumbs and walnuts with the oil.
+4. Brush the mustard mixture over the salmon, press the walnut crumbs on top, and bake 8-12 minutes until the fish flakes.', false, 101);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1200', 'local', 'Quick Chickpea Chana Masala', 'Main Courses', 'Ingredients:
+- 2 tbsp extra-virgin olive oil
+- 1 yellow onion, chopped
+- 1 jalapeno, minced
+- 5 cloves garlic, minced
+- 1 tbsp fresh ginger, minced
+- 1 1/2 tsp garam masala
+- 1 1/2 tsp ground coriander
+- 3/4 tsp ground cumin
+- 1/2 tsp turmeric
+- 1 can (28 oz) crushed tomatoes
+- 2 cans (15 oz each) chickpeas, rinsed
+- Brown rice, to serve
+- Lemon wedges and cilantro, to serve
+
+Instructions:
+1. Soften the onion and jalapeno in the oil with a pinch of salt, about 5 minutes.
+2. Stir in the garlic and ginger until fragrant, then toast the garam masala, coriander, cumin, and turmeric for a minute.
+3. Add the tomatoes and chickpeas, bring to a simmer, and bubble gently at least 10 minutes.
+4. Serve over brown rice with lemon and cilantro.', false, 102);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1214', 'local', 'Ginger Tofu Stir-Fry with Cauliflower Rice', 'Main Courses', 'Ingredients:
+- 1 block extra-firm tofu, pressed and cubed
+- 4 tsp sesame oil, divided
+- 2 tbsp peanut butter
+- 3 tbsp tamari, divided
+- 1 tbsp maple syrup
+- 1 tbsp lime juice
+- 1 tsp chili sauce, or to taste
+- 1 cup shiitake mushrooms, chopped
+- 1 cup cabbage, thinly sliced
+- 1 red bell pepper, thinly sliced
+- 2 cloves garlic, minced
+- 1 tbsp fresh ginger, minced
+- 2 green onions, sliced
+- 3 cups riced cauliflower
+
+Instructions:
+1. Toss the tofu with a third of the tamari and let it sit while you whisk the peanut butter, remaining tamari, maple syrup, lime juice, and chili sauce into a sauce.
+2. Brown the tofu in half the sesame oil in a hot skillet; set aside.
+3. Stir-fry the shiitakes, cabbage, and bell pepper in the rest of the oil with the garlic, ginger, and green onions until crisp-tender.
+4. Add the cauliflower rice for a few minutes, return the tofu, pour in the sauce, and toss until hot.', false, 103);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1229', 'local', 'Turmeric Quinoa & Black Bean Burgers', 'Main Courses', 'Ingredients:
+- 1 can (15 oz) black beans, rinsed
+- 1/4 cup quinoa
+- 1/2 cup vegetable broth
+- 1/4 cup bell pepper, chopped
+- 2 slices whole-grain bread, blitzed to crumbs
+- 2 tbsp onion, chopped
+- 1 large clove garlic, minced
+- 1 1/2 tsp ground cumin
+- 1 1/2 tsp turmeric
+- 1 egg, beaten
+
+Instructions:
+1. Simmer the quinoa in the broth until absorbed and tender.
+2. Mash the beans, leaving some texture, and mix in the quinoa, bell pepper, crumbs, onion, garlic, cumin, turmeric, and egg.
+3. Shape into 5 patties.
+4. Cook in a hot nonstick skillet 3-4 minutes per side until browned and heated through; serve on greens or whole-grain buns.', false, 104);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1240', 'local', 'Lemony Lentil Soup with Wilted Greens', 'Soups & Stews', 'Ingredients:
+- 1/4 cup extra-virgin olive oil
+- 1 yellow onion, chopped
+- 2 carrots, chopped
+- 4 cloves garlic, minced
+- 2 tsp ground cumin
+- 1 tsp curry powder
+- 1/2 tsp dried thyme
+- 1 can (28 oz) diced tomatoes, drained
+- 1 cup brown lentils, rinsed
+- 4 cups vegetable broth
+- 1 cup collard greens or kale, chopped
+- 1-2 tbsp lemon juice
+- Salt and black pepper
+
+Instructions:
+1. Soften the onion and carrots in the oil, then stir in the garlic, cumin, curry powder, and thyme until fragrant.
+2. Add the tomatoes for a few minutes, then the lentils, broth, and 2 cups water; simmer 25-30 minutes until tender.
+3. Blend about 2 cups of the soup and stir it back in for a creamy body.
+4. Wilt the greens in for the last 5 minutes and finish with lemon juice, salt, and pepper.', false, 105);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1253', 'local', 'Massaged Kale Salad with Apple, Cherries & Pecans', 'Salads', 'Ingredients:
+- 1/2 cup pecans, toasted and chopped
+- 8 oz kale, stemmed and chopped
+- 4 radishes, thinly sliced
+- 1/2 cup dried tart cherries
+- 1 apple, chopped
+- 2 oz goat cheese, crumbled
+- 3 tbsp extra-virgin olive oil
+- 1 1/2 tbsp apple cider vinegar
+- 1 tbsp Dijon mustard
+- 1 1/2 tsp honey
+- Salt and black pepper
+
+Instructions:
+1. Sprinkle the kale with a little salt and massage handfuls until the leaves darken and soften.
+2. Add the radishes, cherries, apple, pecans, and goat cheese.
+3. Whisk the oil, vinegar, mustard, and honey into a dressing and toss the salad with it.
+4. Rest 10 minutes before serving so the flavors mingle.', false, 106);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1264', 'local', 'Strawberries-and-Cream Chia Pudding', 'Desserts', 'Ingredients:
+- 1 can (14 oz) coconut milk
+- 1 cup strawberries, chopped, plus more to top
+- 1/2 tsp vanilla extract
+- 1-3 tbsp maple syrup, to taste
+- 1/3 cup chia seeds
+
+Instructions:
+1. Blend the coconut milk, strawberries, vanilla, and maple syrup until smooth.
+2. Pulse in the chia seeds just enough to combine.
+3. Refrigerate at least 4 hours or overnight, stirring once early on.
+4. Serve topped with fresh berries.', false, 107);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1270', 'local', 'Golden Turmeric Milk', 'Beverages', 'Ingredients:
+- 1 1/2 cups coconut milk
+- 1 1/2 cups almond milk
+- 1 1/2 tsp turmeric
+- 1/4 tsp ground ginger
+- 1 cinnamon stick
+- 1 pinch black pepper
+- Maple syrup, to taste
+
+Instructions:
+1. Whisk everything together in a small saucepan.
+2. Warm over medium heat about 4 minutes — hot but never boiling.
+3. Fish out the cinnamon stick, adjust sweetness, and pour into mugs.', false, 108);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1278', 'local', 'Greek Shrimp Baked in Tomato-Feta Sauce', 'Main Courses', 'Ingredients:
+- 1 1/2 lb shrimp, peeled and deveined
+- 1 1/2 tsp dried oregano, divided
+- 1 1/2 tsp dried dill, divided
+- 6 cloves garlic, minced, divided
+- Extra-virgin olive oil
+- 1 red onion, chopped
+- 1 can (28 oz) diced tomatoes
+- Juice of 1/2 lemon
+- Handful fresh mint, chopped
+- Handful fresh parsley, chopped
+- 2 oz feta, crumbled
+- 6 Kalamata olives, pitted
+
+Instructions:
+1. Toss the shrimp with half the oregano, dill, and garlic, a drizzle of oil, and a pinch of salt; set aside.
+2. Soften the red onion with the remaining garlic in olive oil.
+3. Add the tomatoes, lemon juice, and remaining herbs and simmer about 15 minutes to thicken.
+4. Nestle in the shrimp and cook 5-7 minutes until pink and opaque.
+5. Fold in the mint and parsley, scatter feta and olives over, and serve from the pan.', false, 109);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1291', 'local', 'Steamed Mussels in Tomato-Fennel Broth', 'Main Courses', 'Ingredients:
+- 2 lb mussels, scrubbed and debearded
+- 2 tbsp extra-virgin olive oil
+- 1 fennel bulb, thinly sliced
+- 4 cloves garlic, sliced
+- 1 can (15 oz) white beans, rinsed
+- 1 can (14 oz) diced tomatoes
+- 1/2 cup vegetable broth
+- Pinch of red pepper flakes
+- Handful fresh parsley, chopped
+- Whole-grain bread, to serve
+
+Instructions:
+1. Soften the fennel in the oil, then add the garlic and a pinch of pepper flakes for a minute.
+2. Add the tomatoes, beans, and broth and simmer 5 minutes.
+3. Tip in the mussels, cover, and steam 5-7 minutes until they open; discard any that stay shut.
+4. Shower with parsley and serve straight from the pot with bread for the broth.', false, 110);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1301', 'local', 'One-Tray Greek Chicken with Potatoes, Olives & Feta', 'Main Courses', 'Ingredients:
+- 8 chicken thighs, skin-on, bone-in
+- 1 lb red potatoes, halved
+- 8 cloves garlic, bashed, skin on
+- 1 red onion, cut into wedges
+- 1 yellow bell pepper, thick strips
+- 2 tbsp extra-virgin olive oil
+- 2 tbsp dried oregano
+- 1 lemon, cut into 8 wedges
+- 1 cup cherry tomatoes
+- 20 black olives
+- 3 oz feta, crumbled
+- Salt and black pepper
+
+Instructions:
+1. Heat the oven to 400°F. Tumble the potatoes, garlic, onion, and bell pepper into a roasting tin and sit the chicken on top, skin up.
+2. Season with oregano, salt, and pepper, drizzle with the oil, and squeeze the lemon wedges over, tucking them in.
+3. Roast 30 minutes until the skin starts to brown.
+4. Scatter the cherry tomatoes, olives, and feta around and roast 20 minutes more, until the chicken is cooked through.', false, 111);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1313', 'local', 'Spanakorizo — Greek Spinach & Rice', 'Main Courses', 'Ingredients:
+- 1 lb spinach, rinsed
+- Juice of 1/2 lemon
+- 1 yellow onion, chopped
+- 2 1/2 tbsp extra-virgin olive oil
+- 1 tsp dried mint
+- 2 tbsp fresh dill, chopped
+- 1/3 cup brown rice
+- 1 tbsp tomato paste
+- Feta, to serve
+- Salt and black pepper
+
+Instructions:
+1. Wilt the spinach with the lemon juice in a splash of the oil; set aside to drain.
+2. Soften the onion in the remaining oil, then return the spinach with the mint, dill, tomato paste, and a cup of warm water.
+3. Stir in the rice, season, cover, and simmer until tender, adding water if it dries out.
+4. Serve warm with feta, more lemon, and a drizzle of oil.', false, 112);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1323', 'local', 'Fakes — Greek Brown Lentil Soup', 'Soups & Stews', 'Ingredients:
+- 1 lb brown lentils, rinsed
+- 1 small red onion, chopped
+- 2 cloves garlic, chopped
+- 2 bay leaves
+- 1/2 cup extra-virgin olive oil
+- 1 tbsp tomato paste
+- 1 tbsp red wine vinegar
+- Feta, to serve
+- Salt and black pepper
+
+Instructions:
+1. Simmer the lentils in 5 cups water with the onion, garlic, and bay leaves, covered, about 25 minutes.
+2. Stir in the oil, tomato paste, and vinegar; season with salt and pepper.
+3. Simmer 15 minutes more until the soup thickens.
+4. Serve with an extra splash of vinegar, a drizzle of oil, and crumbled feta.', false, 113);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1332', 'local', 'Lebanese Tabbouleh with Fine Bulgur', 'Salads', 'Ingredients:
+- 1/4 cup fine bulgur
+- 1/3 cup extra-virgin olive oil
+- 3 tbsp lemon juice
+- 3 bunches curly parsley, finely chopped
+- 2 firm tomatoes, finely chopped
+- 2 green onions, finely chopped
+- 1/4 cup fresh mint, finely chopped
+- Salt and black pepper
+
+Instructions:
+1. Whisk the oil, lemon juice, salt, and pepper in a large bowl and soak the dry bulgur in it 20-30 minutes.
+2. Finely chop the parsley, tomatoes, green onions, and mint.
+3. Pile the herbs and vegetables over the soaked bulgur.
+4. Toss just before serving and adjust lemon and seasoning.', false, 114);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1340', 'local', 'Smoky Charred-Eggplant Baba Ganoush', 'Appetizers', 'Ingredients:
+- 2 eggplants (about 2 lb)
+- 3 tbsp tahini
+- 2 tbsp extra-virgin olive oil
+- 1 1/2 tbsp lemon juice
+- 1 clove garlic, minced
+- Fresh parsley, to garnish
+- Salt
+
+Instructions:
+1. Char the whole eggplants over medium-high heat, turning, about 15 minutes until blackened and collapsed.
+2. Steam them in a covered bowl 15 minutes, then scoop, drain, and chop the flesh.
+3. Mash with the tahini, lemon juice, oil, garlic, and salt, keeping it slightly chunky.
+4. Top with parsley and a drizzle of oil; serve with vegetables or warm bread.', false, 115);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1348', 'local', 'Greek Yogurt with Honey & Toasted Walnuts', 'Desserts', 'Ingredients:
+- 7 oz Greek yogurt
+- 4 tbsp walnuts, toasted
+- 2 tbsp honey
+- Pinch of cinnamon
+
+Instructions:
+1. Toast the walnuts in a dry pan until fragrant and let them cool.
+2. Spoon the yogurt into a bowl and press hollows into the surface.
+3. Scatter the walnuts over, drizzle the honey so it pools, and finish with cinnamon.', false, 116);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1353', 'local', 'Miso Broth with Tofu, Chard & Nori', 'Soups & Stews', 'Ingredients:
+- 4 cups vegetable broth
+- 1 sheet nori, cut into rectangles
+- 3 tbsp miso paste
+- 1/2 cup Swiss chard, chopped
+- 2 green onions, chopped
+- 1/4 cup firm tofu, cubed
+
+Instructions:
+1. Bring the broth to a gentle simmer.
+2. Whisk the miso smooth with a splash of the hot broth.
+3. Simmer the chard, green onions, and tofu about 5 minutes, then slide in the nori.
+4. Off the heat, stir in the thinned miso — never boil it — and serve hot.', false, 117);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1360', 'local', 'Sheet-Pan Crispy Tofu & Brussels Sprouts Bowls', 'Main Courses', 'Ingredients:
+- 1 1/4 cups brown rice
+- 1 1/2 lb Brussels sprouts, halved
+- 2 1/2 tbsp extra-virgin olive oil, divided
+- 1 block (15 oz) extra-firm tofu, pressed and cubed
+- 1/4 cup plus 1 tbsp tamari, divided
+- 1 tbsp cornmeal
+- 3 tbsp honey
+- 2 tbsp rice vinegar
+- 2 tsp sesame oil
+- 1 tsp chili sauce, or to taste
+- 2 tbsp sesame seeds
+- Fresh cilantro, to serve
+
+Instructions:
+1. Boil the rice about 30 minutes, drain, and let it steam covered off the heat.
+2. Toss the tofu with 1 tbsp tamari, 1 tbsp oil, and the cornmeal; toss the sprouts with the remaining oil.
+3. Roast both on separate sheets at 400°F until the tofu is crisp-edged and the sprouts browned, tossing once.
+4. Simmer the remaining tamari, honey, vinegar, sesame oil, and chili sauce until reduced by half.
+5. Build bowls of rice, sprouts, and tofu; glaze generously and finish with sesame seeds and cilantro.', false, 118);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1373', 'local', 'Chilled Tofu & Avocado Salad with Ginger-Soy Dressing', 'Salads', 'Ingredients:
+- 7 oz soft tofu, chilled
+- 1 ripe avocado
+- 2 cloves garlic, grated
+- 1 tsp fresh ginger, grated
+- 2 tbsp tamari
+- 1 tsp sesame oil
+- 1/2 tsp rice vinegar
+- 1 green onion, finely chopped
+
+Instructions:
+1. Slice the chilled tofu and avocado thin and fan them, alternating, across a platter.
+2. Stir the garlic, ginger, tamari, sesame oil, vinegar, and 2 tsp water together.
+3. Spoon the dressing over, scatter the green onion, and serve right away, cool and fresh.', false, 119);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1382', 'local', 'Golden Tofu in Green Spinach Curry', 'Main Courses', 'Ingredients:
+- 10 oz firm tofu, cut into triangles
+- 2 tbsp extra-virgin olive oil
+- 2 tsp coriander seeds
+- 2 tsp cumin seeds
+- 2 cardamom pods, seeds bashed
+- 1 knob fresh ginger, chopped
+- 1 yellow onion, finely chopped
+- 2 cloves garlic, chopped
+- 14 oz spinach
+- Handful cilantro, plus more to serve
+- Brown rice, to serve
+
+Instructions:
+1. Pan-fry the tofu triangles in a little of the oil until golden; set aside.
+2. Toast the coriander, cumin, and cardamom in the remaining oil until they crackle.
+3. Soften the ginger, onion, and garlic, then wilt in the spinach.
+4. Blend the spinach mixture with the cilantro and a splash of water into a smooth green sauce.
+5. Return the sauce and tofu to the pan, warm through, and serve over brown rice with cilantro.', false, 120);
+insert into recipes (id, user_id, name, category, instructions, bookmarked, position) values ('u1394', 'local', 'Savory Turmeric Tofu Scramble', 'Main Courses', 'Ingredients:
+- 1 tbsp extra-virgin olive oil
+- 1 block (14 oz) firm tofu
+- 2 tbsp nutritional yeast
+- 1/2 tsp salt
+- 1/4 tsp turmeric
+- 1/4 tsp garlic powder
+- 2 tbsp soy milk
+- Avocado or whole-grain toast, to serve
+
+Instructions:
+1. Warm the oil in a skillet and crumble the tofu straight into it.
+2. Cook a few minutes so the excess water steams off.
+3. Sprinkle in the nutritional yeast, salt, turmeric, and garlic powder and cook 5 minutes more, leaving it undisturbed at the end for golden spots.
+4. Stir in the soy milk to bring it together soft and serve with avocado or toast.', false, 121);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('d279', 'd278', 'Whole-grain bread', false, 2, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('d280', 'd278', 'Cucumber', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('d281', 'd278', 'Hummus', false, 1, 2);
@@ -1936,6 +2535,69 @@ insert into recipe_ingredients (id, recipe_id, name, needs, count, position) val
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u108', 'u101', 'Pine nuts', false, 1, 6);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u109', 'u101', 'Balsamic vinegar', false, 1, 7);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u110', 'u101', 'Extra-virgin olive oil', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1044', 'u1043', 'Tomatoes, cherry', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1045', 'u1043', 'Fennel', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1046', 'u1043', 'Garlic clove', false, 3, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1047', 'u1043', 'Capers', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1048', 'u1043', 'Extra-virgin olive oil', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1049', 'u1043', 'Red wine vinegar', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1050', 'u1043', 'Honey', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1051', 'u1043', 'Cod', false, 4, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1052', 'u1043', 'Lemon', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1053', 'u1043', 'Basil', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1055', 'u1054', 'Chicken, thigh', false, 6, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1056', 'u1054', 'Rosemary', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1057', 'u1054', 'Paprika, smoked', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1058', 'u1054', 'Extra-virgin olive oil', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1059', 'u1054', 'Onion, yellow', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1060', 'u1054', 'Mushrooms, cremini', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1061', 'u1054', 'Garlic clove', false, 3, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1062', 'u1054', 'Quinoa', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1063', 'u1054', 'Chicken broth', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1064', 'u1054', 'Spinach', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1066', 'u1065', 'Whole-wheat pasta', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1067', 'u1065', 'Kale', false, 8, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1068', 'u1065', 'Extra-virgin olive oil', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1069', 'u1065', 'Garlic clove', false, 4, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1070', 'u1065', 'Sardines, canned', false, 2, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1071', 'u1065', 'Pecorino / Parmesan', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1073', 'u1072', 'Spinach', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1074', 'u1072', 'Strawberries', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1075', 'u1072', 'Walnuts', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1076', 'u1072', 'Feta', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1077', 'u1072', 'Red wine vinegar', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1078', 'u1072', 'Shallots', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1079', 'u1072', 'Honey', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1080', 'u1072', 'Extra-virgin olive oil', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1082', 'u1081', 'Blueberries', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1083', 'u1081', 'Banana', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1084', 'u1081', 'Yogurt, Greek', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1085', 'u1081', 'Soy milk', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1086', 'u1081', 'Walnuts', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1087', 'u1081', 'Honey', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1088', 'u1081', 'Vanilla extract', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1089', 'u1081', 'Oats', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1090', 'u1081', 'Chia seeds', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1092', 'u1091', 'Chickpeas', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1093', 'u1091', 'Extra-virgin olive oil', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1094', 'u1091', 'Salt', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1095', 'u1091', 'Paprika, smoked', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1097', 'u1096', 'Blueberries', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1098', 'u1096', 'Kale', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1099', 'u1096', 'Banana', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1100', 'u1096', 'Walnuts', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1101', 'u1096', 'Flaxseed, ground', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1102', 'u1096', 'Soy milk', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1103', 'u1096', 'Honey', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1105', 'u1104', 'Mushroom, portobello', false, 4, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1106', 'u1104', 'Lentils, green', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1107', 'u1104', 'Walnuts', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1108', 'u1104', 'Onion, yellow', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1109', 'u1104', 'Garlic clove', false, 2, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1110', 'u1104', 'Extra-virgin olive oil', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1111', 'u1104', 'Thyme', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1112', 'u1104', 'Tomato paste', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1113', 'u1104', 'Whole-grain bread', false, 2, 8);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u112', 'u111', 'Whole-wheat pita', false, 2, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u113', 'u111', 'Turkey, breast', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u114', 'u111', 'Hummus', false, 1, 2);
@@ -1943,6 +2605,74 @@ insert into recipe_ingredients (id, recipe_id, name, needs, count, position) val
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u116', 'u111', 'Carrot', false, 1, 4);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u117', 'u111', 'Romaine', false, 2, 5);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u118', 'u111', 'Onion, red', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1115', 'u1114', 'Blueberries', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1116', 'u1114', 'Lemon', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1117', 'u1114', 'Oats', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1118', 'u1114', 'Yogurt, Greek', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1119', 'u1114', 'Almond milk', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1120', 'u1114', 'Maple syrup', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1121', 'u1114', 'Lemon juice', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1123', 'u1122', 'Cod', false, 2, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1124', 'u1122', 'Whole-grain bread', false, 2, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1125', 'u1122', 'Garlic clove', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1126', 'u1122', 'Lemon', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1127', 'u1122', 'Oregano', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1128', 'u1122', 'Lemon juice', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1129', 'u1122', 'Extra-virgin olive oil', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1130', 'u1122', 'Black pepper', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1132', 'u1131', 'Chicken, breast', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1133', 'u1131', 'Lemon', false, 4, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1134', 'u1131', 'Garlic clove', false, 6, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1135', 'u1131', 'Rosemary', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1136', 'u1131', 'Extra-virgin olive oil', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1137', 'u1131', 'Okra', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1139', 'u1138', 'Quinoa', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1140', 'u1138', 'Bell pepper, red', false, 4, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1141', 'u1138', 'Garlic clove', false, 2, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1142', 'u1138', 'Tomatoes, canned, diced', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1143', 'u1138', 'Black beans, canned', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1144', 'u1138', 'Sweet corn', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1145', 'u1138', 'Cumin', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1146', 'u1138', 'Onion powder', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1147', 'u1138', 'Paprika, smoked', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1148', 'u1138', 'Mozzarella', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1150', 'u1149', 'Rice, brown', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1151', 'u1149', 'Extra-virgin olive oil', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1152', 'u1149', 'Onion, white', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1153', 'u1149', 'Ginger, fresh', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1154', 'u1149', 'Garlic clove', false, 2, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1155', 'u1149', 'Bell pepper, red', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1156', 'u1149', 'Bell pepper, yellow', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1157', 'u1149', 'Carrot', false, 3, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1158', 'u1149', 'Curry paste, red', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1159', 'u1149', 'Coconut milk', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1160', 'u1149', 'Kale', false, 1, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1161', 'u1149', 'Tamari / soy sauce', false, 1, 11);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1162', 'u1149', 'Rice vinegar', false, 1, 12);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1163', 'u1149', 'Cilantro', false, 1, 13);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1165', 'u1164', 'Tomatoes, canned, diced', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1166', 'u1164', 'Kidney beans, canned', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1167', 'u1164', 'Pinto beans, canned', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1168', 'u1164', 'Chickpeas, canned', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1169', 'u1164', 'Vegetable broth', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1170', 'u1164', 'Chili powder', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1171', 'u1164', 'Cumin', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1172', 'u1164', 'Yogurt, Greek', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1173', 'u1164', 'Cilantro', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1175', 'u1174', 'Cucumber', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1176', 'u1174', 'Yogurt, Greek', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1177', 'u1174', 'Dill', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1178', 'u1174', 'Garlic clove', false, 2, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1179', 'u1174', 'Extra-virgin olive oil', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1180', 'u1174', 'Lemon juice', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1182', 'u1181', 'White beans, canned', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1183', 'u1181', 'Cucumber', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1184', 'u1181', 'Tomato', false, 2, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1185', 'u1181', 'Onion, red', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1186', 'u1181', 'Dill', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1187', 'u1181', 'Extra-virgin olive oil', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1188', 'u1181', 'Lemon juice', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1189', 'u1181', 'Black pepper', false, 1, 7);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u120', 'u119', 'Salmon', false, 2, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u121', 'u119', 'Broccoli', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u122', 'u119', 'Sweet potato', false, 1, 2);
@@ -1950,6 +2680,79 @@ insert into recipe_ingredients (id, recipe_id, name, needs, count, position) val
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u124', 'u119', 'Garlic clove', false, 2, 4);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u125', 'u119', 'Paprika, smoked', false, 1, 5);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u126', 'u119', 'Lemon', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1191', 'u1190', 'Salmon', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1192', 'u1190', 'Mustard, Dijon', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1193', 'u1190', 'Garlic clove', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1194', 'u1190', 'Lemon juice', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1195', 'u1190', 'Rosemary', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1196', 'u1190', 'Honey', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1197', 'u1190', 'Whole-grain bread', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1198', 'u1190', 'Walnuts', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1199', 'u1190', 'Extra-virgin olive oil', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1201', 'u1200', 'Extra-virgin olive oil', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1202', 'u1200', 'Onion, yellow', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1203', 'u1200', 'Jalapeno', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1204', 'u1200', 'Garlic clove', false, 5, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1205', 'u1200', 'Ginger, fresh', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1206', 'u1200', 'Garam masala', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1207', 'u1200', 'Coriander', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1208', 'u1200', 'Cumin', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1209', 'u1200', 'Turmeric', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1210', 'u1200', 'Tomatoes, canned, crushed', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1211', 'u1200', 'Chickpeas, canned', false, 2, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1212', 'u1200', 'Rice, brown', false, 1, 11);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1213', 'u1200', 'Cilantro', false, 1, 12);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1215', 'u1214', 'Tofu', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1216', 'u1214', 'Sesame oil', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1217', 'u1214', 'Peanut butter', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1218', 'u1214', 'Tamari / soy sauce', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1219', 'u1214', 'Maple syrup', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1220', 'u1214', 'Limes', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1221', 'u1214', 'Chili sauce', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1222', 'u1214', 'Mushrooms, shiitake', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1223', 'u1214', 'Cabbage', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1224', 'u1214', 'Bell pepper, red', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1225', 'u1214', 'Garlic clove', false, 2, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1226', 'u1214', 'Ginger, fresh', false, 1, 11);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1227', 'u1214', 'Onions, green', false, 2, 12);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1228', 'u1214', 'Cauliflower', false, 1, 13);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1230', 'u1229', 'Black beans, canned', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1231', 'u1229', 'Quinoa', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1232', 'u1229', 'Vegetable broth', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1233', 'u1229', 'Bell pepper, green', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1234', 'u1229', 'Whole-grain bread', false, 2, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1235', 'u1229', 'Onion, yellow', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1236', 'u1229', 'Garlic clove', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1237', 'u1229', 'Cumin', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1238', 'u1229', 'Turmeric', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1239', 'u1229', 'Eggs', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1241', 'u1240', 'Extra-virgin olive oil', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1242', 'u1240', 'Onion, yellow', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1243', 'u1240', 'Carrot', false, 2, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1244', 'u1240', 'Garlic clove', false, 4, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1245', 'u1240', 'Cumin', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1246', 'u1240', 'Curry powder', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1247', 'u1240', 'Thyme', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1248', 'u1240', 'Tomatoes, canned, diced', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1249', 'u1240', 'Lentils, brown', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1250', 'u1240', 'Vegetable broth', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1251', 'u1240', 'Collard greens', false, 1, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1252', 'u1240', 'Lemon juice', false, 1, 11);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1254', 'u1253', 'Pecans', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1255', 'u1253', 'Kale', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1256', 'u1253', 'Radish', false, 4, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1257', 'u1253', 'Tart cherries', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1258', 'u1253', 'Apples', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1259', 'u1253', 'Cheese, goat', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1260', 'u1253', 'Extra-virgin olive oil', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1261', 'u1253', 'Apple cider vinegar', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1262', 'u1253', 'Mustard, Dijon', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1263', 'u1253', 'Honey', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1265', 'u1264', 'Coconut milk', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1266', 'u1264', 'Strawberries', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1267', 'u1264', 'Vanilla extract', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1268', 'u1264', 'Maple syrup', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1269', 'u1264', 'Chia seeds', false, 1, 4);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u128', 'u127', 'Chickpeas', false, 2, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u129', 'u127', 'Spinach', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u130', 'u127', 'Tomato', false, 1, 2);
@@ -1961,6 +2764,117 @@ insert into recipe_ingredients (id, recipe_id, name, needs, count, position) val
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u136', 'u127', 'Coconut milk', false, 1, 8);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u137', 'u127', 'Rice, brown', false, 1, 9);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u138', 'u127', 'Cilantro', false, 1, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1271', 'u1270', 'Coconut milk', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1272', 'u1270', 'Almond milk', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1273', 'u1270', 'Turmeric', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1274', 'u1270', 'Ginger, ground', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1275', 'u1270', 'Cinnamon', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1276', 'u1270', 'Black pepper', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1277', 'u1270', 'Maple syrup', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1279', 'u1278', 'Shrimp', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1280', 'u1278', 'Oregano', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1281', 'u1278', 'Dill', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1282', 'u1278', 'Garlic clove', false, 6, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1283', 'u1278', 'Extra-virgin olive oil', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1284', 'u1278', 'Onion, red', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1285', 'u1278', 'Tomatoes, canned, diced', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1286', 'u1278', 'Lemon juice', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1287', 'u1278', 'Mint', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1288', 'u1278', 'Parsley', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1289', 'u1278', 'Feta', false, 1, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1290', 'u1278', 'Olives, Kalamata', false, 6, 11);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1292', 'u1291', 'Mussels', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1293', 'u1291', 'Extra-virgin olive oil', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1294', 'u1291', 'Fennel', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1295', 'u1291', 'Garlic clove', false, 4, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1296', 'u1291', 'White beans, canned', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1297', 'u1291', 'Tomatoes, canned, diced', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1298', 'u1291', 'Vegetable broth', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1299', 'u1291', 'Parsley', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1300', 'u1291', 'Whole-grain bread', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1302', 'u1301', 'Chicken, thigh', false, 8, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1303', 'u1301', 'Potatoes, red', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1304', 'u1301', 'Garlic clove', false, 8, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1305', 'u1301', 'Onion, red', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1306', 'u1301', 'Bell pepper, yellow', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1307', 'u1301', 'Extra-virgin olive oil', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1308', 'u1301', 'Oregano', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1309', 'u1301', 'Lemon', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1310', 'u1301', 'Tomatoes, cherry', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1311', 'u1301', 'Olives, black', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1312', 'u1301', 'Feta', false, 1, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1314', 'u1313', 'Spinach', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1315', 'u1313', 'Lemon juice', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1316', 'u1313', 'Onion, yellow', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1317', 'u1313', 'Extra-virgin olive oil', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1318', 'u1313', 'Mint', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1319', 'u1313', 'Dill', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1320', 'u1313', 'Rice, brown', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1321', 'u1313', 'Tomato paste', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1322', 'u1313', 'Feta', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1324', 'u1323', 'Lentils, brown', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1325', 'u1323', 'Onion, red', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1326', 'u1323', 'Garlic clove', false, 2, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1327', 'u1323', 'Bay leaves', false, 2, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1328', 'u1323', 'Extra-virgin olive oil', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1329', 'u1323', 'Tomato paste', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1330', 'u1323', 'Red wine vinegar', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1331', 'u1323', 'Feta', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1333', 'u1332', 'Bulgur', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1334', 'u1332', 'Extra-virgin olive oil', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1335', 'u1332', 'Lemon juice', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1336', 'u1332', 'Parsley, curly', false, 3, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1337', 'u1332', 'Tomato', false, 2, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1338', 'u1332', 'Onions, green', false, 2, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1339', 'u1332', 'Mint', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1341', 'u1340', 'Eggplant', false, 2, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1342', 'u1340', 'Tahini', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1343', 'u1340', 'Extra-virgin olive oil', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1344', 'u1340', 'Lemon juice', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1345', 'u1340', 'Garlic clove', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1346', 'u1340', 'Parsley', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1347', 'u1340', 'Salt', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1349', 'u1348', 'Yogurt, Greek', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1350', 'u1348', 'Walnuts', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1351', 'u1348', 'Honey', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1352', 'u1348', 'Cinnamon', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1354', 'u1353', 'Vegetable broth', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1355', 'u1353', 'Nori', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1356', 'u1353', 'Miso', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1357', 'u1353', 'Swiss chard', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1358', 'u1353', 'Onions, green', false, 2, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1359', 'u1353', 'Tofu', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1361', 'u1360', 'Rice, brown', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1362', 'u1360', 'Brussels sprouts', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1363', 'u1360', 'Extra-virgin olive oil', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1364', 'u1360', 'Tofu', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1365', 'u1360', 'Tamari / soy sauce', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1366', 'u1360', 'Cornmeal', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1367', 'u1360', 'Honey', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1368', 'u1360', 'Rice vinegar', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1369', 'u1360', 'Sesame oil', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1370', 'u1360', 'Chili sauce', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1371', 'u1360', 'Sesame seeds', false, 1, 10);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1372', 'u1360', 'Cilantro', false, 1, 11);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1374', 'u1373', 'Tofu', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1375', 'u1373', 'Avocado', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1376', 'u1373', 'Garlic clove', false, 2, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1377', 'u1373', 'Ginger, fresh', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1378', 'u1373', 'Tamari / soy sauce', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1379', 'u1373', 'Sesame oil', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1380', 'u1373', 'Rice vinegar', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1381', 'u1373', 'Onions, green', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1383', 'u1382', 'Tofu', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1384', 'u1382', 'Extra-virgin olive oil', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1385', 'u1382', 'Coriander', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1386', 'u1382', 'Cumin', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1387', 'u1382', 'Cardamom', false, 2, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1388', 'u1382', 'Ginger, fresh', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1389', 'u1382', 'Onion, yellow', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1390', 'u1382', 'Garlic clove', false, 2, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1391', 'u1382', 'Spinach', false, 1, 8);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1392', 'u1382', 'Cilantro', false, 1, 9);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1393', 'u1382', 'Rice, brown', false, 1, 10);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u140', 'u139', 'Chicken, thigh', false, 4, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u141', 'u139', 'Artichoke', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u142', 'u139', 'Lemon', false, 1, 2);
@@ -1969,6 +2883,14 @@ insert into recipe_ingredients (id, recipe_id, name, needs, count, position) val
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u145', 'u139', 'Extra-virgin olive oil', false, 1, 5);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u146', 'u139', 'Olives', false, 1, 6);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u147', 'u139', 'Parsley', false, 1, 7);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1395', 'u1394', 'Extra-virgin olive oil', false, 1, 0);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1396', 'u1394', 'Tofu', false, 1, 1);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1397', 'u1394', 'Nutritional yeast', false, 1, 2);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1398', 'u1394', 'Salt', false, 1, 3);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1399', 'u1394', 'Turmeric', false, 1, 4);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1400', 'u1394', 'Garlic powder', false, 1, 5);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1401', 'u1394', 'Soy milk', false, 1, 6);
+insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u1402', 'u1394', 'Avocado', false, 1, 7);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u149', 'u148', 'Whole-wheat pasta', false, 1, 0);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u150', 'u148', 'Lentils', false, 1, 1);
 insert into recipe_ingredients (id, recipe_id, name, needs, count, position) values ('u151', 'u148', 'Walnuts', false, 1, 2);
@@ -2537,21 +3459,147 @@ insert into recipe_tags (recipe_id, tag, position) values ('u10', 'No-Cook', 2);
 insert into recipe_tags (recipe_id, tag, position) values ('u10', 'Breakfast', 3);
 insert into recipe_tags (recipe_id, tag, position) values ('u101', 'Mediterranean', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u101', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1043', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1043', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1043', 'Cod', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1043', 'One-Pot', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1054', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1054', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1054', 'Chicken', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1054', 'One-Pot', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1065', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1065', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1065', 'Sardines', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1065', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1072', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1072', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1072', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1072', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1081', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1081', 'Breakfast', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1081', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1091', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1091', 'Quick', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1096', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1096', 'Breakfast', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1096', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1096', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1104', 'MIND', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1104', 'Dinner', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u111', 'DASH', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u111', 'Turkey', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u111', 'Quick', 2);
 insert into recipe_tags (recipe_id, tag, position) values ('u111', 'Lunch', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1114', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1114', 'Breakfast', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1114', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1122', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1122', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1122', 'Cod', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1122', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1131', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1131', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1131', 'Chicken', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1138', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1138', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1149', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1149', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1149', 'One-Pot', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1164', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1164', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1164', 'One-Pot', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1164', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1174', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1174', 'No-Cook', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1174', 'Quick', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1181', 'DASH', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1181', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1181', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1181', 'Quick', 3);
 insert into recipe_tags (recipe_id, tag, position) values ('u119', 'MIND', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u119', 'Salmon', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u119', 'One-Pot', 2);
 insert into recipe_tags (recipe_id, tag, position) values ('u119', 'Dinner', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1190', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1190', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1190', 'Salmon', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1190', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1200', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1200', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1200', 'One-Pot', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1200', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1214', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1214', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1214', 'Tofu', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1214', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1229', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1229', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1240', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1240', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1240', 'One-Pot', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1253', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1253', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1253', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1264', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1264', 'Breakfast', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1264', 'No-Cook', 2);
 insert into recipe_tags (recipe_id, tag, position) values ('u127', 'Anti-Inflammatory', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u127', 'One-Pot', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u127', 'Dinner', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1270', 'Anti-Inflammatory', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1270', 'No-Cook', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1270', 'Quick', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1278', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1278', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1278', 'Shrimp', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1278', 'One-Pot', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1291', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1291', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1291', 'Mussels', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1291', 'One-Pot', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1301', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1301', 'Dinner', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1301', 'Chicken', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1301', 'One-Pot', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1313', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1313', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1313', 'One-Pot', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1323', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1323', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1323', 'One-Pot', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1332', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1332', 'Lunch', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1332', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1340', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1340', 'No-Cook', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1348', 'Mediterranean', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1348', 'Breakfast', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1348', 'No-Cook', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1348', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1353', 'Blue Zone', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1353', 'Tofu', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1353', 'Lunch', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1353', 'Quick', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1353', 'One-Pot', 4);
+insert into recipe_tags (recipe_id, tag, position) values ('u1360', 'Blue Zone', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1360', 'Tofu', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1360', 'Dinner', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1373', 'Blue Zone', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1373', 'Tofu', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1373', 'Lunch', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1373', 'No-Cook', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1373', 'Quick', 4);
+insert into recipe_tags (recipe_id, tag, position) values ('u1382', 'Blue Zone', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1382', 'Tofu', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1382', 'Dinner', 2);
 insert into recipe_tags (recipe_id, tag, position) values ('u139', 'Mediterranean', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u139', 'Chicken', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u139', 'One-Pot', 2);
 insert into recipe_tags (recipe_id, tag, position) values ('u139', 'Dinner', 3);
+insert into recipe_tags (recipe_id, tag, position) values ('u1394', 'Blue Zone', 0);
+insert into recipe_tags (recipe_id, tag, position) values ('u1394', 'Tofu', 1);
+insert into recipe_tags (recipe_id, tag, position) values ('u1394', 'Breakfast', 2);
+insert into recipe_tags (recipe_id, tag, position) values ('u1394', 'Quick', 3);
 insert into recipe_tags (recipe_id, tag, position) values ('u148', 'MIND', 0);
 insert into recipe_tags (recipe_id, tag, position) values ('u148', 'Dinner', 1);
 insert into recipe_tags (recipe_id, tag, position) values ('u161', 'Blue Zone', 0);
