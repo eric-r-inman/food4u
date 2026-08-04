@@ -57,12 +57,20 @@ parse =
     parsePastedRecipe catalog
 
 
+{-| The parsed chips' names alone, for the fidelity assertions that
+predate chip counts.
+-}
+chipNames : RecipeParser.ParsedRecipe -> List String
+chipNames parsed =
+    List.map .name parsed.ingredients
+
+
 {-| Parse a single pasted ingredient bullet and return its chip name.
 -}
 chip : String -> String
 chip line =
     parse ("Test\n\nIngredients:\n- " ++ line)
-        |> .ingredients
+        |> chipNames
         |> List.head
         |> Maybe.withDefault "(no chip)"
 
@@ -259,7 +267,7 @@ suite =
                 \_ -> (parse budgetBytes).name |> Expect.equal "Mediterranean Lentil Soup"
             , test "ingredients" <|
                 \_ ->
-                    (parse budgetBytes).ingredients
+                    chipNames (parse budgetBytes)
                         |> Expect.equal
                             [ "Olive oil", "Yellow Onion", "Carrots", "Celery", "Garlic", "Cumin", "Cinnamon", "Green lentils", "Vegetable broth", "Lemon juice", "Kale", "Salt", "Black pepper" ]
             , test "steps survive verbatim" <|
@@ -273,12 +281,12 @@ suite =
                 \_ -> (parse loveAndLemons).name |> Expect.equal "Black Bean Soup"
             , test "ingredients" <|
                 \_ ->
-                    (parse loveAndLemons).ingredients
+                    chipNames (parse loveAndLemons)
                         |> Expect.equal
                             [ "Extra-virgin olive oil", "Yellow Onion", "Celery", "Carrots", "Sea salt", "Black pepper", "Garlic", "Cumin", "Chili powder", "Black beans", "Chipotle peppers", "Vegetable broth", "Lime juice", "Avocado" ]
             , test "the parenthetical can size does not eat the food" <|
                 \_ ->
-                    (parse loveAndLemons).ingredients
+                    chipNames (parse loveAndLemons)
                         |> List.member "Black beans"
                         |> Expect.equal True
             ]
@@ -287,12 +295,12 @@ suite =
                 \_ -> (parse kingArthur).name |> Expect.equal "Whole Grain Banana Bread"
             , test "ingredients" <|
                 \_ ->
-                    (parse kingArthur).ingredients
+                    chipNames (parse kingArthur)
                         |> Expect.equal
                             [ "Banana", "Vegetable oil", "Dark brown sugar", "Eggs", "King Arthur Pure Vanilla Extract", "King Arthur Unbleached All-Purpose Flour", "Baking soda", "Cinnamon", "Walnuts", "Granulated sugar" ]
             , test "subsection labels yield no chips" <|
                 \_ ->
-                    (parse kingArthur).ingredients
+                    chipNames (parse kingArthur)
                         |> List.filter (\c -> c == "Batter" || c == "Topping")
                         |> Expect.equal []
             ]
@@ -301,12 +309,12 @@ suite =
                 \_ -> (parse minimalistBaker).name |> Expect.equal "1-Pot Chickpea Shakshuka"
             , test "ingredients" <|
                 \_ ->
-                    (parse minimalistBaker).ingredients
+                    chipNames (parse minimalistBaker)
                         |> Expect.equal
                             [ "Avocado oil", "Shallots", "Garlic", "Tomatoes", "Tomato paste", "Maple syrup", "Sea salt", "Smoked paprika", "Cumin", "Chickpeas", "Lemon wedges", "Cilantro" ]
             , test "dash steps after the header are not chips" <|
                 \_ ->
-                    (parse minimalistBaker).ingredients
+                    chipNames (parse minimalistBaker)
                         |> List.filter (String.contains "skillet")
                         |> Expect.equal []
             ]
@@ -315,7 +323,7 @@ suite =
                 \_ -> (parse directionsStyle).name |> Expect.equal "Easy Vegetable Soup"
             , test "yield lines produce no chips" <|
                 \_ ->
-                    (parse directionsStyle).ingredients
+                    chipNames (parse directionsStyle)
                         |> Expect.equal
                             [ "Olive oil", "Onions", "Tomatoes", "Vegetable broth", "Spinach", "Salt and pepper" ]
             , test "Step labels stay in the instructions" <|
@@ -329,7 +337,7 @@ suite =
                 \_ -> (parse handTyped).name |> Expect.equal "Grandma's Greens"
             , test "bulleted foods become canonical chips" <|
                 \_ ->
-                    (parse handTyped).ingredients
+                    chipNames (parse handTyped)
                         |> Expect.equal [ "Olive oil", "Kale", "Garlic", "Lemons" ]
             ]
         , describe "email/markdown (asterisks, Method:, juice-of)"
@@ -337,7 +345,7 @@ suite =
                 \_ -> (parse emailStyle).name |> Expect.equal "FWD: best hummus ever"
             , test "ingredients, including juice of 1 lemon" <|
                 \_ ->
-                    (parse emailStyle).ingredients
+                    chipNames (parse emailStyle)
                         |> Expect.equal [ "Chickpeas", "Tahini", "Lemons", "Garlic" ]
             ]
         , describe "leading articles and spelled-out counts"
@@ -377,7 +385,7 @@ suite =
                         reparsed =
                             parse (RecipeExport.recipeText recipe)
                     in
-                    ( reparsed.name, reparsed.ingredients )
+                    ( reparsed.name, chipNames reparsed )
                         |> Expect.equal
                             ( "Hummus"
                             , [ "Chickpeas", "Tahini", "Extra-virgin olive oil", "Lemon juice", "Garlic" ]

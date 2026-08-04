@@ -47,6 +47,7 @@ chipFor : String -> String
 chipFor line =
     parsePastedRecipe catalog ("Test\n\nIngredients:\n- " ++ line)
         |> .ingredients
+        |> List.map .name
         |> List.head
         |> Maybe.withDefault "(no chip)"
 
@@ -109,6 +110,7 @@ suite =
                 \_ ->
                     parsePastedRecipe catalog "Test\n\nIngredients:\n- 1 tomato\n- 2 cups tomatoes"
                         |> .ingredients
+                        |> List.map .name
                         |> Expect.equal [ "Tomatoes" ]
             ]
         , describe "canonicalize resolves one typed name the same way"

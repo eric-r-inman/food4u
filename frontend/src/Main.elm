@@ -1019,7 +1019,7 @@ commitPaste category model =
 
                     ( ingredients, seqAfter ) =
                         List.foldl
-                            (\nm ( acc, s ) -> ( acc ++ [ Item (nextId s) nm False 1 ], s + 1 ))
+                            (\ing ( acc, s ) -> ( acc ++ [ Item (nextId s) ing.name False ing.count ], s + 1 ))
                             ( [], model.seq )
                             parsed.ingredients
 
