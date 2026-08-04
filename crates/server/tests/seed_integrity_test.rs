@@ -147,3 +147,55 @@ async fn no_auto_staple_is_a_leafy_green() {
      allow it (see docs/staples-auto-populate.org): {offenders:#?}"
   );
 }
+
+/// The Shopping List categories a fresh model mints, which are the only
+/// departments the catalog's auto-sort defaults may name.  Mirrored from
+/// `defaultCartCategories` in the frontend's Main.elm; a department the
+/// frontend never mints would leave its foods unsortable.
+const DEPARTMENTS: [&str; 11] = [
+  "Produce",
+  "Canned & Dry Goods",
+  "Dairy",
+  "Frozen",
+  "Bulk",
+  "Bakery",
+  "Meat & Seafood",
+  "Baking & Spices",
+  "Condiments & Sauces",
+  "Coffee & Tea",
+  "Health & Wellness",
+];
+
+#[tokio::test]
+async fn every_food_department_is_a_default_shopping_category() {
+  let model = seeded_model().await;
+  let offenders: Vec<String> = model
+    .tiers
+    .iter()
+    .flat_map(|t| &t.groups)
+    .flat_map(|g| &g.foods)
+    .filter(|f| {
+      !f.department.is_empty() && !DEPARTMENTS.contains(&f.department.as_str())
+    })
+    .map(|f| format!("{} -> {}", f.name, f.department))
+    .collect();
+
+  assert!(
+    offenders.is_empty(),
+    "every catalog department must name a default Shopping List \
+     category, or auto-sort can never file the food: {offenders:#?}"
+  );
+
+  let unassigned = model
+    .tiers
+    .iter()
+    .flat_map(|t| &t.groups)
+    .flat_map(|g| &g.foods)
+    .filter(|f| f.department.is_empty())
+    .count();
+  assert_eq!(
+    unassigned, 0,
+    "every bundled food should carry a department so auto-sort covers \
+     the whole catalog"
+  );
+}

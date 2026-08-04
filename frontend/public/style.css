@@ -54,6 +54,11 @@
   --deselect-border: oklch(0.82 0.03 60);
   --deselect-bg: #fff;
   --deselect-fg: oklch(0.45 0.02 60);
+  /* The header pill buttons (bulk-move, the sorting controls) share one
+     set of metrics so the row reads as one family of actions. */
+  --pill-font-size: 10.5px;
+  --pill-radius: 6px;
+  --pill-padding: 4px 8px;
   --move-here-bg: oklch(0.58 0.16 145);
   --move-here-hover-bg: oklch(0.52 0.17 145);
   --move-here-fg: #fff;
@@ -1183,18 +1188,40 @@ button {
   flex: 0 0 auto;
   white-space: nowrap;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--pill-radius);
   cursor: pointer;
-  font-size: 10.5px;
+  font-size: var(--pill-font-size);
   font-weight: 700;
   letter-spacing: 0.3px;
   line-height: 1;
-  padding: 4px 8px;
+  padding: var(--pill-padding);
   background: var(--move-here-bg);
   color: var(--move-here-fg);
 }
 
 .move-here-btn:hover {
+  background: var(--move-here-hover-bg);
+}
+
+/* The Shopping List's sorting controls share the bulk-move pill: the
+   reserved bucket's Auto-sort files items out to their departments, and a
+   department's Sort-here points its contents back at itself. */
+.cart-sort-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  border: none;
+  border-radius: var(--pill-radius);
+  cursor: pointer;
+  font-size: var(--pill-font-size);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  line-height: 1;
+  padding: var(--pill-padding);
+  background: var(--move-here-bg);
+  color: var(--move-here-fg);
+}
+
+.cart-sort-btn:hover {
   background: var(--move-here-hover-bg);
 }
 

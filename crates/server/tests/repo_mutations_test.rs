@@ -37,6 +37,7 @@ fn sample() -> Model {
           hero: false,
           na: false,
           recipe_id: String::new(),
+          department: String::new(),
         }],
       }],
     }],
@@ -59,6 +60,7 @@ fn sample() -> Model {
     planner: vec![],
     planner_days: 7,
     column_order: vec![],
+    sort_targets: vec![],
   }
 }
 

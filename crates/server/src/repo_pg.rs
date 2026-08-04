@@ -36,7 +36,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .map_err(read)?;
 
   let foods = sqlx::query_as::<_, FoodRow>(
-    "select f.id, f.group_id, f.name, f.prep, f.hero, \
+    "select f.id, f.group_id, f.name, f.prep, f.hero, f.department, \
      coalesce(s.in_stock, false) as na, coalesce(s.recipe_id, '') as recipe_id \
      from foods f \
      left join user_food_state s on s.food_id = f.id and s.user_id = $1 \
@@ -123,6 +123,15 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
   .await
   .map_err(read)?;
 
+  let sort_targets = sqlx::query_as::<_, repo::SortTargetRow>(
+    "select name, department from user_sort_targets \
+     where user_id = $1 order by name",
+  )
+  .bind(user_id)
+  .fetch_all(pool)
+  .await
+  .map_err(read)?;
+
   Ok(repo::assemble(repo::ModelRows {
     tiers,
     groups,
@@ -135,6 +144,7 @@ pub async fn load(pool: &PgPool, user_id: &str) -> Result<Model, RepoError> {
     planner,
     planner_days,
     column_order,
+    sort_targets,
   }))
 }
 
@@ -173,6 +183,11 @@ pub async fn save(
     .await
     .map_err(write)?;
   sqlx::query("delete from meal_plan_entries where user_id = $1")
+    .bind(user_id)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
+  sqlx::query("delete from user_sort_targets where user_id = $1")
     .bind(user_id)
     .execute(&mut *tx)
     .await
@@ -221,8 +236,8 @@ pub async fn save(
 
       for (food_pos, food) in group.foods.iter().enumerate() {
         sqlx::query(
-          "insert into foods (id, group_id, name, prep, hero, position) \
-           values ($1, $2, $3, $4, $5, $6)",
+          "insert into foods (id, group_id, name, prep, hero, position, \
+           department) values ($1, $2, $3, $4, $5, $6, $7)",
         )
         .bind(&food.id)
         .bind(&group.id)
@@ -230,6 +245,7 @@ pub async fn save(
         .bind(&food.prep)
         .bind(food.hero)
         .bind(food_pos as i64)
+        .bind(&food.department)
         .execute(&mut *tx)
         .await
         .map_err(write)?;
@@ -351,6 +367,19 @@ pub async fn save(
     .bind(&entry.meal)
     .bind(&entry.recipe_id)
     .bind(entry_pos as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
+  }
+
+  for target in &model.sort_targets {
+    sqlx::query(
+      "insert into user_sort_targets (user_id, name, department) \
+       values ($1, $2, $3)",
+    )
+    .bind(user_id)
+    .bind(&target.name)
+    .bind(&target.department)
     .execute(&mut *tx)
     .await
     .map_err(write)?;

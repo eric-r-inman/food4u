@@ -75,6 +75,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
             hero: true,
             na: true,
             recipe_id: "r1".into(),
+            department: String::new(),
           },
           Food {
             id: "f2".into(),
@@ -83,6 +84,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
             hero: false,
             na: false,
             recipe_id: String::new(),
+            department: String::new(),
           },
         ],
       }],
@@ -135,6 +137,7 @@ async fn per_user_overlay_and_ordering_are_preserved() {
     planner_days: 9,
     // A non-canonical arrangement, so the round-trip proves it persists.
     column_order: vec!["cart".into(), "pyramid".into(), "recipes".into()],
+    sort_targets: vec![],
   };
 
   repo::save(&pool, "local", &model).await.unwrap();

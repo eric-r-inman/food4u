@@ -41,12 +41,13 @@ sampleData =
         ]
     , plannerDays = 2
     , columnOrder = []
+    , sortTargets = []
     }
 
 
 emptyData : Data
 emptyData =
-    { tiers = [], staples = [], recipes = [], planner = [], plannerDays = 3, columnOrder = [] }
+    { tiers = [], staples = [], recipes = [], planner = [], plannerDays = 3, columnOrder = [], sortTargets = [] }
 
 
 occurrences : String -> String -> Int

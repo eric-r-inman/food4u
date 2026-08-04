@@ -7,7 +7,9 @@ module Data exposing
     , Loc(..)
     , PlannerEntry
     , Recipe
+    , SortTarget
     , Tier
+    , autoSortCart
     , cartZone
     , dataDecoder
     , encodeData
@@ -28,6 +30,7 @@ module Data exposing
     , pyramidHasName
     , removeFood
     , removeGroup
+    , retargetPane
     , selKey
     , shoppingCartName
     , staplesTrackerId
@@ -41,8 +44,10 @@ shape. Older saved documents are tolerated: fields added over time
 decode to sensible defaults rather than failing the whole load.
 -}
 
+import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
+import Set
 
 
 {-| The reserved name of the Shopping List storage card. It is a to-buy
@@ -106,6 +111,19 @@ type alias Data =
     -- id. Absent in older saved data; the app falls back to its canonical
     -- order.
     , columnOrder : List String
+
+    -- Per-user auto-sort overrides: items with this name file into this
+    -- Shopping List category instead of the catalog default, which also
+    -- gives custom items a home. Absent in older saved data.
+    , sortTargets : List SortTarget
+    }
+
+
+{-| One auto-sort override: where items with this name file.
+-}
+type alias SortTarget =
+    { name : String
+    , department : String
     }
 
 
@@ -169,6 +187,10 @@ type alias Food =
     -- Id of a recipe this food is linked to ("" when none). Set by
     -- dragging a recipe onto the food's pyramid category.
     , recipeId : String
+
+    -- The Shopping List category this food's item auto-sorts into (""
+    -- when the catalog has no default). Absent in older saved data.
+    , department : String
     }
 
 
@@ -250,7 +272,7 @@ parseSelKey key =
 
 dataDecoder : Decoder Data
 dataDecoder =
-    Decode.map6 Data
+    Decode.map7 Data
         (Decode.field "tiers" (Decode.list tierDecoder))
         (Decode.field "staples" (Decode.list cardDecoder))
         -- "recipes" is absent in older saved data; default to empty.
@@ -278,6 +300,19 @@ dataDecoder =
             , Decode.succeed []
             ]
         )
+        -- "sortTargets" is absent in older saved data; default to empty.
+        (Decode.oneOf
+            [ Decode.field "sortTargets" (Decode.list sortTargetDecoder)
+            , Decode.succeed []
+            ]
+        )
+
+
+sortTargetDecoder : Decoder SortTarget
+sortTargetDecoder =
+    Decode.map2 SortTarget
+        (Decode.field "name" Decode.string)
+        (Decode.field "department" Decode.string)
 
 
 plannerEntryDecoder : Decoder PlannerEntry
@@ -342,7 +377,7 @@ groupDecoder =
 
 foodDecoder : Decoder Food
 foodDecoder =
-    Decode.map6 Food
+    Decode.map7 Food
         (Decode.field "id" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.field "prep" Decode.string)
@@ -351,6 +386,12 @@ foodDecoder =
         -- "recipeId" is absent in older saved data; default to none.
         (Decode.oneOf
             [ Decode.field "recipeId" Decode.string
+            , Decode.succeed ""
+            ]
+        )
+        -- "department" is absent in older saved data; default to none.
+        (Decode.oneOf
+            [ Decode.field "department" Decode.string
             , Decode.succeed ""
             ]
         )
@@ -397,6 +438,15 @@ encodeData data =
         , ( "planner", Encode.list encodePlannerEntry data.planner )
         , ( "plannerDays", Encode.int data.plannerDays )
         , ( "columnOrder", Encode.list Encode.string data.columnOrder )
+        , ( "sortTargets", Encode.list encodeSortTarget data.sortTargets )
+        ]
+
+
+encodeSortTarget : SortTarget -> Encode.Value
+encodeSortTarget target =
+    Encode.object
+        [ ( "name", Encode.string target.name )
+        , ( "department", Encode.string target.department )
         ]
 
 
@@ -456,6 +506,7 @@ encodeFood food =
         , ( "hero", Encode.bool food.hero )
         , ( "na", Encode.bool food.na )
         , ( "recipeId", Encode.string food.recipeId )
+        , ( "department", Encode.string food.department )
         ]
 
 
@@ -708,3 +759,109 @@ pyramidHasName name data =
         |> List.concatMap .groups
         |> List.concatMap .foods
         |> List.any (\f -> String.toLower f.name == String.toLower name)
+
+
+{-| Where each item name auto-sorts: the catalog's department defaults
+overlaid by the user's own re-targets, keyed by lowercase name so lookup
+matches the way chips resolve elsewhere.
+-}
+sortTargetIndex : Data -> Dict String String
+sortTargetIndex data =
+    Dict.fromList
+        ((data.tiers
+            |> List.concatMap .groups
+            |> List.concatMap .foods
+            |> List.filter (\f -> f.department /= "")
+            |> List.map (\f -> ( String.toLower f.name, f.department ))
+         )
+            ++ List.map (\t -> ( String.toLower t.name, t.department )) data.sortTargets
+        )
+
+
+{-| File every item on the reserved Shopping List bucket into the
+category its name targets. An item with no target, or whose target names
+no existing category, stays on the bucket rather than guessing.
+-}
+autoSortCart : Data -> Data
+autoSortCart data =
+    let
+        targets =
+            sortTargetIndex data
+
+        categoryByName =
+            data.staples
+                |> List.filter (\c -> isShoppingCard c && c.name /= shoppingCartName)
+                |> List.map (\c -> ( String.toLower c.name, c.id ))
+                |> Dict.fromList
+
+        destinationFor item =
+            Dict.get (String.toLower item.name) targets
+                |> Maybe.andThen (\dept -> Dict.get (String.toLower dept) categoryByName)
+
+        moved =
+            data.staples
+                |> List.filter (\c -> isShoppingCard c && c.name == shoppingCartName)
+                |> List.concatMap .items
+                |> List.filterMap (\i -> Maybe.map (Tuple.pair i) (destinationFor i))
+
+        relocate card =
+            if not (isShoppingCard card) then
+                card
+
+            else if card.name == shoppingCartName then
+                { card | items = List.filter (\i -> destinationFor i == Nothing) card.items }
+
+            else
+                { card
+                    | items =
+                        card.items
+                            ++ (moved
+                                    |> List.filter (\( _, cid ) -> cid == card.id)
+                                    |> List.map Tuple.first
+                               )
+                }
+    in
+    { data | staples = List.map relocate data.staples }
+
+
+{-| Point every item now sitting in the given Shopping List category at
+that category: custom items gain a target, and catalog foods gain an
+override that wins over their department default.
+-}
+retargetPane : String -> Data -> Data
+retargetPane cardId data =
+    data.staples
+        |> List.filter (\c -> c.id == cardId)
+        |> List.head
+        |> Maybe.map
+            (\card ->
+                let
+                    names =
+                        card.items
+                            |> List.map .name
+                            |> List.foldl
+                                (\n ( seen, acc ) ->
+                                    if Set.member (String.toLower n) seen then
+                                        ( seen, acc )
+
+                                    else
+                                        ( Set.insert (String.toLower n) seen, n :: acc )
+                                )
+                                ( Set.empty, [] )
+                            |> Tuple.second
+                            |> List.reverse
+
+                    lower =
+                        names |> List.map String.toLower |> Set.fromList
+
+                    kept =
+                        List.filter
+                            (\t -> not (Set.member (String.toLower t.name) lower))
+                            data.sortTargets
+                in
+                { data
+                    | sortTargets =
+                        kept ++ List.map (\n -> SortTarget n card.name) names
+                }
+            )
+        |> Maybe.withDefault data

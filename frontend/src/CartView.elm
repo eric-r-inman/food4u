@@ -12,7 +12,7 @@ import Data exposing (Card, Data, Loc(..), isShoppingCard, shoppingCartName)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (on, onClick, onInput)
+import Html.Events exposing (on, onClick, onInput, stopPropagationOn)
 import Html.Lazy as Lazy
 import Json.Decode as Decode
 import Model exposing (Indices, Model, Selection, isOpen)
@@ -152,6 +152,35 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
             else
                 [ categoryDeleteControl (confirmingDelete == Just card.id) (RequestDelete card.id) (RemovePane card.id) CancelDelete ]
 
+        -- The reserved bucket's header files its items into their target
+        -- departments; a category's header points its current items back
+        -- at itself, so custom items become sortable and a food's target
+        -- can be changed by moving it.  Hidden while selecting or paring,
+        -- whose header controls take the space.
+        sortControls =
+            if selectMode || pareMode || List.isEmpty card.items then
+                []
+
+            else if reserved then
+                [ button
+                    [ type_ "button"
+                    , class "cart-sort-btn"
+                    , title "File each item into the department it targets"
+                    , stopPropagationOn "click" (Decode.succeed ( AutoSortCart, True ))
+                    ]
+                    [ text "⇅ Auto-sort" ]
+                ]
+
+            else
+                [ button
+                    [ type_ "button"
+                    , class "cart-sort-btn"
+                    , title "Make every item here sort back to this department"
+                    , stopPropagationOn "click" (Decode.succeed ( RetargetPane card.id, True ))
+                    ]
+                    [ text "◎ Sort here" ]
+                ]
+
         -- While items are selected, a green bulk-move button moves the
         -- whole selection into this list.
         moveControl =
@@ -213,7 +242,7 @@ viewCartCard nameToTierRail toggled selectMode countMode pareMode selected confi
                 ]
                 :: span [] [ text card.name ]
                 :: span [ class "cart-cat-count" ] [ text (String.fromInt (List.length card.items)) ]
-                :: (moveControl ++ controls)
+                :: (sortControls ++ moveControl ++ controls)
             )
             :: (quickAddField ++ body)
         )
