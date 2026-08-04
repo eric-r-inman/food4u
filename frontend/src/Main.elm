@@ -25,7 +25,7 @@ import Browser
 import Browser.Dom as Dom
 import Browser.Events
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Group, Item, Loc(..), PlannerEntry, Recipe, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, moveRecipeBefore, moveRecipeToCategoryEnd, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
+import Data exposing (Card, Data, Food, Group, Item, Loc(..), PlannerEntry, Recipe, autoSortCart, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, moveRecipeBefore, moveRecipeToCategoryEnd, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, retargetPane, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -563,6 +563,35 @@ update msg model =
             , Cmd.none
             )
 
+        AutoSortCart ->
+            -- File each item on the reserved bucket into the category its
+            -- name targets; items with no target, or a target naming no
+            -- existing category, stay put.
+            withData model
+                (\data ->
+                    let
+                        newData =
+                            autoSortCart data
+                    in
+                    ( { model | data = Just newData, derived = derive newData }
+                    , saveModel newData
+                    )
+                )
+
+        RetargetPane cardId ->
+            -- Point every item now in this category at this category, so
+            -- auto-sort files it here from now on.
+            withData model
+                (\data ->
+                    let
+                        newData =
+                            retargetPane cardId data
+                    in
+                    ( { model | data = Just newData, derived = derive newData }
+                    , saveModel newData
+                    )
+                )
+
         MoveSelectedTo target ->
             -- Move every selected item into the clicked area, keeping them
             -- selected (at their new home if they moved) so a further
@@ -760,7 +789,7 @@ update msg model =
                             else
                                 let
                                     newData =
-                                        pushFood gid (Food (nextId model.seq) name "F" False na "") data
+                                        pushFood gid (Food (nextId model.seq) name "F" False na "" "") data
                                 in
                                 ( { model | data = Just newData, derived = derive newData, seq = model.seq + 1, drag = Nothing, toggled = Set.insert gid model.toggled }
                                 , saveModel newData
@@ -933,7 +962,7 @@ commitAdd target model =
                     newData =
                         case target of
                             AddFood (PyramidGroup gid) ->
-                                pushFood gid (Food newId value "F" False False "") data
+                                pushFood gid (Food newId value "F" False False "" "") data
 
                             AddFood loc ->
                                 pushItemTo loc (Item newId value False 1) data
@@ -1086,7 +1115,7 @@ linkRecipeToGroup rid gid seq data =
                 )
 
             else
-                ( pushFood gid (Food (nextId seq) recipe.name "" False False rid) data, seq + 1 )
+                ( pushFood gid (Food (nextId seq) recipe.name "" False False rid "") data, seq + 1 )
 
         Nothing ->
             ( data, seq )
@@ -1668,7 +1697,7 @@ dropOneHere from foodId target seq data =
                             ( data, seq )
 
                         else
-                            ( pushFood gid (Food (nextId seq) name "F" False na "") data, seq + 1 )
+                            ( pushFood gid (Food (nextId seq) name "F" False na "" "") data, seq + 1 )
                     )
                 |> Maybe.withDefault ( data, seq )
 

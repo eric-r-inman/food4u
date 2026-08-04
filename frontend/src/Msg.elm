@@ -71,6 +71,8 @@ type Msg
     | ChangeItemCount Loc String Int
     | ToggleItemSelected String
     | MoveSelectedTo Loc
+    | AutoSortCart
+    | RetargetPane String
     | DeselectAll
     | DragStart Loc String
     | DragEnd

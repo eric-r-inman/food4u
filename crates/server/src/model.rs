@@ -29,6 +29,20 @@ pub struct Model {
   /// falls back to its canonical order.
   #[serde(default, rename = "columnOrder")]
   pub column_order: Vec<String>,
+  /// Where auto-sort files items whose name the user has re-targeted: a
+  /// per-user override of the catalog's department defaults, which also
+  /// gives custom items a home.  Empty in documents saved before
+  /// auto-sort existed.
+  #[serde(default, rename = "sortTargets")]
+  pub sort_targets: Vec<SortTarget>,
+}
+
+/// One per-user auto-sort override: items with this name file into this
+/// Shopping List category instead of the catalog default.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SortTarget {
+  pub name: String,
+  pub department: String,
 }
 
 /// The Meal Planner's original fixed length: seven days.
@@ -70,6 +84,11 @@ pub struct Food {
   pub na: bool,
   #[serde(default, rename = "recipeId")]
   pub recipe_id: String,
+  /// The Shopping List category this food's item auto-sorts into.  Empty
+  /// means the food has no default and auto-sort leaves its item where it
+  /// is.  Absent in documents saved before departments existed.
+  #[serde(default)]
+  pub department: String,
 }
 
 /// A storage pane — a kitchen location, the Shopping List, or one of the

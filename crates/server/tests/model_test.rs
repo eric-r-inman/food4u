@@ -30,6 +30,7 @@ fn the_typed_model_round_trips_through_json() {
           hero: true,
           na: true,
           recipe_id: "r1".into(),
+          department: String::new(),
         }],
       }],
     }],
@@ -70,6 +71,7 @@ fn the_typed_model_round_trips_through_json() {
     }],
     planner_days: 10,
     column_order: vec!["planner".into(), "pyramid".into()],
+    sort_targets: vec![],
   };
 
   let reserialized = serde_json::to_string(&model).unwrap();

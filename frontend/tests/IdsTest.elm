@@ -14,7 +14,7 @@ import Test exposing (Test, describe, test)
 
 emptyData : Data
 emptyData =
-    { tiers = [], staples = [], recipes = [], planner = [], plannerDays = 7, columnOrder = [] }
+    { tiers = [], staples = [], recipes = [], planner = [], plannerDays = 7, columnOrder = [], sortTargets = [] }
 
 
 suite : Test

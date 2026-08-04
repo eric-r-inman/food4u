@@ -28,7 +28,7 @@ HEADER
 emit "select 'insert into users (id, email, display_name, created_at, planner_days) values ('||quote(id)||', '||quote(email)||', '||quote(display_name)||', '||quote(created_at)||', '||planner_days||');' from users order by id;"
 emit "select 'insert into tiers (id, no, name, freq, width, rail, tint, line, position) values ('||quote(id)||', '||quote(no)||', '||quote(name)||', '||quote(freq)||', '||quote(width)||', '||quote(rail)||', '||quote(tint)||', '||quote(line)||', '||position||');' from tiers order by position;"
 emit "select 'insert into food_groups (id, tier_id, label, position) values ('||quote(id)||', '||quote(tier_id)||', '||quote(label)||', '||position||');' from food_groups order by tier_id, position;"
-emit "select 'insert into foods (id, group_id, name, prep, hero, position) values ('||quote(id)||', '||quote(group_id)||', '||quote(name)||', '||quote(prep)||', '||(case when hero then 'true' else 'false' end)||', '||position||');' from foods order by group_id, position;"
+emit "select 'insert into foods (id, group_id, name, prep, hero, position, department) values ('||quote(id)||', '||quote(group_id)||', '||quote(name)||', '||quote(prep)||', '||(case when hero then 'true' else 'false' end)||', '||position||', '||quote(department)||');' from foods order by group_id, position;"
 emit "select 'insert into user_food_state (user_id, food_id, in_stock, recipe_id) values ('||quote(user_id)||', '||quote(food_id)||', '||(case when in_stock then 'true' else 'false' end)||', '||quote(recipe_id)||');' from user_food_state order by user_id, food_id;"
 # The Staples Tracker and the Shopping List's default categories are
 # minted client-side for every account, so the seed-editing session always

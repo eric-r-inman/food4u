@@ -15,6 +15,7 @@ const MAX_RECIPES: usize = 1_000;
 const MAX_INGREDIENTS: usize = 20_000;
 const MAX_PLANNER_ENTRIES: usize = 2_000;
 const MAX_COLUMN_ORDER: usize = 20;
+const MAX_SORT_TARGETS: usize = 10_000;
 
 /// A model that exceeds one of the size limits.  Carries a human-readable
 /// description of which limit and by how much.
@@ -56,6 +57,7 @@ pub fn check(model: &Model) -> Result<(), QuotaExceeded> {
   )?;
   ceiling("planner entries", model.planner.len(), MAX_PLANNER_ENTRIES)?;
   ceiling("column order entries", model.column_order.len(), MAX_COLUMN_ORDER)?;
+  ceiling("sort targets", model.sort_targets.len(), MAX_SORT_TARGETS)?;
   Ok(())
 }
 

@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+1. The Shopping List sorts itself into grocery departments: every catalog food
+   carries a store department, Auto-sort files the main bucket's items into
+   their departments' panes, and each pane's Sort-here button re-targets the
+   items now inside it, custom items included. Existing kitchens get the
+   defaults automatically on their next server start.
 ** Fixes
 ** Breaking
 ** Maintenance
@@ -14,6 +19,7 @@
 2. Plain olive oil joins the catalog's plant-based oils and fats beside the
    extra-virgin bottle, so a kitchen can track both. Existing kitchens keep
    their foods; the addition reaches only kitchens seeded afterward.
+
 * v0.24.0
 ** Added
 1. The bundled collection grows by thirty-seven recipes — eight more for each of

@@ -9,7 +9,7 @@
 //! catalog food to the user's stock and recipe-link overlay.
 
 use crate::model::{
-  Card, Food, Group, Item, Model, PlannerEntry, Recipe, Tier,
+  Card, Food, Group, Item, Model, PlannerEntry, Recipe, SortTarget, Tier,
 };
 use sqlx::SqlitePool;
 use std::collections::HashMap;
@@ -66,6 +66,7 @@ pub(crate) struct FoodRow {
   name: String,
   prep: String,
   hero: bool,
+  department: String,
   na: bool,
   recipe_id: String,
 }
@@ -144,7 +145,7 @@ pub async fn load(
   .map_err(read)?;
 
   let foods = sqlx::query_as::<_, FoodRow>(
-    "select f.id, f.group_id, f.name, f.prep, f.hero, \
+    "select f.id, f.group_id, f.name, f.prep, f.hero, f.department, \
      coalesce(s.in_stock, 0) as na, coalesce(s.recipe_id, '') as recipe_id \
      from foods f \
      left join user_food_state s on s.food_id = f.id and s.user_id = ? \
@@ -230,6 +231,15 @@ pub async fn load(
   .await
   .map_err(read)?;
 
+  let sort_targets = sqlx::query_as::<_, SortTargetRow>(
+    "select name, department from user_sort_targets \
+     where user_id = ? order by name",
+  )
+  .bind(user_id)
+  .fetch_all(pool)
+  .await
+  .map_err(read)?;
+
   Ok(assemble(ModelRows {
     tiers,
     groups,
@@ -242,6 +252,7 @@ pub async fn load(
     planner,
     planner_days,
     column_order,
+    sort_targets,
   }))
 }
 
@@ -260,6 +271,15 @@ pub(crate) struct ModelRows {
   pub planner: Vec<PlannerRow>,
   pub planner_days: i64,
   pub column_order: Vec<String>,
+  pub sort_targets: Vec<SortTargetRow>,
+}
+
+/// One user_sort_targets row: an item name and the Shopping List category
+/// the user pointed it at.
+#[derive(sqlx::FromRow)]
+pub(crate) struct SortTargetRow {
+  name: String,
+  department: String,
 }
 
 /// Build the model from the ordered row sets: bucket each child by its
@@ -278,6 +298,7 @@ pub(crate) fn assemble(rows: ModelRows) -> Model {
     planner,
     planner_days,
     column_order,
+    sort_targets,
   } = rows;
   let mut foods_by_group: HashMap<String, Vec<Food>> = HashMap::new();
   for row in foods {
@@ -288,6 +309,7 @@ pub(crate) fn assemble(rows: ModelRows) -> Model {
       hero: row.hero,
       na: row.na,
       recipe_id: row.recipe_id,
+      department: row.department,
     });
   }
 
@@ -386,6 +408,13 @@ pub(crate) fn assemble(rows: ModelRows) -> Model {
       .collect(),
     planner_days,
     column_order,
+    sort_targets: sort_targets
+      .into_iter()
+      .map(|row| SortTarget {
+        name: row.name,
+        department: row.department,
+      })
+      .collect(),
   }
 }
 
@@ -436,6 +465,11 @@ pub async fn save(
     .execute(&mut *tx)
     .await
     .map_err(write)?;
+  sqlx::query("delete from user_sort_targets where user_id = ?")
+    .bind(user_id)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
   sqlx::query("delete from recipes where user_id = ?")
     .bind(user_id)
     .execute(&mut *tx)
@@ -474,8 +508,8 @@ pub async fn save(
 
       for (food_pos, food) in group.foods.iter().enumerate() {
         sqlx::query(
-          "insert into foods (id, group_id, name, prep, hero, position) \
-           values (?, ?, ?, ?, ?, ?)",
+          "insert into foods (id, group_id, name, prep, hero, position, \
+           department) values (?, ?, ?, ?, ?, ?, ?)",
         )
         .bind(&food.id)
         .bind(&group.id)
@@ -483,6 +517,7 @@ pub async fn save(
         .bind(&food.prep)
         .bind(food.hero)
         .bind(food_pos as i64)
+        .bind(&food.department)
         .execute(&mut *tx)
         .await
         .map_err(write)?;
@@ -604,6 +639,19 @@ pub async fn save(
     .bind(&entry.meal)
     .bind(&entry.recipe_id)
     .bind(entry_pos as i64)
+    .execute(&mut *tx)
+    .await
+    .map_err(write)?;
+  }
+
+  for target in &model.sort_targets {
+    sqlx::query(
+      "insert into user_sort_targets (user_id, name, department) \
+       values (?, ?, ?)",
+    )
+    .bind(user_id)
+    .bind(&target.name)
+    .bind(&target.department)
     .execute(&mut *tx)
     .await
     .map_err(write)?;
