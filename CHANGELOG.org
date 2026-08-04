@@ -3,20 +3,22 @@
 
 * Upcoming
 ** Added
-1. The bundled collection grows by thirty-seven recipes — eight more for each of
-   MIND, DASH, Anti-Inflammatory, and Mediterranean, plus five built around tofu
-   under a new Tofu tag — and the catalog gains red curry paste and curry powder
-   to cook them from. Existing kitchens keep their recipes; the additions reach
-   only kitchens seeded afterward.
-2. The bulk-move button that appears while items are selected now shows how many
+1. The bulk-move button that appears while items are selected now shows how many
    it will move — "⬇ (3)" — instead of the "Move here" label, so the arrow reads
    at a glance as "move the selected items here". No action is required.
-3. Plain olive oil joins the catalog's plant-based oils and fats beside the
+2. Plain olive oil joins the catalog's plant-based oils and fats beside the
    extra-virgin bottle, so a kitchen can track both. Existing kitchens keep
    their foods; the addition reaches only kitchens seeded afterward.
 ** Fixes
 ** Breaking
 ** Maintenance
+* v0.24.0
+** Added
+1. The bundled collection grows by thirty-seven recipes — eight more for each of
+   MIND, DASH, Anti-Inflammatory, and Mediterranean, plus five built around tofu
+   under a new Tofu tag — and the catalog gains red curry paste and curry powder
+   to cook them from. Existing kitchens keep their recipes; the additions reach
+   only kitchens seeded afterward.
 * v0.23.0
 ** Added
 1. Pasting a recipe now reads item counts: "3 red bell peppers" arrives as one
