@@ -3,14 +3,16 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.24.0
+** Added
 1. The bundled collection grows by thirty-seven recipes — eight more for each of
    MIND, DASH, Anti-Inflammatory, and Mediterranean, plus five built around tofu
    under a new Tofu tag — and the catalog gains red curry paste and curry powder
    to cook them from. Existing kitchens keep their recipes; the additions reach
    only kitchens seeded afterward.
-** Fixes
-** Breaking
-** Maintenance
 * v0.23.0
 ** Added
 1. Pasting a recipe now reads item counts: "3 red bell peppers" arrives as one
