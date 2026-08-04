@@ -1,4 +1,4 @@
-module RecipeParser exposing (ParsedRecipe, canonicalize, parsePastedRecipe)
+module RecipeParser exposing (ParsedIngredient, ParsedRecipe, canonicalize, parsePastedRecipe)
 
 {-| A heuristic parser for a pasted recipe. The first non-empty line is
 the name; ingredient lines (under an "Ingredients" header, or bullet
@@ -13,6 +13,11 @@ casing, and whole-name singular/plural pairs fold together ("tomato"
 becomes "Tomatoes"). Matching never reaches into substrings, so "Coconut
 milk" cannot collapse into "Coconut".
 
+Each chip also carries the item count the line implies — "3 red bell
+peppers" is three peppers on the shopping list, and "2 cans black beans"
+is two cans, but "2 cups spinach" is an amount of one bag of spinach,
+not two of anything, so measures of volume or weight never count.
+
 -}
 
 import Char
@@ -22,8 +27,18 @@ import Set exposing (Set)
 
 type alias ParsedRecipe =
     { name : String
-    , ingredients : List String
+    , ingredients : List ParsedIngredient
     , instructions : String
+    }
+
+
+{-| One parsed chip: the catalog-resolved food name and the discrete
+item count its ingredient line implies (1 whenever the line's leading
+number measures volume or weight rather than countable items).
+-}
+type alias ParsedIngredient =
+    { name : String
+    , count : Int
     }
 
 
@@ -36,17 +51,17 @@ parsePastedRecipe catalog raw =
         name =
             lines |> List.filter (\l -> l /= "") |> List.head |> Maybe.withDefault "Untitled recipe"
 
-        ( _, ingredientsRev ) =
+        ( _, ingredientLinesRev ) =
             List.foldl parseLineStep ( SeekingSection, [] ) lines
 
         resolve =
             canonicalName (catalogIndex catalog)
 
         ingredients =
-            ingredientsRev
+            ingredientLinesRev
                 |> List.reverse
-                |> List.filter (\n -> n /= "")
-                |> List.map resolve
+                |> List.map (\l -> { name = resolve (cleanIngredient l), count = itemCount l })
+                |> List.filter (\ing -> ing.name /= "")
                 |> dedupeKeepingOrder
     in
     { name = name
@@ -151,14 +166,14 @@ parseLineStep line ( section, ings ) =
     else
         case section of
             IngredientsSection ->
-                ( section, cleanIngredient line :: ings )
+                ( section, line :: ings )
 
             InstructionsSection ->
                 ( section, ings )
 
             SeekingSection ->
                 if isBulletLine line then
-                    ( section, cleanIngredient line :: ings )
+                    ( section, line :: ings )
 
                 else
                     ( section, ings )
@@ -202,13 +217,13 @@ dropNameLine lines =
             []
 
 
-dedupeKeepingOrder : List String -> List String
+dedupeKeepingOrder : List ParsedIngredient -> List ParsedIngredient
 dedupeKeepingOrder items =
     List.foldl
         (\x ( seen, acc ) ->
             let
                 key =
-                    String.toLower x
+                    String.toLower x.name
             in
             if Set.member key seen then
                 ( seen, acc )
@@ -220,6 +235,118 @@ dedupeKeepingOrder items =
         items
         |> Tuple.second
         |> List.reverse
+
+
+{-| The discrete item count an ingredient line implies. A leading number
+counts items only when what follows is countable: the food itself ("3
+red bell peppers") or a purchasable unit ("2 cans black beans", "4
+cloves garlic"). A number that measures volume or weight ("2 cups
+spinach", "400g lentils") counts nothing — the chip is one item however
+much of it the recipe uses — and a line with no leading number is one
+item.
+-}
+itemCount : String -> Int
+itemCount line =
+    let
+        tokens =
+            line
+                |> stripParentheticals
+                |> afterLabel
+                |> stripLeadingChars bulletChars
+                |> stripLeadingArticle
+                |> stripFoodOfPrefix
+                |> String.words
+    in
+    case tokens of
+        first :: rest ->
+            case leadingNumber (stripTrailingPunct first) of
+                Just n ->
+                    if numberCountsItems rest then
+                        n
+
+                    else
+                        1
+
+                Nothing ->
+                    1
+
+        [] ->
+            1
+
+
+{-| Whether the tokens after a leading number name something countable:
+prep words and articles are skipped, a volume or weight measure means
+the number was an amount, and anything else — a purchasable unit or the
+food itself — means the number was a count.
+-}
+numberCountsItems : List String -> Bool
+numberCountsItems tokens =
+    case tokens of
+        t :: rest ->
+            let
+                word =
+                    String.toLower (stripTrailingPunct t)
+            in
+            if isPrepWord t || isArticleWord t || word == "of" then
+                numberCountsItems rest
+
+            else if Set.member word volumeMeasureWords then
+                False
+
+            else
+                word /= ""
+
+        [] ->
+            False
+
+
+{-| Read a count from an ingredient line's leading token: "3" and
+"three" count, a range ("1-2") counts its larger end, a whole number
+with a trailing fraction ("1½") rounds up, and a bare fraction ("½",
+"1/2") is one item. Anything else is not a number.
+-}
+leadingNumber : String -> Maybe Int
+leadingNumber token =
+    let
+        isDash c =
+            c == '-' || c == '–'
+
+        isFraction c =
+            String.contains (String.fromChar c) fractionChars
+    in
+    if token == "" then
+        Nothing
+
+    else if String.any isDash token then
+        case List.reverse (String.split "-" (String.replace "–" "-" token)) of
+            last :: _ ->
+                leadingNumber last
+
+            [] ->
+                Nothing
+
+    else if String.contains "/" token then
+        -- A slashed fraction is a part of one item; buy the whole one.
+        Just 1
+
+    else if String.all Char.isDigit token then
+        String.toInt token
+
+    else if String.all isFraction token then
+        Just 1
+
+    else
+        case String.toInt (String.filter Char.isDigit token) of
+            Just n ->
+                if String.all (\c -> Char.isDigit c || isFraction c) token then
+                    -- "1½" rounds up: the half means opening a second one.
+                    Just (n + 1)
+
+                else
+                    Dict.get (String.toLower token) numberWordValues
+
+            Nothing ->
+                Dict.get (String.toLower token) numberWordValues
 
 
 {-| Reduce an ingredient line ("2 cups chopped spinach, rinsed") to a bare
@@ -279,7 +406,15 @@ bullets, list punctuation, and a leading quantity.
 -}
 leadingChars : String
 leadingChars =
-    "-*•·–—.#)(▢□☐ 0123456789/" ++ fractionChars
+    bulletChars ++ "0123456789/" ++ fractionChars
+
+
+{-| Bullet and list punctuation alone — the leading strip that keeps a
+quantity in place, for the count extraction that needs to read it.
+-}
+bulletChars : String
+bulletChars =
+    "-*•·–—.#)(▢□☐ "
 
 
 {-| Remove every "(...)" span, so "2 (15-ounce) cans black beans" keeps
@@ -519,8 +654,27 @@ would ("two lemons", "half a cup").
 -}
 numberWords : Set String
 numberWords =
+    Set.fromList (Dict.keys numberWordValues)
+
+
+{-| The value each spelled-out count carries when it counts items.
+"Half" is one — half a lemon is still a lemon bought whole.
+-}
+numberWordValues : Dict String Int
+numberWordValues =
+    Dict.fromList
+        [ ( "one", 1 ), ( "two", 2 ), ( "three", 3 ), ( "four", 4 ), ( "five", 5 ), ( "six", 6 ), ( "seven", 7 ), ( "eight", 8 ), ( "nine", 9 ), ( "ten", 10 ), ( "eleven", 11 ), ( "twelve", 12 ), ( "half", 1 ), ( "dozen", 12 ) ]
+
+
+{-| The measures of volume, weight, or vague amount, under which a
+leading number measures the food rather than counting items. The
+remaining measure words — cans, cloves, bunches, heads, and the other
+purchasable units — leave the number counting real things.
+-}
+volumeMeasureWords : Set String
+volumeMeasureWords =
     Set.fromList
-        [ "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "half", "dozen" ]
+        [ "cup", "cups", "tbsp", "tbs", "tablespoon", "tablespoons", "tsp", "teaspoon", "teaspoons", "oz", "ounce", "ounces", "lb", "lbs", "pound", "pounds", "g", "gram", "grams", "kg", "ml", "l", "liter", "liters", "litre", "litres", "pinch", "pinches", "dash", "handful", "qt", "quart", "quarts", "pint", "pints", "gallon", "gallons", "knob", "each" ]
 
 
 isPrepWord : String -> Bool

@@ -20,6 +20,13 @@ parse =
     parsePastedRecipe catalog
 
 
+{-| The parsed chips' names alone, for assertions that predate counts.
+-}
+chipNames : RecipeParser.ParsedRecipe -> List String
+chipNames parsed =
+    List.map .name parsed.ingredients
+
+
 suite : Test
 suite =
     describe "robustness"
@@ -36,11 +43,11 @@ suite =
         , describe "prose is not a recipe"
             [ test "an article paragraph yields no chips" <|
                 \_ ->
-                    (parse "A Brief History of Soup\n\nSoup is ancient. Mix the ingredients well, our ancestors knew, and dinner follows. There are many directions a broth can take.\n\nScholars disagree about the rest.").ingredients
+                    chipNames (parse "A Brief History of Soup\n\nSoup is ancient. Mix the ingredients well, our ancestors knew, and dinner follows. There are many directions a broth can take.\n\nScholars disagree about the rest.")
                         |> Expect.equal []
             , test "a keyword buried in prose does not flip sections" <|
                 \_ ->
-                    (parse "Notes\n\nSimple, wholesome ingredients.\nThis line must not become a chip.").ingredients
+                    chipNames (parse "Notes\n\nSimple, wholesome ingredients.\nThis line must not become a chip.")
                         |> Expect.equal []
             ]
         , describe "bulk"
@@ -50,21 +57,21 @@ suite =
                         blather =
                             List.repeat 400 "The story continues at considerable length." |> String.join "\n"
                     in
-                    (parse ("War and Peas\n\n" ++ blather ++ "\n- 2 cups kale\n" ++ blather)).ingredients
+                    chipNames (parse ("War and Peas\n\n" ++ blather ++ "\n- 2 cups kale\n" ++ blather))
                         |> Expect.equal [ "Kale" ]
             ]
         , describe "encodings and bullets"
             [ test "windows line endings do not corrupt chips" <|
                 \_ ->
-                    (parse "Soup\u{000D}\n\u{000D}\nIngredients:\u{000D}\n- 2 tomatoes\u{000D}\n- 1 bunch kale\u{000D}\n\u{000D}\nMethod:\u{000D}\nSimmer.").ingredients
+                    chipNames (parse "Soup\u{000D}\n\u{000D}\nIngredients:\u{000D}\n- 2 tomatoes\u{000D}\n- 1 bunch kale\u{000D}\n\u{000D}\nMethod:\u{000D}\nSimmer.")
                         |> Expect.equal [ "Tomatoes", "Kale" ]
             , test "accented foods survive and match the catalog" <|
                 \_ ->
-                    (parse "Salsa\n\nIngredients:\n- 2 jalapeños, sliced\n- 1 cup açaí").ingredients
+                    chipNames (parse "Salsa\n\nIngredients:\n- 2 jalapeños, sliced\n- 1 cup açaí")
                         |> Expect.equal [ "Jalapeños", "Açaí" ]
             , test "en-dash, em-dash, and middot bullets are recognized" <|
                 \_ ->
-                    (parse "Soup\n\n– 1 tomato\n— 2 cups kale\n· 1 jalapeño").ingredients
+                    chipNames (parse "Soup\n\n– 1 tomato\n— 2 cups kale\n· 1 jalapeño")
                         |> Expect.equal [ "Tomatoes", "Kale", "Jalapeños" ]
             ]
         , describe "documented behaviour for odd structures"
@@ -74,7 +81,7 @@ suite =
                         parsed =
                             parse "Salad\n\nIngredients:\n- 1 tomato\n\nInstructions:\nToss.\n\nSmoothie\n\nIngredients:\n- 2 cups kale\n\nInstructions:\nBlend."
                     in
-                    ( parsed.name, parsed.ingredients )
+                    ( parsed.name, chipNames parsed )
                         |> Expect.equal ( "Salad", [ "Tomatoes", "Kale" ] )
             ]
         ]
