@@ -3,6 +3,16 @@
 
 * Upcoming
 ** Added
+1. Pasting a recipe now reads item counts: "3 red bell peppers" arrives as one
+   chip counted three, and counted units like cans and cloves count too, while
+   amounts like cups or grams stay a single item. The bundled recipes carry the
+   same counts, so their ingredients land on the Shopping List in the quantities
+   the dishes actually call for. No action is required.
+** Fixes
+** Breaking
+** Maintenance
+* v0.22.0
+** Added
 1. The Staples Tracker's Auto button now stocks only shelf-stable proteins.
    Fresh cuts have given way to the canned fish a pantry actually keeps, so an
    auto-filled tracker no longer suggests meat you would buy for the week's
@@ -19,14 +29,6 @@
    recipes and Auto staples follow the renames, so their chips keep their tier
    colour, stock tracking, and shopping-list identity. Existing kitchens keep
    their foods; the changes reach only kitchens seeded afterward.
-4. Pasting a recipe now reads item counts: "3 red bell peppers" arrives as one
-   chip counted three, and counted units like cans and cloves count too, while
-   amounts like cups or grams stay a single item. The bundled recipes carry the
-   same counts, so their ingredients land on the Shopping List in the quantities
-   the dishes actually call for. No action is required.
-** Fixes
-** Breaking
-** Maintenance
 * v0.21.0
 ** Maintenance
 1. Git works inside the development shell on macOS again. The shell now supplies
