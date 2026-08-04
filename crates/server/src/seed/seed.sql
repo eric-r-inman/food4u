@@ -526,6 +526,7 @@ insert into foods (id, group_id, name, prep, hero, position) values ('u959', 'd6
 insert into foods (id, group_id, name, prep, hero, position) values ('u960', 'd6', 'Olives, black', 'F', false, 14);
 insert into foods (id, group_id, name, prep, hero, position) values ('u961', 'd6', 'Olives, green', 'F', false, 15);
 insert into foods (id, group_id, name, prep, hero, position) values ('u820', 'd6', 'Sesame oil', 'F', false, 16);
+insert into foods (id, group_id, name, prep, hero, position) values ('ex253', 'd6', 'Olive oil', 'P', false, 17);
 insert into foods (id, group_id, name, prep, hero, position) values ('d33', 'd94', 'Eggplant', 'F', false, 0);
 insert into foods (id, group_id, name, prep, hero, position) values ('d34', 'd94', 'Zucchini', 'F', false, 1);
 insert into foods (id, group_id, name, prep, hero, position) values ('d36', 'd94', 'Broccoli', 'F', false, 2);
