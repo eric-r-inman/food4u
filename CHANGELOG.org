@@ -8,6 +8,11 @@
    amounts like cups or grams stay a single item. The bundled recipes carry the
    same counts, so their ingredients land on the Shopping List in the quantities
    the dishes actually call for. No action is required.
+2. The bundled collection grows by thirty-seven recipes — eight more for each of
+   MIND, DASH, Anti-Inflammatory, and Mediterranean, plus five built around tofu
+   under a new Tofu tag — and the catalog gains red curry paste and curry powder
+   to cook them from. Existing kitchens keep their recipes; the additions reach
+   only kitchens seeded afterward.
 ** Fixes
 ** Breaking
 ** Maintenance
