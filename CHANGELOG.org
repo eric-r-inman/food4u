@@ -3,13 +3,17 @@
 
 * Upcoming
 ** Added
-1. The bulk-move button that appears while items are selected now shows how many
+1. The app grows hotkeys: "s", "c", and "p" toggle Select, Count, and Pare, and
+   "1" through "5" open or close the columns, counted left to right in your
+   current arrangement. Nothing fires while you are typing in a field, and each
+   toggle's tooltip names its key. No action is needed.
+2. The bulk-move button that appears while items are selected now shows how many
    it will move — "⬇ (3)" — instead of the "Move here" label, so the arrow reads
    at a glance as "move the selected items here". No action is required.
-2. Plain olive oil joins the catalog's plant-based oils and fats beside the
+3. Plain olive oil joins the catalog's plant-based oils and fats beside the
    extra-virgin bottle, so a kitchen can track both. Existing kitchens keep
    their foods; the addition reaches only kitchens seeded afterward.
-3. The Shopping List sorts itself into grocery departments: every catalog food
+4. The Shopping List sorts itself into grocery departments: every catalog food
    carries a store department, Auto-sort files the main bucket's items into
    their departments' panes, and each pane's Sort-here button re-targets the
    items now inside it, custom items included. Existing kitchens get the
