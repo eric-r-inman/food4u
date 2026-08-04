@@ -125,6 +125,7 @@ selectToggle on selectedCount msg =
     button
         [ type_ "button"
         , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
+        , title "Hotkey: s"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text
@@ -153,6 +154,7 @@ countToggle on msg =
     button
         [ type_ "button"
         , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
+        , title "Hotkey: c"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text
@@ -177,6 +179,7 @@ pareToggle on msg =
     button
         [ type_ "button"
         , classList [ ( "select-toggle", True ), ( "select-toggle-on", on ) ]
+        , title "Hotkey: p"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
         [ text

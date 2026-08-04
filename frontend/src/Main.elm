@@ -120,6 +120,7 @@ subscriptions model =
     -- While a pane is being edited: a mousedown outside it closes the editor
     -- without saving, and Enter/Escape commit/cancel from anywhere (so a
     -- colour-only change need not return focus to a text field first).
+    -- Otherwise the app-wide hotkeys listen.
     case model.editingPane of
         Just _ ->
             Sub.batch
@@ -128,7 +129,117 @@ subscriptions model =
                 ]
 
         Nothing ->
-            Sub.none
+            Browser.Events.onKeyDown (hotkey model)
+
+
+{-| The app-wide hotkeys: bare keys with no modifier, in the style most
+web apps use, so nothing collides with the browser's own shortcuts (which
+all carry a modifier). "s", "c", and "p" toggle Select, Count, and Pare;
+"1" through "5" open or close the columns, counted left to right in the
+user's current arrangement. Nothing fires while the focus is in a field
+the user is typing into, or while a modifier is held.
+-}
+hotkey : Model -> Decode.Decoder Msg
+hotkey model =
+    Decode.map3
+        (\key modifier typing ->
+            if modifier || typing then
+                Nothing
+
+            else
+                hotkeyMsg model key
+        )
+        (Decode.field "key" Decode.string)
+        (Decode.map3 (\a b c -> a || b || c)
+            (Decode.field "ctrlKey" Decode.bool)
+            (Decode.field "metaKey" Decode.bool)
+            (Decode.field "altKey" Decode.bool)
+        )
+        typingTarget
+        |> Decode.andThen
+            (Maybe.map Decode.succeed
+                >> Maybe.withDefault (Decode.fail "not a hotkey")
+            )
+
+
+{-| Whether the event's target is somewhere the user types, so letters
+must stay letters: an input, a textarea, a select, or anything
+content-editable.
+-}
+typingTarget : Decode.Decoder Bool
+typingTarget =
+    Decode.map2
+        (\tag editable ->
+            List.member tag [ "INPUT", "TEXTAREA", "SELECT" ] || editable
+        )
+        (Decode.oneOf
+            [ Decode.at [ "target", "tagName" ] Decode.string
+            , Decode.succeed ""
+            ]
+        )
+        (Decode.oneOf
+            [ Decode.at [ "target", "isContentEditable" ] Decode.bool
+            , Decode.succeed False
+            ]
+        )
+
+
+{-| The message a hotkey produces, if the key is one: mode toggles by
+letter, column toggles by the column's current left-to-right position,
+counted from one — "0" and other digits off the row's end fall through
+to nothing.
+-}
+hotkeyMsg : Model -> String -> Maybe Msg
+hotkeyMsg model key =
+    case key of
+        "s" ->
+            Just ToggleSelectMode
+
+        "c" ->
+            Just ToggleCountMode
+
+        "p" ->
+            Just TogglePareMode
+
+        _ ->
+            String.toInt key
+                |> Maybe.andThen
+                    (\n ->
+                        if n < 1 then
+                            Nothing
+
+                        else
+                            model.data
+                                |> Maybe.map (.columnOrder >> normalizeColumnOrder)
+                                |> Maybe.withDefault columnIds
+                                |> List.drop (n - 1)
+                                |> List.head
+                    )
+                |> Maybe.andThen columnToggleMsg
+
+
+{-| The open-or-close message for one column id.
+-}
+columnToggleMsg : String -> Maybe Msg
+columnToggleMsg columnId =
+    case columnId of
+        "pyramid" ->
+            Just TogglePyramid
+
+        "recipes" ->
+            Just ToggleRecipes
+
+        "planner" ->
+            Just TogglePlanner
+
+        "kitchen" ->
+            Just ToggleKitchen
+
+        "cart" ->
+            Just ToggleCart
+
+        _ ->
+            Nothing
 
 
 {-| Enter commits the pane edit, Escape cancels it; any other key produces
