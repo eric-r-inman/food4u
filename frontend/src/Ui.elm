@@ -199,21 +199,21 @@ selectionCircle selected =
     span [ classList [ ( "sel-circle", True ), ( "sel-circle-on", selected ) ] ] []
 
 
-{-| The green "move here" button shown on a pane or category header while
+{-| The green bulk-move button shown on a pane or category header while
 items are selected: pressing it moves the whole selection into that area.
-It carries a label, not a bare arrow, so it reads as an action rather than
-being mistaken for a count beside the header's food tally. It sits in a
-header that is itself a collapse or edit toggle, so its click must not
-propagate.
+It shows the selection's size — "⬇ (3)" — so the arrow reads as "move the
+3 selected here"; the parentheses keep the number from being mistaken for
+the header's own food tally. It sits in a header that is itself a
+collapse or edit toggle, so its click must not propagate.
 -}
-moveHereButton : Msg -> Html Msg
-moveHereButton msg =
+moveHereButton : Int -> Msg -> Html Msg
+moveHereButton selectedCount msg =
     button
         [ type_ "button"
         , class "move-here-btn"
         , stopPropagationOn "click" (Decode.succeed ( msg, True ))
         ]
-        [ text "⬇ Move here" ]
+        [ text ("⬇ (" ++ String.fromInt selectedCount ++ ")") ]
 
 
 {-| The slim vertical bar a column collapses to. The rail class names the
