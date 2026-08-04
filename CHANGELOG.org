@@ -3,12 +3,7 @@
 
 * Upcoming
 ** Added
-1. Pasting a recipe now reads item counts: "3 red bell peppers" arrives as one
-   chip counted three, and counted units like cans and cloves count too, while
-   amounts like cups or grams stay a single item. The bundled recipes carry the
-   same counts, so their ingredients land on the Shopping List in the quantities
-   the dishes actually call for. No action is required.
-2. The bundled collection grows by thirty-seven recipes — eight more for each of
+1. The bundled collection grows by thirty-seven recipes — eight more for each of
    MIND, DASH, Anti-Inflammatory, and Mediterranean, plus five built around tofu
    under a new Tofu tag — and the catalog gains red curry paste and curry powder
    to cook them from. Existing kitchens keep their recipes; the additions reach
@@ -16,6 +11,13 @@
 ** Fixes
 ** Breaking
 ** Maintenance
+* v0.23.0
+** Added
+1. Pasting a recipe now reads item counts: "3 red bell peppers" arrives as one
+   chip counted three, and counted units like cans and cloves count too, while
+   amounts like cups or grams stay a single item. The bundled recipes carry the
+   same counts, so their ingredients land on the Shopping List in the quantities
+   the dishes actually call for. No action is required.
 * v0.22.0
 ** Added
 1. The Staples Tracker's Auto button now stocks only shelf-stable proteins.
