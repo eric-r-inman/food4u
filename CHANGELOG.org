@@ -3,14 +3,16 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.26.0
+** Added
 1. The Shopping List sorts itself into grocery departments: every catalog food
    carries a store department, Auto-sort files the main bucket's items into
    their departments' panes, and each pane's Sort-here button re-targets the
    items now inside it, custom items included. Existing kitchens get the
    defaults automatically on their next server start.
-** Fixes
-** Breaking
-** Maintenance
 * v0.25.0
 ** Added
 1. The bulk-move button that appears while items are selected now shows how many
