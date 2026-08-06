@@ -70,6 +70,7 @@ type Msg
     | TogglePareMode
     | ChangeItemCount Loc String Int
     | ToggleItemSelected String
+    | ToggleLocSelected Loc
     | MoveSelectedTo Loc
     | AutoSortCart
     | RetargetPane String

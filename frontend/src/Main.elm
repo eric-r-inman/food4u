@@ -25,7 +25,7 @@ import Browser
 import Browser.Dom as Dom
 import Browser.Events
 import CartView exposing (viewCartColumn)
-import Data exposing (Card, Data, Food, Group, Item, Loc(..), PlannerEntry, Recipe, autoSortCart, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, moveRecipeBefore, moveRecipeToCategoryEnd, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, retargetPane, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName)
+import Data exposing (Card, Data, Food, Group, Item, Loc(..), PlannerEntry, Recipe, autoSortCart, cartZone, dataDecoder, encodeData, foodInGroup, isShoppingCard, itemInStorage, listHasName, mapCard, mapGroup, mapRecipe, mapStorage, moveRecipeBefore, moveRecipeToCategoryEnd, parseSelKey, pushFood, pushGroup, pushItemTo, pyramidHasName, removeFood, removeGroup, retargetPane, selKey, shoppingCartName, staplesTrackerId, staplesTrackerName, toggleLocSelection)
 import Derived exposing (inStockNames)
 import Dict exposing (Dict)
 import File.Download as Download
@@ -673,6 +673,14 @@ update msg model =
             ( { model | selection = (\s -> { s | items = toggleMember key s.items }) model.selection }
             , Cmd.none
             )
+
+        ToggleLocSelected loc ->
+            withData model
+                (\data ->
+                    ( { model | selection = (\s -> { s | items = toggleLocSelection loc data s.items }) model.selection }
+                    , Cmd.none
+                    )
+                )
 
         AutoSortCart ->
             -- File each item on the reserved bucket into the category its

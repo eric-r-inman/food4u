@@ -707,12 +707,25 @@ countSuffix countMode item =
 {-| The click-to-select attribute an item badge carries while its column is
 in select mode, and nothing otherwise. Dragging still works — a drag
 suppresses the click — so the same badge both selects on tap and moves on
-drag.
+drag. A shift-click widens the gesture to the whole category the badge
+lives in: select everything there, or unselect everything when it already
+is.
 -}
 selectAttrs : Bool -> Loc -> String -> List (Attribute Msg)
 selectAttrs selectMode loc itemId =
     if selectMode then
-        [ onClick (ToggleItemSelected (selKey loc itemId)) ]
+        [ on "click"
+            (Decode.map
+                (\shift ->
+                    if shift then
+                        ToggleLocSelected loc
+
+                    else
+                        ToggleItemSelected (selKey loc itemId)
+                )
+                (Decode.field "shiftKey" Decode.bool)
+            )
+        ]
 
     else
         []

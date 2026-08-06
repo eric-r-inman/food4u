@@ -35,6 +35,7 @@ module Data exposing
     , shoppingCartName
     , staplesTrackerId
     , staplesTrackerName
+    , toggleLocSelection
     )
 
 {-| The food model's schema and its JSON serialization. The model is a
@@ -865,3 +866,52 @@ retargetPane cardId data =
                 }
             )
         |> Maybe.withDefault data
+
+
+{-| The selection keys of every item living at one location: the foods of
+a pyramid group, the items of a storage pane, or the ingredients of a
+recipe.
+-}
+locSelKeys : Loc -> Data -> Set.Set String
+locSelKeys loc data =
+    Set.fromList
+        (List.map (selKey loc)
+            (case loc of
+                PyramidGroup gid ->
+                    data.tiers
+                        |> List.concatMap .groups
+                        |> List.filter (\g -> g.id == gid)
+                        |> List.concatMap .foods
+                        |> List.map .id
+
+                StoragePane cid ->
+                    data.staples
+                        |> List.filter (\c -> c.id == cid)
+                        |> List.concatMap .items
+                        |> List.map .id
+
+                RecipeIngredients rid ->
+                    data.recipes
+                        |> List.filter (\r -> r.id == rid)
+                        |> List.concatMap .ingredients
+                        |> List.map .id
+            )
+        )
+
+
+{-| Select every item at a location, or unselect them all when every one
+is already selected — the shift-click gesture on an item badge, scoped to
+the category the badge lives in. A location with no items leaves the
+selection untouched.
+-}
+toggleLocSelection : Loc -> Data -> Set.Set String -> Set.Set String
+toggleLocSelection loc data selected =
+    let
+        keys =
+            locSelKeys loc data
+    in
+    if not (Set.isEmpty keys) && Set.isEmpty (Set.diff keys selected) then
+        Set.diff selected keys
+
+    else
+        Set.union selected keys
