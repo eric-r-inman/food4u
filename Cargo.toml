@@ -49,7 +49,7 @@ tower-http = { version = "0.6", features = ["trace", "cors", "fs", "set-header"]
 # local backend) and PostgreSQL (the hosted backend); tls-rustls provides
 # TLS for connections to a remote PostgreSQL.  default-features is off to
 # avoid pulling a second async runtime; only the tokio runtime is enabled.
-sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "sqlite", "postgres", "migrate", "macros"] }
+sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "tls-rustls", "sqlite", "postgres", "migrate", "macros"] }
 
 # Embeds the compiled Elm frontend into the server binary.
 # interpolate-folder-path lets the #[folder] attribute expand the
