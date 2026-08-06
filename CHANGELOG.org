@@ -3,6 +3,11 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.28.0
+** Added
 1. Two Shopping List departments are renamed: "Baking & Spices" becomes "Cooking
    & Baking", and "Condiments & Sauces" becomes "Condiments & Dressings".
    Cooking essentials — the oils, vinegars, ghee, and cooking wine — now sort
@@ -10,9 +15,6 @@
    goods; and fresh avocado and lemon sort with the produce. Existing kitchens
    pick up the renames automatically on their next server start, including their
    own category panes and sorting overrides. No action is needed.
-** Fixes
-** Breaking
-** Maintenance
 * v0.27.0
 ** Added
 1. The app grows hotkeys: "s", "c", and "p" toggle Select, Count, and Pare, and
