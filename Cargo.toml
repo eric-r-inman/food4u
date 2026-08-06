@@ -61,7 +61,7 @@ rust-embed = { version = "8", features = ["mime-guess", "interpolate-folder-path
 tempfile = "3"
 
 # OpenMetrics/Prometheus
-prometheus = "0.13"
+prometheus = "0.14"
 
 # OpenAPI (re-exported by foundation, but needed for ApiRouter in app code)
 aide = { version = "0.15", features = ["axum", "axum-json", "axum-query", "scalar", "macros"] }
