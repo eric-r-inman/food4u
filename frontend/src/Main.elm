@@ -1392,8 +1392,8 @@ defaultCartCategories =
     , "Bulk"
     , "Bakery"
     , "Meat & Seafood"
-    , "Baking & Spices"
-    , "Condiments & Sauces"
+    , "Cooking & Baking"
+    , "Condiments & Dressings"
     , "Coffee & Tea"
     , "Health & Wellness"
     ]

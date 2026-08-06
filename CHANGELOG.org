@@ -3,6 +3,13 @@
 
 * Upcoming
 ** Added
+1. Two Shopping List departments are renamed: "Baking & Spices" becomes "Cooking
+   & Baking", and "Condiments & Sauces" becomes "Condiments & Dressings".
+   Cooking essentials — the oils, vinegars, ghee, and cooking wine — now sort
+   into Cooking & Baking; canned tomato paste and chipotles sort with the canned
+   goods; and fresh avocado and lemon sort with the produce. Existing kitchens
+   pick up the renames automatically on their next server start, including their
+   own category panes and sorting overrides. No action is needed.
 ** Fixes
 ** Breaking
 ** Maintenance

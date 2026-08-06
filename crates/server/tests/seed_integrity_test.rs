@@ -160,8 +160,8 @@ const DEPARTMENTS: [&str; 11] = [
   "Bulk",
   "Bakery",
   "Meat & Seafood",
-  "Baking & Spices",
-  "Condiments & Sauces",
+  "Cooking & Baking",
+  "Condiments & Dressings",
   "Coffee & Tea",
   "Health & Wellness",
 ];
