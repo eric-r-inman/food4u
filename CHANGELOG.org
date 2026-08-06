@@ -3,13 +3,15 @@
 
 * Upcoming
 ** Added
+** Fixes
+** Breaking
+** Maintenance
+* v0.29.0
+** Added
 1. In select mode, shift-clicking an item now toggles its whole category: every
    item in that category, pane, or recipe becomes selected, and when all of them
    already are, the same shift-click unselects them all. Selections elsewhere
    are left alone, and it works in every column. No action is needed.
-** Fixes
-** Breaking
-** Maintenance
 * v0.28.0
 ** Added
 1. Two Shopping List departments are renamed: "Baking & Spices" becomes "Cooking
